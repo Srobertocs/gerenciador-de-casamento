@@ -9,12 +9,28 @@ package gestaocasamento;
  * @author SOUSA
  */
 public class GestaoCasamento {
+    //Inicialização dos OBJETOS e DAOS
+    Pessoa pessoa  = new Pessoa();
+    
+    PessoaDAO pessoaDAO = new PessoaDAO();
+    
+    public GestaoCasamento() {        
+        //Iníciar código aqui
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    }
+
+    //Métodos de menu opcão 
+    private int menuOpcaoInicio(){
+        int opcao = 0;
+        return opcao;
+    }
+    private int menuOpcaoPessoa(){
+        int opcao = 0;
+        return opcao;
     }
     
+    //Main
+    public static void main(String[] args) {
+        new GestaoCasamento();
+    }
 }
