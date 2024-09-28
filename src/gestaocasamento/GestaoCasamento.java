@@ -28,6 +28,7 @@ public class GestaoCasamento {
             pegaopcao = gui.menuPrincipal();
 
             switch (pegaopcao) {
+                // 1 - Acessa o Menu de pessoas
                 case 1:
                     executaOpcaoPessoa();
                     break;
@@ -48,6 +49,7 @@ public class GestaoCasamento {
             pegaopcao = gui.menuPessoa();
 
             switch (pegaopcao) {
+                // 1 - Adiciona pessoas
                 case 1:
                     boolean confirmacao;
                     
@@ -59,10 +61,11 @@ public class GestaoCasamento {
                          JOptionPane.showMessageDialog(null, "Pessoa não cadastrada");      
                     }
                     break;  
-                    
+                // 5 - Mostrar casdastro das pessoas
                 case 5:
                     pessoaDAO.mostraPessoa();
                     break;
+                // 6 - Volta para o menu principal
                 case 6:
                     break;
                 default:

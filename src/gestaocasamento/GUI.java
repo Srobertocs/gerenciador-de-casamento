@@ -25,7 +25,7 @@ public class GUI {
         return pessoa;
     }
 
-    //Métodos dos menus e opção
+    //Métodos dos menus de opção
     public int menuPrincipal() {
         int opcao;
 
