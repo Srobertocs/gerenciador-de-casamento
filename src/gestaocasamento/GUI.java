@@ -19,6 +19,8 @@ public class GUI {
         pessoa.setNome(JOptionPane.showInputDialog("Digite o nome: "));
         pessoa.setTelefone(JOptionPane.showInputDialog("Digite o numero de contato: "));
         pessoa.setNascimento(JOptionPane.showInputDialog("Digite a data de nascimento: "));
+        pessoa.setDataCriacao(Datas.pegaDataAgora());
+        pessoa.setDataModificao(Datas.pegaDataAgora());
         
         return pessoa;
     }

@@ -5,6 +5,7 @@
 package gestaocasamento;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -81,8 +82,8 @@ public class Pessoa {
                 + " | Nome: " + nome
                 + " | Telefone: " + telefone
                 + " | Data de nascimento: " + nascimento
-                + " | Data de criacao: " + dataCriacao
-                + " | Data de modificao: " + dataModificao;
+                + " | Data de criacao: " + dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                + " | Data de modificao: " + dataModificao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         return texto;
     }
     @Override
