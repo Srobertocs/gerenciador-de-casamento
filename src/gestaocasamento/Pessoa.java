@@ -23,7 +23,7 @@ public class Pessoa {
     
     //Construtor
     Pessoa(){
-        Pessoa.count += Pessoa.count;
+        Pessoa.count += 1;
         this.id = Pessoa.count;
     }
     
@@ -76,7 +76,14 @@ public class Pessoa {
      //Método toString
     @Override
     public String toString() {
-        return "Pessoa{" + "id=" + id + ", nome=" + nome + ", nascimento=" + nascimento + ", telefone=" + telefone + ", dataCriacao=" + dataCriacao + ", dataModificao=" + dataModificao + '}';
+        
+        String texto = "Id: " + id
+                + " | Nome: " + nome
+                + " | Telefone: " + telefone
+                + " | Data de nascimento: " + nascimento
+                + " | Data de criacao: " + dataCriacao
+                + " | Data de modificao: " + dataModificao;
+        return texto;
     }
     @Override
     public int hashCode() {
