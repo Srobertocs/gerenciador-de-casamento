@@ -49,19 +49,35 @@ public class GestaoCasamento {
             pegaopcao = gui.menuPessoa();
 
             switch (pegaopcao) {
-                // 1 - Adiciona pessoas
+                // 1 - Adicionar pessoas
                 case 1:
                     boolean confirmacao;
-                    
-                    confirmacao = pessoaDAO.adicionapessoa(gui.criaPessoa());
-                    
-                    if(confirmacao == true){
+
+                    confirmacao = pessoaDAO.adicionaPessoa(gui.criaPessoa());
+
+                    if (confirmacao == true) {
                         JOptionPane.showMessageDialog(null, "Pessoa cadastrada");
-                    }else {
-                         JOptionPane.showMessageDialog(null, "Pessoa não cadastrada");      
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Pessoa não cadastrada. A lista de pessoas está lotada");
                     }
-                    break;  
-                // 5 - Mostrar casdastro das pessoas
+                    break;
+                // 3 - Excluir cadastro
+                case 3:
+                    boolean cadastroExcluido;
+
+                    cadastroExcluido = pessoaDAO.excluirPessoa(JOptionPane.showInputDialog("Digite o nome da pessoa que deseja excluir "));  
+                    
+                    if(cadastroExcluido){
+                        JOptionPane.showMessageDialog(null, "Cadastro excluido com sucesso");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "O Cadastro não foi encontrado. \nPossiveis motivos: "
+                                + "\n1 - Nome digitado incorretamente "
+                                + "\n2 - Cadastro inexistente"
+                                + "\n3- Nenhum cadastro encontrado");
+                    }
+                    break;
+                // 5 - Mostrar casdastro 
                 case 5:
                     pessoaDAO.mostraPessoa();
                     break;

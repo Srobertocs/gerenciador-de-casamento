@@ -14,7 +14,7 @@ public class PessoaDAO {
 
     Pessoa[] pessoa = new Pessoa[40];
 
-    public boolean adicionapessoa(Pessoa novaPessoa) {
+    public boolean adicionaPessoa(Pessoa novaPessoa) {
         for (int i = 0; i < 40; i++) {
             if (this.pessoa[i] == null) {
                 this.pessoa[i] = novaPessoa;
@@ -26,18 +26,30 @@ public class PessoaDAO {
 
     public void mostraPessoa() {
         boolean vazio = true;
+        
         String texto = "PESSOAS CADASTRADAS\n";
 
         for (int i = 0; i < 40; i++) {
             if (this.pessoa[i] != null) {
-                texto +="\n" + pessoa[i].toString();
+                texto += "\n" + pessoa[i].toString();
                 vazio = false;
             }
         }
         if (vazio == true) {
             JOptionPane.showMessageDialog(null, "Nenhum cadastro encontrado");
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, texto);
         }
+    }
+
+    public boolean excluirPessoa(String nomePessoa) {
+        
+        for (int i = 0; i < 40; i++) {
+            if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
+                this.pessoa[i] = null;
+                return true;
+            }
+        }
+        return false;
     }
 }
