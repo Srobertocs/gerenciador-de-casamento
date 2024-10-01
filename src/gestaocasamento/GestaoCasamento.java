@@ -17,11 +17,11 @@ public class GestaoCasamento {
     GUI gui = new GUI();
 
     public GestaoCasamento() {
-        executaOpcaoInicio();
+        executaOpcaoMenuPrincipal();
     }
 
     //Métodos de execução das opcões dos menus 
-    private void executaOpcaoInicio() {
+    private void executaOpcaoMenuPrincipal() {
         int pegaopcao = 0;
 
         while (pegaopcao != 6) {
@@ -30,7 +30,7 @@ public class GestaoCasamento {
             switch (pegaopcao) {
                 // 1 - Acessa o Menu de pessoas
                 case 1:
-                    executaOpcaoPessoa();
+                    executaOpcaoMenuPessoa();
                     break;
                 case 6:
                     JOptionPane.showMessageDialog(null, "Programa encerrado");
@@ -42,7 +42,7 @@ public class GestaoCasamento {
         }
     }
 
-    private void executaOpcaoPessoa() {
+    private void executaOpcaoMenuPessoa() {
         int pegaopcao = 0;
 
         while (pegaopcao != 6) {
@@ -61,20 +61,45 @@ public class GestaoCasamento {
                         JOptionPane.showMessageDialog(null, "Pessoa não cadastrada. A lista de pessoas está lotada");
                     }
                     break;
-                // 3 - Excluir cadastro
+                //2 - Consulta Pessoa  
+                case 2:
+                    String consultaPessoa;
+
+                    consultaPessoa = pessoaDAO.consultaPessoa(JOptionPane.showInputDialog("Digite o nome da pessoa para consulta-la"));
+
+                    if (consultaPessoa != null) {
+                        JOptionPane.showMessageDialog(null, "RESULTADO DA CONSULTA"
+                                + "\n\n" + consultaPessoa);
+
+                    } else {
+                        GUI.exibirMensagemPessoaNaoEncontrada();
+                    }
+                    break;
+                // 3 - Exclui cadastro
                 case 3:
                     boolean cadastroExcluido;
 
-                    cadastroExcluido = pessoaDAO.excluirPessoa(JOptionPane.showInputDialog("Digite o nome da pessoa que deseja excluir "));  
-                    
-                    if(cadastroExcluido){
-                        JOptionPane.showMessageDialog(null, "Cadastro excluido com sucesso");
+                    cadastroExcluido = pessoaDAO.excluiPessoa(JOptionPane.showInputDialog("Digite o nome da pessoa que deseja excluir "));
+
+                    if (cadastroExcluido) {
+                        JOptionPane.showMessageDialog(null, "Pessoa excluida com sucesso");
+                    } else {
+                        GUI.exibirMensagemPessoaNaoEncontrada();
                     }
-                    else{
-                        JOptionPane.showMessageDialog(null, "O Cadastro não foi encontrado. \nPossiveis motivos: "
-                                + "\n1 - Nome digitado incorretamente "
-                                + "\n2 - Cadastro inexistente"
-                                + "\n3- Nenhum cadastro encontrado");
+                    break;
+                // 4 - Altera o nome da pessoa 
+                case 4:
+                    boolean alteraNome;
+
+                    String nomePessoa = JOptionPane.showInputDialog("Digite o nome da pessoa que deseja alterar");
+                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome");
+
+                    alteraNome = pessoaDAO.alteraPessoa(nomePessoa, novoNome);
+
+                    if (alteraNome) {
+                        JOptionPane.showMessageDialog(null, "Pessoa alterada com sucesso");
+                    } else {
+                        GUI.exibirMensagemPessoaNaoEncontrada();
                     }
                     break;
                 // 5 - Mostrar casdastro 

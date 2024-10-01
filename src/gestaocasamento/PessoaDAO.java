@@ -26,7 +26,7 @@ public class PessoaDAO {
 
     public void mostraPessoa() {
         boolean vazio = true;
-        
+
         String texto = "PESSOAS CADASTRADAS\n";
 
         for (int i = 0; i < 40; i++) {
@@ -42,8 +42,8 @@ public class PessoaDAO {
         }
     }
 
-    public boolean excluirPessoa(String nomePessoa) {
-        
+    public boolean excluiPessoa(String nomePessoa) {
+
         for (int i = 0; i < 40; i++) {
             if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
                 this.pessoa[i] = null;
@@ -51,5 +51,26 @@ public class PessoaDAO {
             }
         }
         return false;
+    }
+
+    public boolean alteraPessoa(String nomePessoa, String novoNome) {
+        for (int i = 0; i < 40; i++) {
+            if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
+                this.pessoa[i].setNome(novoNome); 
+                this.pessoa[i].setDataModificao(Datas.pegaDataAgora());
+                return true;
+            } 
+        }
+        return false;
+    }
+
+    public String consultaPessoa(String nomePessoa) {
+
+        for (int i = 0; i < 40; i++) {
+            if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
+                return this.pessoa[i].toString();
+            }
+        }
+        return null;
     }
 }
