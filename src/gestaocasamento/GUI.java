@@ -32,7 +32,7 @@ public class GUI {
         String menu = "HOME\nSEJA BEM-VINDO\n"
                 + "\nselecione:"
                 + "\n1- Gerenciamento de pessoas"
-                + "\n2-"
+                + "\n2- Lista de presentes"
                 + "\n3-"
                 + "\n4-"
                 + "\n5-"
@@ -58,6 +58,18 @@ public class GUI {
         return opcao;
     }
 
+      public int menuPresente() {
+        int opcao;
+
+        String menu = "LISTA DE PRESENTES\n"
+                + "\nselecione:"
+                + "\n1- Visualizar lista de presentes"
+                + "\n2- Reservar presente"
+                + "\n3- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
     //Métodos informativos
     public static void exibirMensagemPessoaNaoEncontrada() {
         JOptionPane.showMessageDialog(null, "A pessoa não foi encontrada. "

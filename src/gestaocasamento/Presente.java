@@ -12,33 +12,33 @@ import java.util.Objects;
  *
  * @author SOUSA
  */
-public class Pessoa {
+public class Presente {
     private long id;
     private String nome;
-    private String nascimento;
-    private String telefone; 
+    private String tipo;
+    private Pessoa comprador;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificao;
     
     private static long count;
     
-    //Construtor
-    public Pessoa(){
-        Pessoa.count += 1;
-        this.id = Pessoa.count;
+    //Construtor 
+   public Presente(){
+        Presente.count += 1;
+        this.id = Presente.count;
     }
-    
-    //Métodos Setters
+     
+     //Métodos Setters
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public void setNascimento(String nascimento) {
-        this.nascimento = nascimento;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setComprador(Pessoa comprador) {
+        this.comprador = comprador;
     }
 
     public void setDataCriacao(LocalDateTime dataCriacao) {
@@ -48,22 +48,18 @@ public class Pessoa {
     public void setDataModificao(LocalDateTime dataModificao) {
         this.dataModificao = dataModificao;
     }
-    
-    //Métodos Getters
-    public long getId() {
-        return id;
-    }
-
+     
+     //Métodos Getters
     public String getNome() {
         return nome;
     }
 
-    public String getNascimento() {
-        return nascimento;
+    public String getTipo() {
+        return tipo;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public Pessoa getComprador() {
+        return comprador;
     }
 
     public LocalDateTime getDataCriacao() {
@@ -72,29 +68,28 @@ public class Pessoa {
 
     public LocalDateTime getDataModificao() {
         return dataModificao;
-    } 
-    
-     //Método toString
+    }
+    //Método ToString
     @Override
     public String toString() {
-        
-        String texto = "ID: " + this.id
-                + " | Nome: " + this.nome
-                + " | Telefone: " + this.telefone
-                + " | Data de nascimento: " + this.nascimento
-                + " | Data de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-                + " | Data de modificao: " + this.dataModificao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        String texto = "\n ID: " + this.id
+                + "\n Nome: " + this.nome
+                + "\n Classificacao: " + this.tipo
+                + "\n Comprador: " + this.comprador 
+                + "\n\n Data de modificacao: " + this.dataModificao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+                
         return texto;
     }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 53 * hash + Objects.hashCode(this.nome);
-        hash = 53 * hash + Objects.hashCode(this.nascimento);
-        hash = 53 * hash + Objects.hashCode(this.telefone);
-        hash = 53 * hash + Objects.hashCode(this.dataCriacao);
-        hash = 53 * hash + Objects.hashCode(this.dataModificao);
+        int hash = 3;
+        hash = 79 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 79 * hash + Objects.hashCode(this.nome);
+        hash = 79 * hash + Objects.hashCode(this.tipo);
+        hash = 79 * hash + Objects.hashCode(this.comprador);
+        hash = 79 * hash + Objects.hashCode(this.dataCriacao);
+        hash = 79 * hash + Objects.hashCode(this.dataModificao);
         return hash;
     }
 
@@ -109,17 +104,17 @@ public class Pessoa {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Pessoa other = (Pessoa) obj;
+        final Presente other = (Presente) obj;
         if (this.id != other.id) {
             return false;
         }
         if (!Objects.equals(this.nome, other.nome)) {
             return false;
         }
-        if (!Objects.equals(this.nascimento, other.nascimento)) {
+        if (!Objects.equals(this.tipo, other.tipo)) {
             return false;
         }
-        if (!Objects.equals(this.telefone, other.telefone)) {
+        if (!Objects.equals(this.comprador, other.comprador)) {
             return false;
         }
         if (!Objects.equals(this.dataCriacao, other.dataCriacao)) {
@@ -127,4 +122,8 @@ public class Pessoa {
         }
         return Objects.equals(this.dataModificao, other.dataModificao);
     }
+    
+    
+    
+    
 }

@@ -14,6 +14,7 @@ public class GestaoCasamento {
 
     //Inicialização dos OBJETOS e DAOS
     PessoaDAO pessoaDAO = new PessoaDAO();
+    PresenteDAO presenteDAO = new PresenteDAO();
     GUI gui = new GUI();
 
     public GestaoCasamento() {
@@ -32,6 +33,10 @@ public class GestaoCasamento {
                 case 1:
                     executaOpcaoMenuPessoa();
                     break;
+                // 2 - Acessa o Menu da lista de presentes
+                case 2:
+                    executaOpcaoMenuPresente();
+                    break;
                 case 6:
                     JOptionPane.showMessageDialog(null, "Programa encerrado");
                     break;
@@ -43,11 +48,12 @@ public class GestaoCasamento {
     }
 
     private void executaOpcaoMenuPessoa() {
+        
         int pegaopcao = 0;
 
         while (pegaopcao != 6) {
+            
             pegaopcao = gui.menuPessoa();
-
             switch (pegaopcao) {
                 // 1 - Adicionar pessoas
                 case 1:
@@ -70,7 +76,6 @@ public class GestaoCasamento {
                     if (consultaPessoa != null) {
                         JOptionPane.showMessageDialog(null, "RESULTADO DA CONSULTA"
                                 + "\n\n" + consultaPessoa);
-
                     } else {
                         GUI.exibirMensagemPessoaNaoEncontrada();
                     }
@@ -112,6 +117,28 @@ public class GestaoCasamento {
                 default:
                     JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente!");
                     break;
+            }
+        }
+    }
+
+    private void executaOpcaoMenuPresente() {
+
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 3) {
+            
+            pegaOpcao = gui.menuPresente();
+            switch (pegaOpcao) {
+                case 1:     
+                    JOptionPane.showMessageDialog(null, presenteDAO.mostraListaPresentes());
+                    break;
+                case 2:
+                    break;
+                //Retorna para o menu principal
+                case 3:
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente!");
             }
         }
     }
