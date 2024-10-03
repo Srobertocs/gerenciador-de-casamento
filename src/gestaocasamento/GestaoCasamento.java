@@ -129,11 +129,33 @@ public class GestaoCasamento {
             
             pegaOpcao = gui.menuPresente();
             switch (pegaOpcao) {
+               //Mostra a lista de presentes 
                 case 1:     
                     JOptionPane.showMessageDialog(null, presenteDAO.mostraListaPresentes());
                     break;
+                //Reserva comprador de cada presente 
                 case 2:
-                    break;
+                    boolean confirmacao = false;
+                    //Cria uma pessoa para receber através do nome o cadastro de uma pessoa já existente 
+                    Pessoa pessoa = new Pessoa();
+                    pessoa = pessoaDAO.pegaPessoa(JOptionPane.showInputDialog("Digite o seu nome para fazer a reserva do presente"));
+
+                    //condição para saber se existe a pessoa 
+                   if(pessoa != null){
+                       //pega o id do presente
+                       long id  = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar"));
+                       //Valida o id do presente
+                       if(presenteDAO.validaID(id)){
+                           //Vinculo a pessoa ao presente vinculado ao id recebido depois de validado
+                           confirmacao = presenteDAO.reservaCompradorPresentes(pessoa, id);
+                       }else{
+                           JOptionPane.showMessageDialog(null, "Codigo digitado incorreto");
+                       }                       
+                   }
+                   if (confirmacao){
+                       JOptionPane.showMessageDialog(null, "Reserva feita com sucesso");
+                   }         
+                    break;              
                 //Retorna para o menu principal
                 case 3:
                     break;

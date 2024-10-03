@@ -93,4 +93,19 @@ public class PessoaDAO {
         }
         return null;
     }
+    
+    public Pessoa pegaPessoa(String nomePessoa){
+        
+        boolean vazio = true; 
+        for (int i = 0; i < 40; i++) {
+            if(this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)){
+                vazio = false;
+                return pessoa[i];
+            }
+        }
+        if(vazio == true){
+            GUI.exibirMensagemPessoaNaoEncontrada(); 
+        }
+        return null;
+    }
 }

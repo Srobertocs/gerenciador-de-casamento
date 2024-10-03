@@ -13,22 +13,23 @@ import java.util.Objects;
  * @author SOUSA
  */
 public class Presente {
+
     private long id;
     private String nome;
     private String tipo;
     private Pessoa comprador;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificao;
-    
+
     private static long count;
-    
+
     //Construtor 
-   public Presente(){
+    public Presente() {
         Presente.count += 1;
         this.id = Presente.count;
     }
-     
-     //Métodos Setters
+
+    //Métodos Setters
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -48,8 +49,12 @@ public class Presente {
     public void setDataModificao(LocalDateTime dataModificao) {
         this.dataModificao = dataModificao;
     }
-     
-     //Métodos Getters
+
+    //Métodos Getters
+    public long getId() {
+        return id;
+    }
+
     public String getNome() {
         return nome;
     }
@@ -69,15 +74,26 @@ public class Presente {
     public LocalDateTime getDataModificao() {
         return dataModificao;
     }
+
     //Método ToString
     @Override
     public String toString() {
-        String texto = "\n ID: " + this.id
-                + "\n Nome: " + this.nome
-                + "\n Classificacao: " + this.tipo
-                + "\n Comprador: " + this.comprador 
-                + "\n\n Data de modificacao: " + this.dataModificao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-                
+        String texto;
+
+        if (this.comprador == null) {
+            texto = "\n Codigo: " + this.id
+                    + "\n Nome: " + this.nome
+                    + "\n Classificacao: " + this.tipo
+                    + "\n Comprador: " + this.comprador
+                    + "\n\n Data de modificacao: " + this.dataModificao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+        } else {
+            texto = "\n Codigo: " + this.id
+                    + "\n Nome: " + this.nome
+                    + "\n Classificacao: " + this.tipo
+                    + "\n Comprador: " + this.comprador.getNome()
+                    + "\n\n Data de modificacao: " + this.dataModificao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        }
         return texto;
     }
 
@@ -122,8 +138,5 @@ public class Presente {
         }
         return Objects.equals(this.dataModificao, other.dataModificao);
     }
-    
-    
-    
-    
+
 }

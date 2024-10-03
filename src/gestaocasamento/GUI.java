@@ -43,7 +43,7 @@ public class GUI {
     }
 
     public int menuPessoa() {
-        int opcao = 0;
+        int opcao;
 
         String menu = "GERENCIAMENTO DE PESSOAS\n"
                 + "\nselecione:"

@@ -23,7 +23,7 @@ public class PresenteDAO {
         presente01.setDataCriacao(Datas.pegaDataAgora());
         presente01.setDataModificao(Datas.pegaDataAgora());
         this.adicionaPresentes(presente01);
-        
+
         Presente presente02 = new Presente();
         presente02.setComprador(null);
         presente02.setNome("TELEVISAO");
@@ -31,7 +31,7 @@ public class PresenteDAO {
         presente02.setDataCriacao(Datas.pegaDataAgora());
         presente02.setDataModificao(Datas.pegaDataAgora());
         this.adicionaPresentes(presente02);
-        
+
         Presente presente03 = new Presente();
         presente03.setComprador(null);
         presente03.setNome("GELADEIRA");
@@ -39,7 +39,7 @@ public class PresenteDAO {
         presente03.setDataCriacao(Datas.pegaDataAgora());
         presente03.setDataModificao(Datas.pegaDataAgora());
         this.adicionaPresentes(presente03);
-        
+
         Presente presente04 = new Presente();
         presente04.setComprador(null);
         presente04.setNome("MICROONDAS");
@@ -47,25 +47,25 @@ public class PresenteDAO {
         presente04.setDataCriacao(Datas.pegaDataAgora());
         presente04.setDataModificao(Datas.pegaDataAgora());
         this.adicionaPresentes(presente04);
-        
+
         Presente presente05 = new Presente();
         presente05.setComprador(null);
         presente05.setNome("CAMA KING SIZE");
         presente05.setTipo("Movel");
         presente05.setDataCriacao(Datas.pegaDataAgora());
         presente05.setDataModificao(Datas.pegaDataAgora());
-        this.adicionaPresentes(presente05);  
+        this.adicionaPresentes(presente05);
     }
 
-    public void adicionaPresentes(Presente novoPresente){
+    public void adicionaPresentes(Presente novoPresente) {
         for (int i = 0; i < 5; i++) {
-            if(this.presente[i] == null){
+            if (this.presente[i] == null) {
                 this.presente[i] = novoPresente;
                 break;
             }
         }
     }
-    
+
     public String mostraListaPresentes() {
         String texto = "LISTA DE PRESENTES\n";
         for (int i = 0; i < 5; i++) {
@@ -74,5 +74,32 @@ public class PresenteDAO {
             }
         }
         return texto;
+    }
+    
+    public boolean validaID(long id){ 
+        for (int i = 0; i < 5; i++) {
+            if (this.presente[i].getId() == id){
+                return true;
+            }            
+        }
+        return false;
+    }
+
+    public boolean reservaCompradorPresentes(Pessoa pessoa, long id) {
+
+        for (int i = 0; i < 5; i++) {
+            //Localiza o presente 
+            if (this.presente[i] != null & this.presente[i].getId() == id) {
+                //Verifica se não possui comprador
+                if (this.presente[i].getComprador() == null) {
+                    this.presente[i].setComprador(pessoa);
+                    this.presente[i].setDataModificao(Datas.pegaDataAgora());
+                    return true;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Presente já escolhido por outra pessoa");
+                }
+            }
+        }
+        return false;
     }
 }
