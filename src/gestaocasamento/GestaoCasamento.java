@@ -22,6 +22,24 @@ public class GestaoCasamento {
     }
 
     //Métodos de execução das opcões dos menus 
+    
+    private void executaMenuOpcaoLogin(){
+        int pegaopcao = 0;
+        
+        while(pegaopcao != 3){
+            pegaopcao = gui.menuPrincipal();
+            
+            switch (pegaopcao) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente");
+            }
+        }
+    }
+    
     private void executaOpcaoMenuPrincipal() {
         int pegaopcao = 0;
 
@@ -136,17 +154,14 @@ public class GestaoCasamento {
                 //Reserva comprador de cada presente 
                 case 2:
                     boolean confirmacao = false;
-                    //Cria uma pessoa para receber através do nome o cadastro de uma pessoa já existente 
+                    
                     Pessoa pessoa = new Pessoa();
                     pessoa = pessoaDAO.pegaPessoa(JOptionPane.showInputDialog("Digite o seu nome para fazer a reserva do presente"));
-
-                    //condição para saber se existe a pessoa 
-                   if(pessoa != null){
-                       //pega o id do presente
-                       long id  = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar"));
-                       //Valida o id do presente
-                       if(presenteDAO.validaID(id)){
-                           //Vinculo a pessoa ao presente vinculado ao id recebido depois de validado
+                    
+                   if(pessoa != null){                     
+                       long id  = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar"));       
+                       
+                       if(presenteDAO.validaIdPresente(id)){                         
                            confirmacao = presenteDAO.reservaCompradorPresentes(pessoa, id);
                        }else{
                            JOptionPane.showMessageDialog(null, "Codigo digitado incorreto");

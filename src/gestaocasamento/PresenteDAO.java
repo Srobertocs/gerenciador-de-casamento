@@ -76,7 +76,7 @@ public class PresenteDAO {
         return texto;
     }
     
-    public boolean validaID(long id){ 
+    public boolean validaIdPresente(long id){ 
         for (int i = 0; i < 5; i++) {
             if (this.presente[i].getId() == id){
                 return true;

@@ -58,7 +58,7 @@ public class GUI {
         return opcao;
     }
 
-      public int menuPresente() {
+     public int menuPresente() {
         int opcao;
 
         String menu = "LISTA DE PRESENTES\n"
@@ -66,6 +66,19 @@ public class GUI {
                 + "\n1- Visualizar lista de presentes"
                 + "\n2- Reservar presente"
                 + "\n3- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+     
+     public int menuLogin() {
+        int opcao;
+
+        String menu = "LOGIN\n"
+                + "\nselecione:"
+                + "\n1- Login"
+                + "\n2- Cadastro"
+                + "\n3 - Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
