@@ -29,7 +29,31 @@ public class GUI {
     public String recebeNomePessoa() {
         return JOptionPane.showInputDialog("Digite o nome da pessoa:");
     }
-
+    
+    public String recebeNovoNomePessoa() {
+        return JOptionPane.showInputDialog("Digite o novo nome:");
+    }
+    //Objeto Presente
+    public String recebeIdPresente() {
+        return JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar");
+    }
+    
+    //Objeto usuário
+    public Usuario criaUsuario(){
+        Usuario usuario = new Usuario();
+        
+        usuario.setLogin(JOptionPane.showInputDialog("Digite o nome do usuario:"));
+        usuario.setSenha(JOptionPane.showInputDialog("Digite a senha:"));
+        usuario.setTipo(JOptionPane.showInputDialog("Tipo do usuario"
+                + "\nNoivo"
+                + "\nNoiva"
+                + "\nConvidado"));
+        usuario.setPessoa(null);
+        usuario.setDataCriacao(Datas.pegaDataAgora());
+        usuario.setDataModificacao(Datas.pegaDataAgora());
+        
+        return usuario;
+    } 
     //Métodos dos menus de opção
     public int menuPrincipalNaoLogado() {
         int opcao;
@@ -49,9 +73,9 @@ public class GUI {
 
         String menu = "HOME\nSEJA BEM-VINDO\n\nLOGADO\n"
                 + "\nselecione:"
-                + "\n1- Gerenciamento de pessoas"
-                + "\n2- Lista de presentes"
-                + "\n3-"
+                + "\n1- Lista de presentes"
+                + "\n2- Gerenciamento de pessoas "
+                + "\n3- Gerenciamento de usuarios"
                 + "\n4-"
                 + "\n5-"
                 + "\n6- Sair";
@@ -70,6 +94,22 @@ public class GUI {
                 + "\n3- Excluir pessoa"
                 + "\n4- Alterar o nome da pessoa"
                 + "\n5- Mostra pessoas cadastradas"
+                + "\n6- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+    
+     public int menuUsuario() {
+        int opcao;
+
+        String menu = "GERENCIAMENTO DE USUARIOS\n"
+                + "\nselecione:"
+                + "\n1- Adicionar usuario"
+                + "\n2- Consultar usuario"
+                + "\n3- Excluir usuario"
+                + "\n4- Alterar senha do usuario"
+                + "\n5- Mostrar usuarios cadastrados"
                 + "\n6- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
@@ -146,10 +186,10 @@ public class GUI {
     }
 
     //Objeto Presente 
-    public void exibiPresente(String listaPresentes){
+    public void exibirPresentes(String listaPresentes){
         JOptionPane.showMessageDialog(null,listaPresentes);
     }
-    public void exibiMensagemPresenteJaEscolhido() {
+    public void exibirMensagemPresenteJaEscolhido() {
         JOptionPane.showMessageDialog(null, "Presente já escolhido por outra pessoa");
     }
 

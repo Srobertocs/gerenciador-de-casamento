@@ -69,6 +69,34 @@ public class GestaoCasamento {
         }
     }
 
+    private void executaOpcaoMenuUsuario() {
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 6) {
+            pegaOpcao = gui.menuUsuario();
+
+            switch (pegaOpcao) {
+                // 1 - Adicionar usuário
+
+                case 1:
+
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                case 6:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+                    break;
+            }
+        }
+
+    }
+
     private void executaOpcaoMenuPrincipalLogado() {
         int pegaOpcao = 0;
 
@@ -76,13 +104,17 @@ public class GestaoCasamento {
             pegaOpcao = gui.menuPrincipalLogado();
 
             switch (pegaOpcao) {
-                // 1 - Acessa o Menu de pessoas
+                // 1 - Acessa o Menu da lista de presentes
                 case 1:
+                    executaOpcaoMenuPresente();
+                    break;
+                // 2 - Acessa o Menu de pessoas
+                case 2:
                     executaOpcaoMenuPessoa();
                     break;
-                // 2 - Acessa o Menu da lista de presentes
-                case 2:
-                    executaOpcaoMenuPresente();
+                // 3 - Acessa o Menu de usuarios
+                case 3:
+                    executaOpcaoMenuUsuario();
                     break;
                 case 6:
                     break;
@@ -141,10 +173,7 @@ public class GestaoCasamento {
                 case 4:
                     boolean alteraNome;
 
-                    String nomePessoa = JOptionPane.showInputDialog("Digite o nome da pessoa que deseja alterar");
-                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome");
-
-                    alteraNome = pessoaDAO.alteraPessoa(nomePessoa, novoNome);
+                    alteraNome = pessoaDAO.alteraPessoa(gui.recebeNomePessoa(), gui.recebeNovoNomePessoa());
 
                     if (alteraNome) {
                         gui.exibirMensagemPessoaAlterada();
@@ -176,7 +205,7 @@ public class GestaoCasamento {
             switch (pegaOpcao) {
                 //Mostra a lista de presentes 
                 case 1:
-                    gui.exibiPresente(presenteDAO.mostraListaPresentes());
+                    gui.exibirPresentes(presenteDAO.mostraListaPresentes());
                     break;
                 //Reserva comprador de cada presente 
                 case 2:
@@ -186,7 +215,7 @@ public class GestaoCasamento {
                     pessoa = pessoaDAO.pegaPessoa(gui.recebeNomePessoa());
 
                     if (pessoa != null) {
-                        long id = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar"));
+                        long id = Integer.parseInt(gui.recebeIdPresente());
 
                         if (presenteDAO.validaIdPresente(id)) {
                             confirmacao = presenteDAO.reservaCompradorPresentes(pessoa, id);

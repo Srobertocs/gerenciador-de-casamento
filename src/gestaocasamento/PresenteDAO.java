@@ -98,7 +98,7 @@ public class PresenteDAO {
                     this.presente[i].setDataModificao(Datas.pegaDataAgora());
                     return true;
                 } else {
-                    gui.exibiMensagemPresenteJaEscolhido();
+                    gui.exibirMensagemPresenteJaEscolhido();
                 }
             }
         }
