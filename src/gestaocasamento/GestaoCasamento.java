@@ -15,38 +15,67 @@ public class GestaoCasamento {
     //Inicialização dos OBJETOS e DAOS
     PessoaDAO pessoaDAO = new PessoaDAO();
     PresenteDAO presenteDAO = new PresenteDAO();
+    UsuarioDAO usuarioDAO = new UsuarioDAO();
+
     GUI gui = new GUI();
 
     public GestaoCasamento() {
-        executaOpcaoMenuPrincipal();
+        //executaOpcaoMenuPrincipalNaoLogado();
+        executaOpcaoMenuPrincipalLogado();
     }
 
     //Métodos de execução das opcões dos menus 
-    
-    private void executaMenuOpcaoLogin(){
-        int pegaopcao = 0;
-        
-        while(pegaopcao != 3){
-            pegaopcao = gui.menuPrincipal();
-            
-            switch (pegaopcao) {
+    private void executaOpcaoMenuPrincipalNaoLogado() {
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 3) {
+
+            pegaOpcao = gui.menuPrincipalNaoLogado();
+
+            switch (pegaOpcao) {
                 case 1:
+                    executaOpcaoMenuPresente();
                     break;
                 case 2:
+                    executaOpcaoMenuLogin();
+                    break;
+                case 3:
+                    gui.exibirMesangemProgramaEncerrado();
                     break;
                 default:
-                    JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente");
+                    gui.exibirMensagemOpcaoInexistente();
             }
         }
     }
-    
-    private void executaOpcaoMenuPrincipal() {
-        int pegaopcao = 0;
 
-        while (pegaopcao != 6) {
-            pegaopcao = gui.menuPrincipal();
+    private void executaOpcaoMenuLogin() {
+        int pegaOpcao = 0;
 
-            switch (pegaopcao) {
+        while (pegaOpcao != 3) {
+            pegaOpcao = gui.menuLogin();
+
+            switch (pegaOpcao) {
+                case 1:
+                    executaOpcaoMenuPrincipalLogado();
+                    pegaOpcao = 3;
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+        }
+    }
+
+    private void executaOpcaoMenuPrincipalLogado() {
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 6) {
+            pegaOpcao = gui.menuPrincipalLogado();
+
+            switch (pegaOpcao) {
                 // 1 - Acessa o Menu de pessoas
                 case 1:
                     executaOpcaoMenuPessoa();
@@ -56,23 +85,22 @@ public class GestaoCasamento {
                     executaOpcaoMenuPresente();
                     break;
                 case 6:
-                    JOptionPane.showMessageDialog(null, "Programa encerrado");
                     break;
                 default:
-                    JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente");
+                    gui.exibirMensagemOpcaoInexistente();
                     break;
             }
         }
     }
 
     private void executaOpcaoMenuPessoa() {
-        
-        int pegaopcao = 0;
 
-        while (pegaopcao != 6) {
-            
-            pegaopcao = gui.menuPessoa();
-            switch (pegaopcao) {
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 6) {
+
+            pegaOpcao = gui.menuPessoa();
+            switch (pegaOpcao) {
                 // 1 - Adicionar pessoas
                 case 1:
                     boolean confirmacao;
@@ -80,20 +108,19 @@ public class GestaoCasamento {
                     confirmacao = pessoaDAO.adicionaPessoa(gui.criaPessoa());
 
                     if (confirmacao == true) {
-                        JOptionPane.showMessageDialog(null, "Pessoa cadastrada");
+                        gui.exibirMensagemPessoaAdicionada();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Pessoa não cadastrada. A lista de pessoas está lotada");
+                        gui.exibirMensagemPessoaNaoAdicionada();
                     }
                     break;
                 //2 - Consulta Pessoa  
                 case 2:
                     String consultaPessoa;
 
-                    consultaPessoa = pessoaDAO.consultaPessoa(JOptionPane.showInputDialog("Digite o nome da pessoa para consulta-la"));
+                    consultaPessoa = pessoaDAO.consultaPessoa(gui.recebeNomePessoa());
 
                     if (consultaPessoa != null) {
-                        JOptionPane.showMessageDialog(null, "RESULTADO DA CONSULTA"
-                                + "\n\n" + consultaPessoa);
+                        gui.exibirPessoas(consultaPessoa);
                     } else {
                         GUI.exibirMensagemPessoaNaoEncontrada();
                     }
@@ -102,10 +129,10 @@ public class GestaoCasamento {
                 case 3:
                     boolean cadastroExcluido;
 
-                    cadastroExcluido = pessoaDAO.excluiPessoa(JOptionPane.showInputDialog("Digite o nome da pessoa que deseja excluir "));
+                    cadastroExcluido = pessoaDAO.excluiPessoa(gui.recebeNomePessoa());
 
                     if (cadastroExcluido) {
-                        JOptionPane.showMessageDialog(null, "Pessoa excluida com sucesso");
+                        gui.exibirMensagemPessoaExcluida();
                     } else {
                         GUI.exibirMensagemPessoaNaoEncontrada();
                     }
@@ -120,20 +147,20 @@ public class GestaoCasamento {
                     alteraNome = pessoaDAO.alteraPessoa(nomePessoa, novoNome);
 
                     if (alteraNome) {
-                        JOptionPane.showMessageDialog(null, "Pessoa alterada com sucesso");
+                        gui.exibirMensagemPessoaAlterada();
                     } else {
                         GUI.exibirMensagemPessoaNaoEncontrada();
                     }
                     break;
                 // 5 - Mostrar casdastro 
                 case 5:
-                    pessoaDAO.mostraPessoa();
+                    gui.exibirPessoas(pessoaDAO.mostraPessoa());
                     break;
                 // 6 - Volta para o menu principal
                 case 6:
                     break;
                 default:
-                    JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente!");
+                    gui.exibirMensagemOpcaoInexistente();
                     break;
             }
         }
@@ -144,38 +171,38 @@ public class GestaoCasamento {
         int pegaOpcao = 0;
 
         while (pegaOpcao != 3) {
-            
+
             pegaOpcao = gui.menuPresente();
             switch (pegaOpcao) {
-               //Mostra a lista de presentes 
-                case 1:     
-                    JOptionPane.showMessageDialog(null, presenteDAO.mostraListaPresentes());
+                //Mostra a lista de presentes 
+                case 1:
+                    gui.exibiPresente(presenteDAO.mostraListaPresentes());
                     break;
                 //Reserva comprador de cada presente 
                 case 2:
                     boolean confirmacao = false;
-                    
+
                     Pessoa pessoa = new Pessoa();
-                    pessoa = pessoaDAO.pegaPessoa(JOptionPane.showInputDialog("Digite o seu nome para fazer a reserva do presente"));
-                    
-                   if(pessoa != null){                     
-                       long id  = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar"));       
-                       
-                       if(presenteDAO.validaIdPresente(id)){                         
-                           confirmacao = presenteDAO.reservaCompradorPresentes(pessoa, id);
-                       }else{
-                           JOptionPane.showMessageDialog(null, "Codigo digitado incorreto");
-                       }                       
-                   }
-                   if (confirmacao){
-                       JOptionPane.showMessageDialog(null, "Reserva feita com sucesso");
-                   }         
-                    break;              
+                    pessoa = pessoaDAO.pegaPessoa(gui.recebeNomePessoa());
+
+                    if (pessoa != null) {
+                        long id = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar"));
+
+                        if (presenteDAO.validaIdPresente(id)) {
+                            confirmacao = presenteDAO.reservaCompradorPresentes(pessoa, id);
+                        } else {
+                            gui.exibirMensagemIdPresenteDigitadoIncorreto();
+                        }
+                    }
+                    if (confirmacao) {
+                        gui.exibirMensagemReservaPresenteFeitaComSucesso();
+                    }
+                    break;
                 //Retorna para o menu principal
                 case 3:
                     break;
                 default:
-                    JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente!");
+                    gui.exibirMensagemOpcaoInexistente();
             }
         }
     }

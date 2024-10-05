@@ -9,8 +9,11 @@ package gestaocasamento;
  * @author SOUSA
  */
 public class UsuarioDAO {
-    UsuarioDAO[] usuario = new UsuarioDAO[40];
-    
-    
-    
+
+    Usuario[] usuario = new Usuario[40];
+
+    public boolean adicionaUsuario(Usuario novoUsuario) {
+        return true;
+    }
 }
+

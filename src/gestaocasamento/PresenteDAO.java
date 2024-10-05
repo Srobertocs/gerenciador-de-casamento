@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
  */
 public class PresenteDAO {
 
+    GUI gui = new GUI();
+
     Presente[] presente = new Presente[5];
 
     public PresenteDAO() {
@@ -75,12 +77,12 @@ public class PresenteDAO {
         }
         return texto;
     }
-    
-    public boolean validaIdPresente(long id){ 
+
+    public boolean validaIdPresente(long id) {
         for (int i = 0; i < 5; i++) {
-            if (this.presente[i].getId() == id){
+            if (this.presente[i].getId() == id) {
                 return true;
-            }            
+            }
         }
         return false;
     }
@@ -96,7 +98,7 @@ public class PresenteDAO {
                     this.presente[i].setDataModificao(Datas.pegaDataAgora());
                     return true;
                 } else {
-                    JOptionPane.showMessageDialog(null, "Presente já escolhido por outra pessoa");
+                    gui.exibiMensagemPresenteJaEscolhido();
                 }
             }
         }
