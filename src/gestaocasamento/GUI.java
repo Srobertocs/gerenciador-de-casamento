@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 public class GUI {
 
     //Métodos para popular objetos
+    
     //Objeto Pessoa
     public Pessoa criaPessoa() {
         Pessoa pessoa = new Pessoa();
@@ -21,7 +22,7 @@ public class GUI {
         pessoa.setTelefone(JOptionPane.showInputDialog("Digite o numero de contato: "));
         pessoa.setNascimento(JOptionPane.showInputDialog("Digite a data de nascimento: "));
         pessoa.setDataCriacao(Datas.pegaDataAgora());
-        pessoa.setDataModificao(Datas.pegaDataAgora());
+        pessoa.setDataModificacao(Datas.pegaDataAgora());
 
         return pessoa;
     }
@@ -33,6 +34,7 @@ public class GUI {
     public String recebeNovoNomePessoa() {
         return JOptionPane.showInputDialog("Digite o novo nome:");
     }
+    
     //Objeto Presente
     public String recebeIdPresente() {
         return JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar");
@@ -42,9 +44,9 @@ public class GUI {
     public Usuario criaUsuario(){
         Usuario usuario = new Usuario();
         
-        usuario.setLogin(JOptionPane.showInputDialog("Digite o nome do usuario:"));
+        usuario.setLogin(JOptionPane.showInputDialog("Digite o nome do usuario como login:"));
         usuario.setSenha(JOptionPane.showInputDialog("Digite a senha:"));
-        usuario.setTipo(JOptionPane.showInputDialog("Tipo do usuario"
+        usuario.setTipo(JOptionPane.showInputDialog("Digite o tipo de usuario: "
                 + "\nNoivo"
                 + "\nNoiva"
                 + "\nConvidado"));
@@ -54,7 +56,9 @@ public class GUI {
         
         return usuario;
     } 
+    
     //Métodos dos menus de opção
+    
     public int menuPrincipalNaoLogado() {
         int opcao;
 
@@ -100,7 +104,7 @@ public class GUI {
         return opcao;
     }
     
-     public int menuUsuario() {
+    public int menuUsuario() {
         int opcao;
 
         String menu = "GERENCIAMENTO DE USUARIOS\n"
@@ -143,6 +147,7 @@ public class GUI {
     }
 
     //Métodos de exibição de mensagens
+    
     // GestaoCasamento
     public void exibirMensagemOpcaoInexistente() {
         JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente!");
@@ -161,12 +166,16 @@ public class GUI {
                 + "\n3 - Nenhuma pessoa cadastrada");
     }
     
-    public void exibirPessoas(String texto){
-         JOptionPane.showMessageDialog(null, texto);
+    public void exibirPessoas(String pessoa){
+         JOptionPane.showMessageDialog(null, pessoa);
     }
 
     public void exibirMensagemPessoaJaExistente() {
         JOptionPane.showMessageDialog(null, "Pessoa ja existente");
+    }
+    
+    public void exibirMensagemListaPessoaLotada(){
+        JOptionPane.showMessageDialog(null, "A Lista de Pessoas esta lotada");
     }
 
     public void exibirMensagemPessoaExcluida() {
@@ -186,9 +195,10 @@ public class GUI {
     }
 
     //Objeto Presente 
-    public void exibirPresentes(String listaPresentes){
-        JOptionPane.showMessageDialog(null,listaPresentes);
+    public void exibirPresentes(String presentes){
+        JOptionPane.showMessageDialog(null,presentes);
     }
+    
     public void exibirMensagemPresenteJaEscolhido() {
         JOptionPane.showMessageDialog(null, "Presente já escolhido por outra pessoa");
     }
@@ -200,4 +210,40 @@ public class GUI {
     public void exibirMensagemReservaPresenteFeitaComSucesso() {
         JOptionPane.showMessageDialog(null, "Reserva feita com sucesso");
     }
+    
+    //Objeto Usuario
+    public static void exibirMensagemUsuarioNaoEncontrado() {
+        JOptionPane.showMessageDialog(null, "O Usuario não foi encontrado"
+                + "\nPossiveis motivos: "
+                + "\n1 - Nome digitado incorretamente "
+                + "\n2 - Usuario inexistente"
+                + "\n3 - Nenhum usuario cadastrado");
+    }
+    
+    public static void exibirMensagemUsuarioExistente(){
+        JOptionPane.showMessageDialog(null, "Login ja existente");
+    }
+    
+    public void exibirMensagemListaUsuarioLotada(){
+        JOptionPane.showMessageDialog(null, "A Lista de Usuarios esta lotada");  
+    }
+    
+       public void exibirMensagemUsuarioAdicionado() {
+        JOptionPane.showMessageDialog(null, "Usuario cadastrado");
+    }
+       
+       public void exibirMensagemUsuarioNaoAdicionado() {
+        JOptionPane.showMessageDialog(null, "Usuario não cadastrado.");
+    }
+       
+       public void exibirUsuarios(String usuarios){
+        JOptionPane.showMessageDialog(null, usuarios);
+    }
+       public void exibirNoivoJaCadastrado(){
+           JOptionPane.showMessageDialog(null, "Noivo já cadastrado");
+       }
+       public void exibirNoivaJaCadastrada(){
+           JOptionPane.showMessageDialog(null, "Noiva já cadastrada");
+       }
 }
+

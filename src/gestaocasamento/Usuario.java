@@ -5,6 +5,7 @@
 package gestaocasamento;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -83,7 +84,15 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", login=" + login + ", senha=" + senha + ", tipo=" + tipo + ", pessoa=" + pessoa + ", dataCriacao=" + dataCriacao + ", dataModificacao=" + dataModificacao + '}';
+        String texto = "\nID: " + this.id
+                + " | Login: " + this.login
+                + " | Senha: " + this.senha
+                + " | ID Pessoa vinculada : " + this.pessoa.getId()
+                + " | Nome Pessoa vinculada: " + this.pessoa.getNome()
+                + " | Tipo: " + this.tipo
+                + "\nData de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                + "  Data de modificao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        return texto;
     }
 
     @Override

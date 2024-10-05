@@ -10,14 +10,85 @@ package gestaocasamento;
  */
 public class UsuarioDAO {
 
-    PessoaDAO pessoaDAO = new PessoaDAO();
-
+    GUI gui = new GUI();
     Usuario[] usuario = new Usuario[40];
+    
+    public UsuarioDAO(PessoaDAO pessoaDAO){
+    
+    Usuario usuario01 = new Usuario();
+    usuario01.setLogin("silvio");
+    usuario01.setSenha("123");
+    usuario01.setTipo("Noivo");
+    usuario01.setDataCriacao(Datas.pegaDataAgora());
+    usuario01.setDataModificacao(Datas.pegaDataAgora());
+    adicionaUsuario(usuario01, pessoaDAO.pegaPessoa(usuario01.getLogin()));
+    
+    Usuario usuario02 = new Usuario();
+    usuario02.setLogin("bruna");
+    usuario02.setSenha("789");
+    usuario02.setTipo("Noiva");
+    usuario02.setDataCriacao(Datas.pegaDataAgora());
+    usuario02.setDataModificacao(Datas.pegaDataAgora());
+    adicionaUsuario(usuario02, pessoaDAO.pegaPessoa(usuario02.getLogin()));
+    }
 
-    public boolean adicionaUsuario(Usuario novoUsuario) {
-        for (int i = 0; i < 10; i++) {
+    public boolean adicionaUsuario(Usuario novoUsuario, Pessoa pessoa) {
 
+        for (int i = 0; i < 40; i++) {
+
+            if (usuario[i] != null) {
+                if (usuario[i].getLogin().equals(novoUsuario.getLogin())) {
+                    gui.exibirMensagemUsuarioExistente(); 
+                    return false;
+                }
+                else if (validaTipo(this.usuario[i].getTipo(), novoUsuario.getTipo()) == false){
+                    return false;
+                }
+            }
+            if (this.usuario[i] == null) {
+                if (pessoa == null) {
+                    return false;
+                } else {
+                    novoUsuario.setPessoa(pessoa);
+                    usuario[i] = novoUsuario;
+                    return true;
+                }
+            }
+        }
+        gui.exibirMensagemListaUsuarioLotada();
+        return false;
+    }
+
+    public boolean validaTipo(String tipo, String novoTipo) {
+
+        if (tipo.equals("Noivo") & tipo.equals(novoTipo)) {
+            gui.exibirNoivoJaCadastrado();
+            return false;
+        } else if (tipo.equals("Noiva") & tipo.equals(novoTipo)) {
+            gui.exibirNoivaJaCadastrada();
+            return false;
         }
         return true;
+    }
+
+    public String mostraUsuario() {
+
+        boolean vazio = true;
+
+        String texto = "USUARIOS CADASTRADOS";
+
+        for (int i = 0; i < 40; i++) {
+
+            if (this.usuario[i] != null) {
+                texto += "\n" + usuario[i].toString();
+                vazio = false;
+            }
+        }
+        if (vazio == true) {
+            return null;
+
+        } else {
+            return texto;
+        }
     }
 }

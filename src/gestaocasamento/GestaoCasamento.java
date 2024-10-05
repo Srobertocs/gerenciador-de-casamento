@@ -15,7 +15,7 @@ public class GestaoCasamento {
     //Inicialização dos OBJETOS e DAOS
     PessoaDAO pessoaDAO = new PessoaDAO();
     PresenteDAO presenteDAO = new PresenteDAO();
-    UsuarioDAO usuarioDAO = new UsuarioDAO();
+    UsuarioDAO usuarioDAO = new UsuarioDAO(pessoaDAO);
 
     GUI gui = new GUI();
 
@@ -77,15 +77,33 @@ public class GestaoCasamento {
 
             switch (pegaOpcao) {
                 // 1 - Adicionar usuário
-
                 case 1:
-
+                    boolean confirmacao;
+                    
+                    Usuario usuario = gui.criaUsuario();
+                    Pessoa pessoa = pessoaDAO.pegaPessoa(usuario.getLogin());
+                    
+                    confirmacao = usuarioDAO.adicionaUsuario(usuario,pessoa);
+                    
+                    if(confirmacao){
+                        gui.exibirMensagemUsuarioAdicionado();
+                    }else{
+                        gui.exibirMensagemUsuarioNaoAdicionado();  
+                    }
                     break;
                 case 2:
 
                     break;
                 case 3:
+                    break;
+                // 5 - Mostra Usuarios cadastrados
+                case 5:
 
+                    if(usuarioDAO.mostraUsuario() == null){
+                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                    }else{
+                         gui.exibirUsuarios(usuarioDAO.mostraUsuario());
+                    }
                     break;
                 case 6:
                     break;
@@ -183,7 +201,11 @@ public class GestaoCasamento {
                     break;
                 // 5 - Mostrar casdastro 
                 case 5:
-                    gui.exibirPessoas(pessoaDAO.mostraPessoa());
+                     if(pessoaDAO.mostraPessoa() == null){
+                        GUI.exibirMensagemPessoaNaoEncontrada();
+                    }else{
+                         gui.exibirPessoas(pessoaDAO.mostraPessoa());
+                    }
                     break;
                 // 6 - Volta para o menu principal
                 case 6:

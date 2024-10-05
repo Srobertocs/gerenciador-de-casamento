@@ -60,7 +60,9 @@ public class PresenteDAO {
     }
 
     public void adicionaPresentes(Presente novoPresente) {
+        
         for (int i = 0; i < 5; i++) {
+            
             if (this.presente[i] == null) {
                 this.presente[i] = novoPresente;
                 break;
@@ -69,8 +71,11 @@ public class PresenteDAO {
     }
 
     public String mostraListaPresentes() {
+        
         String texto = "LISTA DE PRESENTES\n";
+        
         for (int i = 0; i < 5; i++) {
+            
             if (this.presente[i] != null) {
                 texto += "\n" + this.presente[i].toString();
             }
@@ -79,7 +84,9 @@ public class PresenteDAO {
     }
 
     public boolean validaIdPresente(long id) {
+        
         for (int i = 0; i < 5; i++) {
+            
             if (this.presente[i].getId() == id) {
                 return true;
             }
@@ -90,9 +97,9 @@ public class PresenteDAO {
     public boolean reservaCompradorPresentes(Pessoa pessoa, long id) {
 
         for (int i = 0; i < 5; i++) {
-            //Localiza o presente 
+            
             if (this.presente[i] != null & this.presente[i].getId() == id) {
-                //Verifica se não possui comprador
+               
                 if (this.presente[i].getComprador() == null) {
                     this.presente[i].setComprador(pessoa);
                     this.presente[i].setDataModificao(Datas.pegaDataAgora());

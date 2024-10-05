@@ -20,60 +20,81 @@ public class PessoaDAO {
 
         //Pessoas armazenadas automaticamente 
         Pessoa pessoa01 = new Pessoa();
-        pessoa01.setNome("Silvio");
+        pessoa01.setNome("silvio");
         pessoa01.setNascimento("31/10/2003");
         pessoa01.setTelefone("(34) 999634-3432");
         pessoa01.setDataCriacao(Datas.pegaDataAgora());
-        pessoa01.setDataModificao(Datas.pegaDataAgora());
+        pessoa01.setDataModificacao(Datas.pegaDataAgora());
         this.adicionaPessoa(pessoa01);
 
         Pessoa pessoa02 = new Pessoa();
-        pessoa02.setNome("Bruna");
+        pessoa02.setNome("bruna");
         pessoa02.setNascimento("30/10/2003");
         pessoa02.setTelefone("(34) 98756-6598");
         pessoa02.setDataCriacao(Datas.pegaDataAgora());
-        pessoa02.setDataModificao(Datas.pegaDataAgora());
+        pessoa02.setDataModificacao(Datas.pegaDataAgora());
         this.adicionaPessoa(pessoa02);
+        
+        Pessoa pessoa03 = new Pessoa();
+        pessoa03.setNome("vitor");
+        pessoa03.setNascimento("04/09/2000");
+        pessoa03.setTelefone("(34) 99965-0087");
+        pessoa03.setDataCriacao(Datas.pegaDataAgora());
+        pessoa03.setDataModificacao(Datas.pegaDataAgora());
+        this.adicionaPessoa(pessoa03);
+        
+        Pessoa pessoa04 = new Pessoa();
+        pessoa04.setNome("ana julia");
+        pessoa04.setNascimento("05/11/1999");
+        pessoa04.setTelefone("(34) 99789-1236");
+        pessoa04.setDataCriacao(Datas.pegaDataAgora());
+        pessoa04.setDataModificacao(Datas.pegaDataAgora());
+        this.adicionaPessoa(pessoa04);
     }
 
     public boolean adicionaPessoa(Pessoa novaPessoa) {
+        
         for (int i = 0; i < 40; i++) {
+
             if (this.pessoa[i] != null) {
-                if( this.pessoa[i].getNome().equals(novaPessoa.getNome())){
-                     gui.exibirMensagemPessoaJaExistente();
-                     return false;
-                }      
-            } else if (this.pessoa[i] == null) {
+                if (this.pessoa[i].getNome().equals(novaPessoa.getNome())) {
+                    gui.exibirMensagemPessoaJaExistente();
+                    return false;
+                }
+            }
+            if (this.pessoa[i] == null) {
                 this.pessoa[i] = novaPessoa;
                 return true;
             }
         }
+        gui.exibirMensagemListaPessoaLotada();
         return false;
     }
 
     public String mostraPessoa() {
+        
         boolean vazio = true;
 
-        String texto = "PESSOAS CADASTRADAS\n";
+        String texto = "PESSOAS CADASTRADAS";
 
         for (int i = 0; i < 40; i++) {
+
             if (this.pessoa[i] != null) {
                 texto += "\n" + pessoa[i].toString();
                 vazio = false;
             }
         }
         if (vazio == true) {
-            GUI.exibirMensagemPessoaNaoEncontrada();
+            return null;
         } else {
-           return texto;
+            return texto;
         }
-        return null;
     }
-    
 
     public boolean excluiPessoa(String nomePessoa) {
 
         for (int i = 0; i < 40; i++) {
+
             if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
                 this.pessoa[i] = null;
                 return true;
@@ -83,10 +104,12 @@ public class PessoaDAO {
     }
 
     public boolean alteraPessoa(String nomePessoa, String novoNome) {
+
         for (int i = 0; i < 40; i++) {
+
             if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
                 this.pessoa[i].setNome(novoNome);
-                this.pessoa[i].setDataModificao(Datas.pegaDataAgora());
+                this.pessoa[i].setDataModificacao(Datas.pegaDataAgora());
                 return true;
             }
         }
@@ -94,12 +117,14 @@ public class PessoaDAO {
     }
 
     public String consultaPessoa(String nomePessoa) {
+
         String pessoa;
-        
+
         for (int i = 0; i < 40; i++) {
+
             if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
                 pessoa = "RESULTADO DA CONSULTA"
-                        + "\n\n" + this.pessoa[i].toString();
+                        + "\n" + this.pessoa[i].toString();
                 return pessoa;
             }
         }
@@ -109,7 +134,9 @@ public class PessoaDAO {
     public Pessoa pegaPessoa(String nomePessoa) {
 
         boolean vazio = true;
+
         for (int i = 0; i < 40; i++) {
+
             if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
                 vazio = false;
                 return pessoa[i];

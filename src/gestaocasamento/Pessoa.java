@@ -18,14 +18,14 @@ public class Pessoa {
     private String nascimento;
     private String telefone; 
     private LocalDateTime dataCriacao;
-    private LocalDateTime dataModificao;
+    private LocalDateTime dataModificacao;
     
     private static long count;
     
     //Construtor
     public Pessoa(){
         Pessoa.count += 1;
-        this.id = Pessoa.count;
+            this.id = Pessoa.count;
     }
     
     //Métodos Setters
@@ -45,8 +45,8 @@ public class Pessoa {
         this.dataCriacao = dataCriacao;
     }
 
-    public void setDataModificao(LocalDateTime dataModificao) {
-        this.dataModificao = dataModificao;
+    public void setDataModificacao(LocalDateTime dataModificao) {
+        this.dataModificacao = dataModificao;
     }
     
     //Métodos Getters
@@ -71,19 +71,19 @@ public class Pessoa {
     }
 
     public LocalDateTime getDataModificao() {
-        return dataModificao;
+        return dataModificacao;
     } 
     
      //Método toString
     @Override
     public String toString() {
         
-        String texto = "ID: " + this.id
+        String texto = "\nID: " + this.id
                 + " | Nome: " + this.nome
                 + " | Telefone: " + this.telefone
                 + " | Data de nascimento: " + this.nascimento
-                + " | Data de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-                + " | Data de modificao: " + this.dataModificao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+                + "\nData de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                + "  Data de modificao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         return texto;
     }
     @Override
@@ -94,7 +94,7 @@ public class Pessoa {
         hash = 53 * hash + Objects.hashCode(this.nascimento);
         hash = 53 * hash + Objects.hashCode(this.telefone);
         hash = 53 * hash + Objects.hashCode(this.dataCriacao);
-        hash = 53 * hash + Objects.hashCode(this.dataModificao);
+        hash = 53 * hash + Objects.hashCode(this.dataModificacao);
         return hash;
     }
 
@@ -125,6 +125,6 @@ public class Pessoa {
         if (!Objects.equals(this.dataCriacao, other.dataCriacao)) {
             return false;
         }
-        return Objects.equals(this.dataModificao, other.dataModificao);
+        return Objects.equals(this.dataModificacao, other.dataModificacao);
     }
 }
