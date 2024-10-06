@@ -54,11 +54,16 @@ public class PessoaDAO {
 
     public boolean adicionaPessoa(Pessoa novaPessoa) {
         
+        if(novaPessoa.getNome().equals("") || novaPessoa.getNascimento().equals("") || novaPessoa.getTelefone().equals("")){
+            Pessoa.setCount();
+            return false;
+        }
         for (int i = 0; i < 40; i++) {
 
             if (this.pessoa[i] != null) {
                 if (this.pessoa[i].getNome().equals(novaPessoa.getNome())) {
                     gui.exibirMensagemPessoaJaExistente();
+                    Pessoa.setCount();
                     return false;
                 }
             }
@@ -116,16 +121,12 @@ public class PessoaDAO {
         return false;
     }
 
-    public String consultaPessoa(String nomePessoa) {
-
-        String pessoa;
+    public Pessoa consultaPessoa(String nomePessoa) {
 
         for (int i = 0; i < 40; i++) {
 
             if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
-                pessoa = "RESULTADO DA CONSULTA"
-                        + "\n" + this.pessoa[i].toString();
-                return pessoa;
+                return this.pessoa[i];
             }
         }
         return null;

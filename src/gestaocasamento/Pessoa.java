@@ -32,6 +32,10 @@ public class Pessoa {
     public void setNome(String nome) {
         this.nome = nome;
     }
+    
+    public static void setCount(){
+        Pessoa.count = count - 1;
+    }
 
     public void setNascimento(String nascimento) {
         this.nascimento = nascimento;

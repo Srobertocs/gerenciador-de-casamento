@@ -44,18 +44,26 @@ public class GUI {
     public Usuario criaUsuario(){
         Usuario usuario = new Usuario();
         
-        usuario.setLogin(JOptionPane.showInputDialog("Digite o nome do usuario como login:"));
-        usuario.setSenha(JOptionPane.showInputDialog("Digite a senha:"));
-        usuario.setTipo(JOptionPane.showInputDialog("Digite o tipo de usuario: "
-                + "\nNoivo"
-                + "\nNoiva"
-                + "\nConvidado"));
+        usuario.setLogin(JOptionPane.showInputDialog("Digite o nome da pessoa para ser o login:"));
+        usuario.setSenha(JOptionPane.showInputDialog("Digite a sequencia que sera a sua senha:"));
+        usuario.setTipo(JOptionPane.showInputDialog("Digite a categoria da pessoa conforme mostrado abaixo: "
+                + "\n| Noivo"
+                + " | Noiva"
+                + " | Convidado |"));
         usuario.setPessoa(null);
         usuario.setDataCriacao(Datas.pegaDataAgora());
         usuario.setDataModificacao(Datas.pegaDataAgora());
         
         return usuario;
     } 
+    
+    public String recebeNomeUsuario(){
+        return JOptionPane.showInputDialog("Digite o login do usuario:");
+    }
+  
+    public String recebeNovaSenhaUsuario(){
+        return JOptionPane.showInputDialog("Digite a nova senha do usuario:");
+    }
     
     //Métodos dos menus de opção
     
@@ -224,8 +232,16 @@ public class GUI {
         JOptionPane.showMessageDialog(null, "Login ja existente");
     }
     
+    public void exibirMensagemUsuarioExcluido(){
+        JOptionPane.showMessageDialog(null, "Usuario excluido com sucesso");
+    }
+    
     public void exibirMensagemListaUsuarioLotada(){
         JOptionPane.showMessageDialog(null, "A Lista de Usuarios esta lotada");  
+    }
+    
+    public void exibirMensagemUsuarioAlterado(){
+        JOptionPane.showMessageDialog(null, "Senha do usuario alterada com sucesso");
     }
     
        public void exibirMensagemUsuarioAdicionado() {
@@ -233,7 +249,7 @@ public class GUI {
     }
        
        public void exibirMensagemUsuarioNaoAdicionado() {
-        JOptionPane.showMessageDialog(null, "Usuario não cadastrado.");
+        JOptionPane.showMessageDialog(null, "Usuario não cadastrado");
     }
        
        public void exibirUsuarios(String usuarios){

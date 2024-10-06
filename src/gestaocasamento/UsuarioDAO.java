@@ -12,49 +12,56 @@ public class UsuarioDAO {
 
     GUI gui = new GUI();
     Usuario[] usuario = new Usuario[40];
-    
-    public UsuarioDAO(PessoaDAO pessoaDAO){
-    
-    Usuario usuario01 = new Usuario();
-    usuario01.setLogin("silvio");
-    usuario01.setSenha("123");
-    usuario01.setTipo("Noivo");
-    usuario01.setDataCriacao(Datas.pegaDataAgora());
-    usuario01.setDataModificacao(Datas.pegaDataAgora());
-    adicionaUsuario(usuario01, pessoaDAO.pegaPessoa(usuario01.getLogin()));
-    
-    Usuario usuario02 = new Usuario();
-    usuario02.setLogin("bruna");
-    usuario02.setSenha("789");
-    usuario02.setTipo("Noiva");
-    usuario02.setDataCriacao(Datas.pegaDataAgora());
-    usuario02.setDataModificacao(Datas.pegaDataAgora());
-    adicionaUsuario(usuario02, pessoaDAO.pegaPessoa(usuario02.getLogin()));
+
+    public UsuarioDAO(PessoaDAO pessoaDAO) {
+
+        Usuario usuario01 = new Usuario();
+        usuario01.setLogin("silvio");
+        usuario01.setSenha("123");
+        usuario01.setTipo("Noivo");
+        usuario01.setDataCriacao(Datas.pegaDataAgora());
+        usuario01.setDataModificacao(Datas.pegaDataAgora());
+        adicionaUsuario(usuario01, pessoaDAO.pegaPessoa(usuario01.getLogin()));
+
+        Usuario usuario02 = new Usuario();
+        usuario02.setLogin("bruna");
+        usuario02.setSenha("789");
+        usuario02.setTipo("Noiva");
+        usuario02.setDataCriacao(Datas.pegaDataAgora());
+        usuario02.setDataModificacao(Datas.pegaDataAgora());
+        adicionaUsuario(usuario02, pessoaDAO.pegaPessoa(usuario02.getLogin()));
     }
 
     public boolean adicionaUsuario(Usuario novoUsuario, Pessoa pessoa) {
 
-        for (int i = 0; i < 40; i++) {
+        if (pessoa == null) {
+            Usuario.setCount();
+            return false;
+        } else {
+            for (int i = 0; i < 40; i++) {
 
-            if (usuario[i] != null) {
-                if (usuario[i].getLogin().equals(novoUsuario.getLogin())) {
-                    gui.exibirMensagemUsuarioExistente(); 
-                    return false;
+                if (usuario[i] != null) {
+
+                    if (usuario[i].getLogin().equals(novoUsuario.getLogin())) {
+                        gui.exibirMensagemUsuarioExistente();
+                        Usuario.setCount();
+                        return false;
+
+                    } else if (validaTipo(this.usuario[i].getTipo(), novoUsuario.getTipo()) == false) {
+                        Usuario.setCount();
+                        return false;
+                    }
                 }
-                else if (validaTipo(this.usuario[i].getTipo(), novoUsuario.getTipo()) == false){
-                    return false;
-                }
-            }
-            if (this.usuario[i] == null) {
-                if (pessoa == null) {
-                    return false;
-                } else {
+                if (this.usuario[i] == null) {
+
                     novoUsuario.setPessoa(pessoa);
                     usuario[i] = novoUsuario;
                     return true;
+
                 }
             }
         }
+
         gui.exibirMensagemListaUsuarioLotada();
         return false;
     }
@@ -90,5 +97,50 @@ public class UsuarioDAO {
         } else {
             return texto;
         }
+    }
+
+    public Usuario consultaUsuario(String nomeUsuario) {
+
+        for (int i = 0; i < 40; i++) {
+
+            if (this.usuario[i] != null && this.usuario[i].getLogin().equals(nomeUsuario)) {
+                return usuario[i];
+            }
+        }
+        return null;
+    }
+
+    public boolean alteraSenhaUsuario(Usuario usuario, String novaSenha) {
+
+        if (usuario == null) {
+            return false;
+        } else {
+
+            for (int i = 0; i < 40; i++) {
+
+                if (this.usuario[i] != null) {
+                    if (this.usuario[i].getSenha().equals(usuario.getSenha()) && this.usuario[i].getLogin().equals(usuario.getLogin())) {
+                        this.usuario[i].setSenha(novaSenha);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean excluirUsuario(Usuario usuario) {
+
+        if (usuario == null) {
+            return false;
+        }
+        for (int i = 0; i < 40; i++) {
+
+            if (this.usuario[i] == usuario) {
+                this.usuario[i] = null;
+                return true;
+            }
+        }
+        return true;
     }
 }

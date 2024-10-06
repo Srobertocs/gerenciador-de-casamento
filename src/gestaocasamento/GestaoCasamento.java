@@ -69,52 +69,6 @@ public class GestaoCasamento {
         }
     }
 
-    private void executaOpcaoMenuUsuario() {
-        int pegaOpcao = 0;
-
-        while (pegaOpcao != 6) {
-            pegaOpcao = gui.menuUsuario();
-
-            switch (pegaOpcao) {
-                // 1 - Adicionar usuário
-                case 1:
-                    boolean confirmacao;
-                    
-                    Usuario usuario = gui.criaUsuario();
-                    Pessoa pessoa = pessoaDAO.pegaPessoa(usuario.getLogin());
-                    
-                    confirmacao = usuarioDAO.adicionaUsuario(usuario,pessoa);
-                    
-                    if(confirmacao){
-                        gui.exibirMensagemUsuarioAdicionado();
-                    }else{
-                        gui.exibirMensagemUsuarioNaoAdicionado();  
-                    }
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-                    break;
-                // 5 - Mostra Usuarios cadastrados
-                case 5:
-
-                    if(usuarioDAO.mostraUsuario() == null){
-                        GUI.exibirMensagemUsuarioNaoEncontrado();
-                    }else{
-                         gui.exibirUsuarios(usuarioDAO.mostraUsuario());
-                    }
-                    break;
-                case 6:
-                    break;
-                default:
-                    gui.exibirMensagemOpcaoInexistente();
-                    break;
-            }
-        }
-
-    }
-
     private void executaOpcaoMenuPrincipalLogado() {
         int pegaOpcao = 0;
 
@@ -143,6 +97,84 @@ public class GestaoCasamento {
         }
     }
 
+    private void executaOpcaoMenuUsuario() {
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 6) {
+            pegaOpcao = gui.menuUsuario();
+
+            switch (pegaOpcao) {
+                // 1 - Adicionar usuário
+                case 1:
+                    boolean confirmacao;
+
+                    Usuario usuario = gui.criaUsuario();
+                    Pessoa pessoa = pessoaDAO.pegaPessoa(usuario.getLogin());
+
+                    confirmacao = usuarioDAO.adicionaUsuario(usuario, pessoa);
+
+                    if (confirmacao) {
+                        gui.exibirMensagemUsuarioAdicionado();
+                    } else {
+                        gui.exibirMensagemUsuarioNaoAdicionado();
+                    }
+                    break;
+                // 2 - Consultar usuario 
+                case 2:
+                    Usuario usuarioConsulta;
+
+                    usuarioConsulta = usuarioDAO.consultaUsuario(gui.recebeNomeUsuario());
+
+                    if (usuarioConsulta != null) {
+                        gui.exibirUsuarios(usuarioConsulta.toString());
+                    } else {
+                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                    }
+                    break;
+
+                case 3:
+                    boolean excluirUsuario;
+
+                    excluirUsuario = usuarioDAO.excluirUsuario(usuarioDAO.consultaUsuario(gui.recebeNomeUsuario()));
+
+                    if (excluirUsuario) {
+                        gui.exibirMensagemUsuarioExcluido();
+                    } else {
+                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                    }
+                    break;
+                // Altera a senha do usuario
+                case 4:
+                    boolean alteraSenha;
+
+                    alteraSenha = usuarioDAO.alteraSenhaUsuario(usuarioDAO.consultaUsuario(gui.recebeNomePessoa()), gui.recebeNovaSenhaUsuario());
+
+                    if (alteraSenha) {
+                        gui.exibirMensagemUsuarioAlterado();
+                    } else {
+                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                    }
+                    break;
+                // 5 - Mostra Usuarios cadastrados
+                case 5:
+
+                    if (usuarioDAO.mostraUsuario() == null) {
+                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                    } else {
+                        gui.exibirUsuarios(usuarioDAO.mostraUsuario());
+                    }
+                    break;
+                // 6 - Voltar 
+                case 6:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+                    break;
+            }
+        }
+
+    }
+
     private void executaOpcaoMenuPessoa() {
 
         int pegaOpcao = 0;
@@ -165,12 +197,12 @@ public class GestaoCasamento {
                     break;
                 //2 - Consulta Pessoa  
                 case 2:
-                    String consultaPessoa;
+                    Pessoa pessoaConsulta;
 
-                    consultaPessoa = pessoaDAO.consultaPessoa(gui.recebeNomePessoa());
+                    pessoaConsulta = pessoaDAO.consultaPessoa(gui.recebeNomePessoa());
 
-                    if (consultaPessoa != null) {
-                        gui.exibirPessoas(consultaPessoa);
+                    if (pessoaConsulta != null) {
+                        gui.exibirPessoas(pessoaConsulta.toString());
                     } else {
                         GUI.exibirMensagemPessoaNaoEncontrada();
                     }
@@ -199,12 +231,12 @@ public class GestaoCasamento {
                         GUI.exibirMensagemPessoaNaoEncontrada();
                     }
                     break;
-                // 5 - Mostrar casdastro 
+                // 5 - Mostrar pessoas  
                 case 5:
-                     if(pessoaDAO.mostraPessoa() == null){
+                    if (pessoaDAO.mostraPessoa() == null) {
                         GUI.exibirMensagemPessoaNaoEncontrada();
-                    }else{
-                         gui.exibirPessoas(pessoaDAO.mostraPessoa());
+                    } else {
+                        gui.exibirPessoas(pessoaDAO.mostraPessoa());
                     }
                     break;
                 // 6 - Volta para o menu principal

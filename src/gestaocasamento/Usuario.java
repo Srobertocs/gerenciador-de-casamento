@@ -32,6 +32,10 @@ public class Usuario {
     public void setLogin(String login) {
         this.login = login;
     }
+    
+     public static void setCount(){
+        Usuario.count = count - 1;
+    }
 
     public void setSenha(String senha) {
         this.senha = senha;
