@@ -65,13 +65,13 @@ public class GestaoCasamento {
                         pegaOpcao = 3;
 
                     } else {
-                        
-                        GUI.exibirMensagemUsuarioNaoEncontrado();
+
+                        gui.exibirMensagemErroLogin();
                     }
                     break;
                 //Cadastro de usuario
                 case 2:
-                    
+
                     Usuario usuario = gui.criaUsuario();
                     Pessoa pessoa = pessoaDAO.pegaPessoa(usuario.getLogin());
 
@@ -80,7 +80,7 @@ public class GestaoCasamento {
                     } else {
                         gui.exibirMensagemUsuarioNaoAdicionado();
                     }
-                    
+
                     break;
                 case 3:
                     break;
@@ -152,7 +152,7 @@ public class GestaoCasamento {
                         GUI.exibirMensagemUsuarioNaoEncontrado();
                     }
                     break;
-
+                //Excluir Usuario
                 case 3:
                     boolean excluirUsuario;
 
@@ -168,7 +168,7 @@ public class GestaoCasamento {
                 case 4:
                     boolean alteraSenha;
 
-                    alteraSenha = usuarioDAO.alteraSenhaUsuario(usuarioDAO.consultaUsuario(gui.recebeNomePessoa()), gui.recebeNovaSenhaUsuario());
+                    alteraSenha = usuarioDAO.alteraSenhaUsuario(usuarioDAO.consultaUsuario(gui.recebeNomeUsuario()), gui.recebeNovaSenhaUsuario());
 
                     if (alteraSenha) {
                         gui.exibirMensagemUsuarioAlterado();

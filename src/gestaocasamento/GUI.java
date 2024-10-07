@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 public class GUI {
 
     //Métodos para popular objetos
-    
     //Objeto Pessoa
     public Pessoa criaPessoa() {
         Pessoa pessoa = new Pessoa();
@@ -30,20 +29,20 @@ public class GUI {
     public String recebeNomePessoa() {
         return JOptionPane.showInputDialog("Digite o nome da pessoa:");
     }
-    
+
     public String recebeNovoNomePessoa() {
         return JOptionPane.showInputDialog("Digite o novo nome:");
     }
-    
+
     //Objeto Presente
     public String recebeIdPresente() {
         return JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar");
     }
-    
+
     //Objeto usuário
-    public Usuario criaUsuario(){
+    public Usuario criaUsuario() {
         Usuario usuario = new Usuario();
-        
+
         usuario.setLogin(JOptionPane.showInputDialog("Digite o nome da pessoa para ser o login:"));
         usuario.setSenha(JOptionPane.showInputDialog("Digite a sequencia que sera a sua senha:"));
         usuario.setTipo(JOptionPane.showInputDialog("Digite a categoria da pessoa conforme mostrado abaixo: "
@@ -53,28 +52,27 @@ public class GUI {
         usuario.setPessoa(null);
         usuario.setDataCriacao(Datas.pegaDataAgora());
         usuario.setDataModificacao(Datas.pegaDataAgora());
-        
+
         return usuario;
-    } 
-    
-    public String recebeNomeUsuario(){
+    }
+
+    public String recebeNomeUsuario() {
         return JOptionPane.showInputDialog("Digite o login do usuario:");
     }
-    
-    public String recebeSenhaUsuario(){
+
+    public String recebeSenhaUsuario() {
         return JOptionPane.showInputDialog("Digite a senha do usuario: ");
     }
-  
-    public String recebeNovaSenhaUsuario(){
+
+    public String recebeNovaSenhaUsuario() {
         return JOptionPane.showInputDialog("Digite a nova senha do usuario:");
     }
-    
+
     //Métodos dos menus de opção
-    
     public int menuPrincipalNaoLogado() {
         int opcao;
 
-        String menu = "HOME\nSEJA BEM-VINDO\n\nSTATUS: NAO LOGADO"
+        String menu = "HOME\nSeja Bem Vindo\n\nStatus: Deslogado"
                 + "\n\nselecione:"
                 + "\n1- Lista de presentes"
                 + "\n2- Entrar no programa"
@@ -87,7 +85,7 @@ public class GUI {
     public int menuPrincipalLogado() {
         int opcao;
 
-        String menu = "HOME\nSTATUS: LOGADO"
+        String menu = "HOME\nStatus: Logado"
                 + "\n\nselecione:"
                 + "\n1- Lista de presentes"
                 + "\n2- Gerenciamento de pessoas "
@@ -115,7 +113,7 @@ public class GUI {
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
     }
-    
+
     public int menuUsuario() {
         int opcao;
 
@@ -152,14 +150,13 @@ public class GUI {
                 + "\nselecione:"
                 + "\n1- Login"
                 + "\n2- Cadastro"
-                + "\n3 - Voltar";
+                + "\n3- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
     }
 
     //Métodos de exibição de mensagens
-    
     // GestaoCasamento
     public void exibirMensagemOpcaoInexistente() {
         JOptionPane.showMessageDialog(null, "Opcao invalida. Digite novamente!");
@@ -167,6 +164,13 @@ public class GUI {
 
     public void exibirMesangemProgramaEncerrado() {
         JOptionPane.showMessageDialog(null, "Programa encerrado");
+    }
+
+    public void exibirMensagemErroLogin() {
+        JOptionPane.showMessageDialog(null, "Acesso negado"
+                + "\nPossiveis motivos: "
+                + "\n1- Dados de login e senha incorretos"
+                + "\n2- Nenhum cadastro encontrado");
     }
 
     //Objeto pessoa
@@ -177,16 +181,16 @@ public class GUI {
                 + "\n2 - Pessoa inexistente"
                 + "\n3 - Nenhuma pessoa cadastrada");
     }
-    
-    public void exibirPessoas(String pessoa){
-         JOptionPane.showMessageDialog(null, pessoa);
+
+    public void exibirPessoas(String pessoa) {
+        JOptionPane.showMessageDialog(null, pessoa);
     }
 
     public void exibirMensagemPessoaJaExistente() {
         JOptionPane.showMessageDialog(null, "Pessoa ja existente");
     }
-    
-    public void exibirMensagemListaPessoaLotada(){
+
+    public void exibirMensagemListaPessoaLotada() {
         JOptionPane.showMessageDialog(null, "A Lista de Pessoas esta lotada");
     }
 
@@ -207,10 +211,10 @@ public class GUI {
     }
 
     //Objeto Presente 
-    public void exibirPresentes(String presentes){
-        JOptionPane.showMessageDialog(null,presentes);
+    public void exibirPresentes(String presentes) {
+        JOptionPane.showMessageDialog(null, presentes);
     }
-    
+
     public void exibirMensagemPresenteJaEscolhido() {
         JOptionPane.showMessageDialog(null, "Presente já reservado");
     }
@@ -222,7 +226,7 @@ public class GUI {
     public void exibirMensagemReservaPresenteFeitaComSucesso() {
         JOptionPane.showMessageDialog(null, "Reserva feita com sucesso");
     }
-    
+
     //Objeto Usuario
     public static void exibirMensagemUsuarioNaoEncontrado() {
         JOptionPane.showMessageDialog(null, "O Usuario não foi encontrado"
@@ -231,39 +235,41 @@ public class GUI {
                 + "\n2 - Usuario inexistente"
                 + "\n3 - Nenhum usuario cadastrado");
     }
-    
-    public static void exibirMensagemUsuarioExistente(){
+
+    public static void exibirMensagemUsuarioExistente() {
         JOptionPane.showMessageDialog(null, "Login ja existente");
     }
-    
-    public void exibirMensagemUsuarioExcluido(){
+
+    public void exibirMensagemUsuarioExcluido() {
         JOptionPane.showMessageDialog(null, "Usuario excluido com sucesso");
     }
-    
-    public void exibirMensagemListaUsuarioLotada(){
-        JOptionPane.showMessageDialog(null, "A Lista de Usuarios esta lotada");  
+
+    public void exibirMensagemListaUsuarioLotada() {
+        JOptionPane.showMessageDialog(null, "A Lista de Usuarios esta lotada");
     }
-    
-    public void exibirMensagemUsuarioAlterado(){
+
+    public void exibirMensagemUsuarioAlterado() {
         JOptionPane.showMessageDialog(null, "Senha do usuario alterada com sucesso");
     }
-    
-       public void exibirMensagemUsuarioAdicionado() {
+
+    public void exibirMensagemUsuarioAdicionado() {
         JOptionPane.showMessageDialog(null, "Usuario cadastrado");
     }
-       
-       public void exibirMensagemUsuarioNaoAdicionado() {
+
+    public void exibirMensagemUsuarioNaoAdicionado() {
         JOptionPane.showMessageDialog(null, "Usuario não cadastrado");
     }
-       
-       public void exibirUsuarios(String usuarios){
+
+    public void exibirUsuarios(String usuarios) {
         JOptionPane.showMessageDialog(null, usuarios);
     }
-       public void exibirNoivoJaCadastrado(){
-           JOptionPane.showMessageDialog(null, "Noivo já cadastrado");
-       }
-       public void exibirNoivaJaCadastrada(){
-           JOptionPane.showMessageDialog(null, "Noiva já cadastrada");
-       }
-}
 
+    public void exibirNoivoJaCadastrado() {
+        JOptionPane.showMessageDialog(null, "Noivo já cadastrado");
+    }
+
+    public void exibirNoivaJaCadastrada() {
+        JOptionPane.showMessageDialog(null, "Noiva já cadastrada");
+    }
+
+}

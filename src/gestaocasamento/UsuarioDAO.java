@@ -121,6 +121,7 @@ public class UsuarioDAO {
                 if (this.usuario[i] != null) {
                     if (this.usuario[i].getSenha().equals(usuario.getSenha()) && this.usuario[i].getLogin().equals(usuario.getLogin())) {
                         this.usuario[i].setSenha(novaSenha);
+                        this.usuario[i].setDataModificacao(Datas.pegaDataAgora());
                         return true;
                     }
                 }
