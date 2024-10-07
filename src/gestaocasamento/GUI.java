@@ -60,6 +60,10 @@ public class GUI {
     public String recebeNomeUsuario(){
         return JOptionPane.showInputDialog("Digite o login do usuario:");
     }
+    
+    public String recebeSenhaUsuario(){
+        return JOptionPane.showInputDialog("Digite a senha do usuario: ");
+    }
   
     public String recebeNovaSenhaUsuario(){
         return JOptionPane.showInputDialog("Digite a nova senha do usuario:");
@@ -70,8 +74,8 @@ public class GUI {
     public int menuPrincipalNaoLogado() {
         int opcao;
 
-        String menu = "HOME\nSEJA BEM-VINDO\n\nNAO LOGADO\n"
-                + "\nselecione:"
+        String menu = "HOME\nSEJA BEM-VINDO\n\nSTATUS: NAO LOGADO"
+                + "\n\nselecione:"
                 + "\n1- Lista de presentes"
                 + "\n2- Entrar no programa"
                 + "\n3- Encerrar";
@@ -83,14 +87,14 @@ public class GUI {
     public int menuPrincipalLogado() {
         int opcao;
 
-        String menu = "HOME\nSEJA BEM-VINDO\n\nLOGADO\n"
-                + "\nselecione:"
+        String menu = "HOME\nSTATUS: LOGADO"
+                + "\n\nselecione:"
                 + "\n1- Lista de presentes"
                 + "\n2- Gerenciamento de pessoas "
                 + "\n3- Gerenciamento de usuarios"
                 + "\n4-"
                 + "\n5-"
-                + "\n6- Sair";
+                + "\n6- Deslogar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
@@ -208,7 +212,7 @@ public class GUI {
     }
     
     public void exibirMensagemPresenteJaEscolhido() {
-        JOptionPane.showMessageDialog(null, "Presente já escolhido por outra pessoa");
+        JOptionPane.showMessageDialog(null, "Presente já reservado");
     }
 
     public void exibirMensagemIdPresenteDigitadoIncorreto() {

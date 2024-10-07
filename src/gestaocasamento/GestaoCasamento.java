@@ -20,8 +20,7 @@ public class GestaoCasamento {
     GUI gui = new GUI();
 
     public GestaoCasamento() {
-        //executaOpcaoMenuPrincipalNaoLogado();
-        executaOpcaoMenuPrincipalLogado();
+        executaOpcaoMenuPrincipalNaoLogado();
     }
 
     //Métodos de execução das opcões dos menus 
@@ -55,11 +54,33 @@ public class GestaoCasamento {
             pegaOpcao = gui.menuLogin();
 
             switch (pegaOpcao) {
+                //Login de Usuário
                 case 1:
-                    executaOpcaoMenuPrincipalLogado();
-                    pegaOpcao = 3;
+                    boolean confirmacao;
+
+                    confirmacao = usuarioDAO.buscaUsuario(gui.recebeNomeUsuario(), gui.recebeSenhaUsuario());
+
+                    if (confirmacao) {
+                        executaOpcaoMenuPrincipalLogado();
+                        pegaOpcao = 3;
+
+                    } else {
+                        
+                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                    }
                     break;
+                //Cadastro de usuario
                 case 2:
+                    
+                    Usuario usuario = gui.criaUsuario();
+                    Pessoa pessoa = pessoaDAO.pegaPessoa(usuario.getLogin());
+
+                    if (usuarioDAO.adicionaUsuario(usuario, pessoa)) {
+                        gui.exibirMensagemUsuarioAdicionado();
+                    } else {
+                        gui.exibirMensagemUsuarioNaoAdicionado();
+                    }
+                    
                     break;
                 case 3:
                     break;
@@ -164,7 +185,7 @@ public class GestaoCasamento {
                         gui.exibirUsuarios(usuarioDAO.mostraUsuario());
                     }
                     break;
-                // 6 - Voltar 
+                // 6 - Deslogar 
                 case 6:
                     break;
                 default:

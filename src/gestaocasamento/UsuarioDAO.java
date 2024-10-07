@@ -143,4 +143,17 @@ public class UsuarioDAO {
         }
         return true;
     }
+
+    public boolean buscaUsuario(String nomeLogin, String senha) {
+
+        for (int i = 0; i < 40; i++) {
+
+            if (this.usuario[i] != null) {
+                if (this.usuario[i].getLogin().equals(nomeLogin) && this.usuario[i].getSenha().equals(senha)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
