@@ -68,6 +68,18 @@ public class GUI {
         return JOptionPane.showInputDialog("Digite a nova senha do usuario:");
     }
 
+    //Objeto Mural de Recados
+    public Recados criaRecado() {
+        Recados recado = new Recados();
+
+        recado.setRecado(JOptionPane.showInputDialog("Digite o recado: "));
+        recado.setUsuario(null);
+        recado.setDataCriacao(Datas.pegaDataAgora());
+        recado.setDataModificacao(Datas.pegaDataAgora());
+
+        return recado;
+    }
+
     //Métodos dos menus de opção
     public int menuPrincipalNaoLogado() {
         int opcao;
@@ -90,7 +102,7 @@ public class GUI {
                 + "\n1- Lista de presentes"
                 + "\n2- Gerenciamento de pessoas "
                 + "\n3- Gerenciamento de usuarios"
-                + "\n4-"
+                + "\n4- Mural de recados"
                 + "\n5-"
                 + "\n6- Deslogar";
 
@@ -156,6 +168,21 @@ public class GUI {
         return opcao;
     }
 
+    public int menuMuralRecados() {
+        int opcao;
+
+        String menu = "MURAL DE RECADOS\n"
+                + "\nselecione:"
+                + "\n1- Escrever recado"
+                + "\n2- Exibir mural de recado"
+                + "\n3- Consultar recados"
+                + "\n4- Editar recado"
+                + "\n5- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+
     //Métodos de exibição de mensagens
     // GestaoCasamento
     public void exibirMensagemOpcaoInexistente() {
@@ -174,7 +201,7 @@ public class GUI {
     }
 
     //Objeto pessoa
-    public static void exibirMensagemPessoaNaoEncontrada() {
+    public void exibirMensagemPessoaNaoEncontrada() {
         JOptionPane.showMessageDialog(null, "A pessoa não foi encontrada. "
                 + "\nPossiveis motivos: "
                 + "\n1 - Nome digitado incorretamente "
@@ -228,7 +255,7 @@ public class GUI {
     }
 
     //Objeto Usuario
-    public static void exibirMensagemUsuarioNaoEncontrado() {
+    public void exibirMensagemUsuarioNaoEncontrado() {
         JOptionPane.showMessageDialog(null, "O Usuario não foi encontrado"
                 + "\nPossiveis motivos: "
                 + "\n1 - Nome digitado incorretamente "
@@ -236,7 +263,7 @@ public class GUI {
                 + "\n3 - Nenhum usuario cadastrado");
     }
 
-    public static void exibirMensagemUsuarioExistente() {
+    public void exibirMensagemUsuarioExistente() {
         JOptionPane.showMessageDialog(null, "Login ja existente");
     }
 
@@ -264,12 +291,29 @@ public class GUI {
         JOptionPane.showMessageDialog(null, usuarios);
     }
 
-    public void exibirNoivoJaCadastrado() {
+    public void exibirMensagemNoivoJaCadastrado() {
         JOptionPane.showMessageDialog(null, "Noivo já cadastrado");
     }
 
-    public void exibirNoivaJaCadastrada() {
+    public void exibirMensagemNoivaJaCadastrada() {
         JOptionPane.showMessageDialog(null, "Noiva já cadastrada");
+    }
+
+    //Objeto Mural de Recados
+    public void exibirMensagemRecadoPostado() {
+        JOptionPane.showMessageDialog(null, "Recado postado com sucesso");
+    }
+
+    public void exibirMensagemRecadoNaoPostado() {
+        JOptionPane.showMessageDialog(null, "Recado nao postado");
+    }
+    
+    public void exibirMuralRecados(String muralRecados){
+        JOptionPane.showMessageDialog(null, muralRecados);
+    }
+    
+    public void exibirMensagemNaoExisteMuralRecados(){
+        JOptionPane.showMessageDialog(null, "Nao existe nenhum recado no mural");
     }
 
 }

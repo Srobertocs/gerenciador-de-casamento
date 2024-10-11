@@ -11,6 +11,7 @@ package gestaocasamento;
 public class UsuarioDAO {
 
     GUI gui = new GUI();
+    
     Usuario[] usuario = new Usuario[40];
 
     public UsuarioDAO(PessoaDAO pessoaDAO) {
@@ -69,10 +70,10 @@ public class UsuarioDAO {
     public boolean validaTipo(String tipo, String novoTipo) {
 
         if (tipo.equals("Noivo") & tipo.equals(novoTipo)) {
-            gui.exibirNoivoJaCadastrado();
+            gui.exibirMensagemNoivoJaCadastrado();
             return false;
         } else if (tipo.equals("Noiva") & tipo.equals(novoTipo)) {
-            gui.exibirNoivaJaCadastrada();
+            gui.exibirMensagemNoivaJaCadastrada();
             return false;
         }
         return true;

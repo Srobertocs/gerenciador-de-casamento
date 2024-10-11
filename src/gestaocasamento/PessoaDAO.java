@@ -144,7 +144,7 @@ public class PessoaDAO {
             }
         }
         if (vazio == true) {
-            GUI.exibirMensagemPessoaNaoEncontrada();
+            gui.exibirMensagemPessoaNaoEncontrada();
         }
         return null;
     }

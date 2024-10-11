@@ -13,9 +13,12 @@ import javax.swing.JOptionPane;
 public class GestaoCasamento {
 
     //Inicialização dos OBJETOS e DAOS
+    Usuario usuarioLogado = null;
+
     PessoaDAO pessoaDAO = new PessoaDAO();
     PresenteDAO presenteDAO = new PresenteDAO();
     UsuarioDAO usuarioDAO = new UsuarioDAO(pessoaDAO);
+    MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO();
 
     GUI gui = new GUI();
 
@@ -58,9 +61,12 @@ public class GestaoCasamento {
                 case 1:
                     boolean confirmacao;
 
-                    confirmacao = usuarioDAO.buscaUsuario(gui.recebeNomeUsuario(), gui.recebeSenhaUsuario());
+                    String nomeUsuario = gui.recebeNomeUsuario();
+
+                    confirmacao = usuarioDAO.buscaUsuario(nomeUsuario, gui.recebeSenhaUsuario());
 
                     if (confirmacao) {
+                        usuarioLogado = usuarioDAO.consultaUsuario(nomeUsuario);
                         executaOpcaoMenuPrincipalLogado();
                         pegaOpcao = 3;
 
@@ -80,7 +86,6 @@ public class GestaoCasamento {
                     } else {
                         gui.exibirMensagemUsuarioNaoAdicionado();
                     }
-
                     break;
                 case 3:
                     break;
@@ -108,6 +113,10 @@ public class GestaoCasamento {
                 // 3 - Acessa o Menu de usuarios
                 case 3:
                     executaOpcaoMenuUsuario();
+                    break;
+                // 4 - Acessar o Menu de mural de recados
+                case 4:
+                    executaOpcaoMenuMuralRecados();
                     break;
                 case 6:
                     break;
@@ -149,7 +158,7 @@ public class GestaoCasamento {
                     if (usuarioConsulta != null) {
                         gui.exibirUsuarios(usuarioConsulta.toString());
                     } else {
-                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                        gui.exibirMensagemUsuarioNaoEncontrado();
                     }
                     break;
                 //Excluir Usuario
@@ -161,7 +170,7 @@ public class GestaoCasamento {
                     if (excluirUsuario) {
                         gui.exibirMensagemUsuarioExcluido();
                     } else {
-                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                        gui.exibirMensagemUsuarioNaoEncontrado();
                     }
                     break;
                 // Altera a senha do usuario
@@ -173,14 +182,14 @@ public class GestaoCasamento {
                     if (alteraSenha) {
                         gui.exibirMensagemUsuarioAlterado();
                     } else {
-                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                        gui.exibirMensagemUsuarioNaoEncontrado();
                     }
                     break;
                 // 5 - Mostra Usuarios cadastrados
                 case 5:
 
                     if (usuarioDAO.mostraUsuario() == null) {
-                        GUI.exibirMensagemUsuarioNaoEncontrado();
+                        gui.exibirMensagemUsuarioNaoEncontrado();
                     } else {
                         gui.exibirUsuarios(usuarioDAO.mostraUsuario());
                     }
@@ -225,7 +234,7 @@ public class GestaoCasamento {
                     if (pessoaConsulta != null) {
                         gui.exibirPessoas(pessoaConsulta.toString());
                     } else {
-                        GUI.exibirMensagemPessoaNaoEncontrada();
+                        gui.exibirMensagemPessoaNaoEncontrada();
                     }
                     break;
                 // 3 - Exclui cadastro
@@ -237,7 +246,7 @@ public class GestaoCasamento {
                     if (cadastroExcluido) {
                         gui.exibirMensagemPessoaExcluida();
                     } else {
-                        GUI.exibirMensagemPessoaNaoEncontrada();
+                        gui.exibirMensagemPessoaNaoEncontrada();
                     }
                     break;
                 // 4 - Altera o nome da pessoa 
@@ -249,13 +258,13 @@ public class GestaoCasamento {
                     if (alteraNome) {
                         gui.exibirMensagemPessoaAlterada();
                     } else {
-                        GUI.exibirMensagemPessoaNaoEncontrada();
+                        gui.exibirMensagemPessoaNaoEncontrada();
                     }
                     break;
                 // 5 - Mostrar pessoas  
                 case 5:
                     if (pessoaDAO.mostraPessoa() == null) {
-                        GUI.exibirMensagemPessoaNaoEncontrada();
+                        gui.exibirMensagemPessoaNaoEncontrada();
                     } else {
                         gui.exibirPessoas(pessoaDAO.mostraPessoa());
                     }
@@ -308,6 +317,45 @@ public class GestaoCasamento {
                 default:
                     gui.exibirMensagemOpcaoInexistente();
             }
+        }
+    }
+
+    private void executaOpcaoMenuMuralRecados() {
+
+        int pegaopcao = 0;
+
+        while (pegaopcao != 5) {
+            pegaopcao = gui.menuMuralRecados();
+
+            switch (pegaopcao) {
+                // 1 - Postar recado
+                case 1:
+                    boolean postado;
+
+                    postado = muralRecadosDAO.postarRecado(gui.criaRecado(), usuarioLogado);
+
+                    if (postado) {
+                        gui.exibirMensagemRecadoPostado();
+                    } else {
+                        gui.exibirMensagemRecadoNaoPostado();
+                    }
+                    break;
+                // 2 - Mostrar mural de recados
+                case 2:
+                    if (muralRecadosDAO.mostrarMuralRecados() == null) {
+                        gui.exibirMensagemNaoExisteMuralRecados();
+
+                    } else {
+                        gui.exibirMuralRecados(muralRecadosDAO.mostrarMuralRecados());
+                    }
+
+                    break;
+                case 5:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+
         }
     }
 
