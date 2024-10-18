@@ -2,8 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package gestaocasamento;
+package control;
 
+import DAO.UsuarioDAO;
+import DAO.PresenteDAO;
+import DAO.PessoaDAO;
+import DAO.MuralRecadosDAO;
+import view.GUI;
+import beans.Usuario;
+import beans.Pessoa;
+import beans.Presente;
+import beans.Recados;
 import javax.swing.JOptionPane;
 
 /**
