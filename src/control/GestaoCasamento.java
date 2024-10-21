@@ -27,7 +27,7 @@ public class GestaoCasamento {
     PessoaDAO pessoaDAO = new PessoaDAO();
     PresenteDAO presenteDAO = new PresenteDAO();
     UsuarioDAO usuarioDAO = new UsuarioDAO(pessoaDAO);
-    MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO();
+    MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO(usuarioDAO);
 
     GUI gui = new GUI();
 
@@ -333,7 +333,7 @@ public class GestaoCasamento {
 
         int pegaopcao = 0;
 
-        while (pegaopcao != 5) {
+        while (pegaopcao != 6) {
             pegaopcao = gui.menuMuralRecados();
 
             switch (pegaopcao) {
@@ -341,7 +341,7 @@ public class GestaoCasamento {
                 case 1:
                     boolean postado;
 
-                    postado = muralRecadosDAO.postarRecado(gui.criaRecado(), usuarioLogado);
+                    postado = muralRecadosDAO.postarMuralRecados(gui.criaRecado(), usuarioLogado);
 
                     if (postado) {
                         gui.exibirMensagemRecadoPostado();
@@ -357,9 +357,52 @@ public class GestaoCasamento {
                     } else {
                         gui.exibirMuralRecados(muralRecadosDAO.mostrarMuralRecados());
                     }
-
                     break;
+                // 3 - Consultar recados 
+                case 3:
+
+                    String textoConsulta;
+
+                    textoConsulta = muralRecadosDAO.consultarMuralRecados(usuarioDAO.consultaUsuario(gui.recebeNomeUsuario()));
+
+                    if (textoConsulta == null) {
+                        gui.exibirMensagemRecadoConsultaInvalida();
+                    } else {
+                        gui.exibirMuralRecados(textoConsulta);
+                    }
+                    break;
+                // 4 - Editar comentario
+                case 4:
+                    long codigoRecado;
+                    boolean recadoEditado = false;
+
+                    codigoRecado = muralRecadosDAO.validaCodigoRecado(gui.recebeCodigoRecado());
+
+                    if (codigoRecado == 0) {
+                        gui.exibirMensagemCodigoNaoEncontrado();
+                    } else {
+                        if(muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecado)){
+                            recadoEditado = muralRecadosDAO.editarComentarioMuralRecados(codigoRecado, gui.recebeNovoRecado());
+                        }else{
+                            gui.exibirMensagemUsuarioRecadoInvalido();
+                        }
+                    }
+                    if (recadoEditado == true) {
+                        gui.exibirMensagemRecadoEditado();
+                    } else {
+                        gui.exibirMensagemRecadoNaoEditado();
+                    }
+                    break;
+                // 5 - Excluir comentário
                 case 5:
+                    
+                    
+                    
+                    
+                    
+                    break;
+                    
+                 case 6:
                     break;
                 default:
                     gui.exibirMensagemOpcaoInexistente();

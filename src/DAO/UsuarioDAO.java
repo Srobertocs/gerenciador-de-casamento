@@ -28,7 +28,7 @@ public class UsuarioDAO {
         usuario01.setTipo("Noivo");
         usuario01.setDataCriacao(Datas.pegaDataAgora());
         usuario01.setDataModificacao(Datas.pegaDataAgora());
-        adicionaUsuario(usuario01, pessoaDAO.pegaPessoa(usuario01.getLogin()));
+        this.adicionaUsuario(usuario01, pessoaDAO.pegaPessoa(usuario01.getLogin()));
 
         Usuario usuario02 = new Usuario();
         usuario02.setLogin("bruna");
@@ -36,7 +36,7 @@ public class UsuarioDAO {
         usuario02.setTipo("Noiva");
         usuario02.setDataCriacao(Datas.pegaDataAgora());
         usuario02.setDataModificacao(Datas.pegaDataAgora());
-        adicionaUsuario(usuario02, pessoaDAO.pegaPessoa(usuario02.getLogin()));
+        this.adicionaUsuario(usuario02, pessoaDAO.pegaPessoa(usuario02.getLogin()));
     }
 
     public boolean adicionaUsuario(Usuario novoUsuario, Pessoa pessoa) {
@@ -106,11 +106,11 @@ public class UsuarioDAO {
         }
     }
 
-    public Usuario consultaUsuario(String nomeUsuario) {
+    public Usuario consultaUsuario(String nomeLogin) {
 
         for (int i = 0; i < 40; i++) {
 
-            if (this.usuario[i] != null && this.usuario[i].getLogin().equals(nomeUsuario)) {
+            if (this.usuario[i] != null && this.usuario[i].getLogin().equals(nomeLogin)) {
                 return usuario[i];
             }
         }
@@ -164,4 +164,5 @@ public class UsuarioDAO {
         }
         return false;
     }
+   
 }

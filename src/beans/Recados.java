@@ -69,6 +69,7 @@ public class Recados {
     @Override
     public String toString() {
         String texto = "Enviado por: " + this.usuario.getLogin()
+                + " |  Código: " + this.id
                 + "\nRecado: " + this.recado
                 + "\n\nData de postagem: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
                 + "\nData de modificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));

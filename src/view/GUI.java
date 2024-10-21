@@ -83,6 +83,14 @@ public class GUI {
 
         return recado;
     }
+    
+    public long recebeCodigoRecado(){
+        return Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo do recado que quer editar: "));
+    }
+    
+    public String recebeNovoRecado(){
+        return  JOptionPane.showInputDialog("Digite a alteracao do recado: ");
+    }
 
     //Métodos dos menus de opção
     public int menuPrincipalNaoLogado() {
@@ -181,7 +189,8 @@ public class GUI {
                 + "\n2- Exibir mural de recado"
                 + "\n3- Consultar recados"
                 + "\n4- Editar recado"
-                + "\n5- Voltar";
+                + "\n5- Excluir recado"
+                + "\n6- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
@@ -319,5 +328,28 @@ public class GUI {
     public void exibirMensagemNaoExisteMuralRecados(){
         JOptionPane.showMessageDialog(null, "Nao existe nenhum recado no mural");
     }
-
+    
+    public void exibirMensagemRecadoConsultaInvalida(){
+        JOptionPane.showMessageDialog(null, "Consulta invalida: possiveis motivos"
+                + "\n1 - Remetente do recado nao cadastrado"
+                + "\n2 - Remetente não escreveu nenhum comentario"
+                + "\n3 - Mural de recados está vazio");
+    }
+    
+    public void exibirMensagemRecadoNaoEditado(){
+        JOptionPane.showMessageDialog(null, "Recado nao editado");
+    }
+    
+    public void exibirMensagemCodigoNaoEncontrado(){
+        JOptionPane.showMessageDialog(null, "Nenhum recado com esse codigo foi encontrado");
+    }
+    
+    public void exibirMensagemRecadoEditado(){
+        JOptionPane.showMessageDialog(null, "Recado editado com sucesso");
+    }
+    
+    public void exibirMensagemUsuarioRecadoInvalido(){
+        JOptionPane.showMessageDialog(null, "O recado que esta tentando editar nao foi escrito por voce.\n"
+                + "Edite algum comentario que voce tenha feito");
+    }
 }
