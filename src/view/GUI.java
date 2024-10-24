@@ -85,7 +85,7 @@ public class GUI {
     }
     
     public long recebeCodigoRecado(){
-        return Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo do recado que quer editar: "));
+        return Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo do recado: "));
     }
     
     public String recebeNovoRecado(){
@@ -348,8 +348,16 @@ public class GUI {
         JOptionPane.showMessageDialog(null, "Recado editado com sucesso");
     }
     
+    public void exibirMensagemRecadoExcluido(){
+        JOptionPane.showMessageDialog(null, "Recado excluido com sucesso");
+    }
+    
+    public void exibirMensagemRecadoNaoExcluido(){
+        JOptionPane.showMessageDialog(null, "Recado nao excluido");
+    }
+    
     public void exibirMensagemUsuarioRecadoInvalido(){
-        JOptionPane.showMessageDialog(null, "O recado que esta tentando editar nao foi escrito por voce.\n"
-                + "Edite algum comentario que voce tenha feito");
+        JOptionPane.showMessageDialog(null, "O recado que esta tentando acessar nao foi escrito por voce.\n"
+                + "Selecione para executar a opcao que selecionou algum comentario que voce mesmo escreveu");
     }
 }

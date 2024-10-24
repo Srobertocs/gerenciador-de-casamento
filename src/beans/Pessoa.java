@@ -13,27 +13,28 @@ import java.util.Objects;
  * @author SOUSA
  */
 public class Pessoa {
+
     private long id;
     private String nome;
     private String nascimento;
-    private String telefone; 
+    private String telefone;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
-    
+
     private static long count;
-    
+
     //Construtor
-    public Pessoa(){
+    public Pessoa() {
         Pessoa.count += 1;
-            this.id = Pessoa.count;
+        this.id = Pessoa.count;
     }
-    
+
     //Métodos Setters
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
-    public static void setCount(){
+
+    public static void setCount() {
         Pessoa.count = count - 1;
     }
 
@@ -52,7 +53,7 @@ public class Pessoa {
     public void setDataModificacao(LocalDateTime dataModificao) {
         this.dataModificacao = dataModificao;
     }
-    
+
     //Métodos Getters
     public long getId() {
         return id;
@@ -76,12 +77,12 @@ public class Pessoa {
 
     public LocalDateTime getDataModificao() {
         return dataModificacao;
-    } 
-    
-     //Método toString
+    }
+
+    //Método toString
     @Override
     public String toString() {
-        
+
         String texto = "\nID: " + this.id
                 + " | Nome: " + this.nome
                 + " | Telefone: " + this.telefone
@@ -90,6 +91,7 @@ public class Pessoa {
                 + "  Data de modificao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         return texto;
     }
+
     @Override
     public int hashCode() {
         int hash = 7;

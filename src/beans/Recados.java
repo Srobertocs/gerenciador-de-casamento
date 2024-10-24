@@ -21,6 +21,7 @@ public class Recados {
     
     private static long count;
     
+    //Construtor
     public Recados(){
         Recados.count += 1;     
         this.id = Recados.count;

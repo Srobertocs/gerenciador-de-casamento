@@ -373,17 +373,17 @@ public class GestaoCasamento {
                     break;
                 // 4 - Editar comentario
                 case 4:
-                    long codigoRecado;
+                    long codigoRecadoEdicao;
                     boolean recadoEditado = false;
 
-                    codigoRecado = muralRecadosDAO.validaCodigoRecado(gui.recebeCodigoRecado());
+                    codigoRecadoEdicao = muralRecadosDAO.validaCodigoRecado(gui.recebeCodigoRecado());
 
-                    if (codigoRecado == 0) {
+                    if (codigoRecadoEdicao == 0) {
                         gui.exibirMensagemCodigoNaoEncontrado();
                     } else {
-                        if(muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecado)){
-                            recadoEditado = muralRecadosDAO.editarComentarioMuralRecados(codigoRecado, gui.recebeNovoRecado());
-                        }else{
+                        if (muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecadoEdicao)) {
+                            recadoEditado = muralRecadosDAO.editarComentarioMuralRecados(codigoRecadoEdicao, gui.recebeNovoRecado());
+                        } else {
                             gui.exibirMensagemUsuarioRecadoInvalido();
                         }
                     }
@@ -395,20 +395,39 @@ public class GestaoCasamento {
                     break;
                 // 5 - Excluir comentário
                 case 5:
+                    long codigoRecadoExclusao;
+                    boolean recadoExcluido = false;
+
+                    codigoRecadoExclusao = muralRecadosDAO.validaCodigoRecado(gui.recebeCodigoRecado());
+
+                    if (codigoRecadoExclusao == 0) {
+                        gui.exibirMensagemCodigoNaoEncontrado();
+                    }else{
+                        if(muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecadoExclusao)){
+                            recadoExcluido = muralRecadosDAO.excluirRecado(codigoRecadoExclusao, usuarioLogado);
+                        }else{
+                            gui.exibirMensagemUsuarioRecadoInvalido();
+                        }
+                    }
                     
-                    
-                    
-                    
-                    
+                    if(recadoExcluido == true){
+                        gui.exibirMensagemRecadoExcluido();
+                    }else{
+                        gui.exibirMensagemRecadoNaoExcluido();
+                    }
                     break;
-                    
-                 case 6:
+
+                case 6:
                     break;
                 default:
                     gui.exibirMensagemOpcaoInexistente();
             }
 
         }
+    }
+    
+    private void executaOpcaoMenuFornecedor(){
+        
     }
 
     //Main

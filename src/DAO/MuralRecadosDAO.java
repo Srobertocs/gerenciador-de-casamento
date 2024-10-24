@@ -19,11 +19,11 @@ public class MuralRecadosDAO {
     public MuralRecadosDAO(UsuarioDAO usuario) {
 
         Recados recado01 = new Recados();
-        recado01.setRecado("Fiquem livres para comentarem o que quiser aqui.");
+        recado01.setRecado("Fiquem livres para comentarem o que quiserem por aqui.");
         recado01.setDataCriacao(Datas.pegaDataAgora());
         recado01.setDataModificacao(Datas.pegaDataAgora());
         this.postarMuralRecados(recado01, usuario.consultaUsuario("silvio"));
-        
+
         Recados recado02 = new Recados();
         recado02.setRecado("Esperamos que gostem da cerimonia");
         recado02.setDataCriacao(Datas.pegaDataAgora());
@@ -95,12 +95,12 @@ public class MuralRecadosDAO {
         return 0;
     }
 
-    public boolean validaUsuarioRecado(Usuario usuarioLogado, long codigo) {
+    public boolean validaUsuarioRecado(Usuario usuarioLogado, long codigoRecado) {
 
         for (int i = 0; i < 20; i++) {
-            if (this.recados[i] != null ) {
-                if(this.recados[i].getUsuario().getLogin().equals(usuarioLogado.getLogin()) && this.recados[i].getId() == codigo){
-                      return true;
+            if (this.recados[i] != null) {
+                if (this.recados[i].getUsuario().getLogin().equals(usuarioLogado.getLogin()) && this.recados[i].getId() == codigoRecado) {
+                    return true;
                 }
             }
         }
@@ -113,6 +113,16 @@ public class MuralRecadosDAO {
             if (this.recados[i] != null && this.recados[i].getId() == codigoRecado) {
                 this.recados[i].setRecado(novoRecado);
                 this.recados[i].setDataModificacao(Datas.pegaDataAgora());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean excluirRecado(long codigoRecado, Usuario usuarioLogado) {
+        for (int i = 0; i < 20; i++) {
+            if (this.recados[i] != null && this.recados[i].getId() == codigoRecado) {
+                this.recados[i] = null;
                 return true;
             }
         }

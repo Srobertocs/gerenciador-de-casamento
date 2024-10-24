@@ -24,6 +24,7 @@ public class Usuario {
     
     private static long count;
     
+    //Contrutor
    public Usuario(){
        Usuario.count += 1;
        this.id = Usuario.count;
