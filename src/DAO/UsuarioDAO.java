@@ -4,7 +4,6 @@
  */
 package DAO;
 
-import DAO.PessoaDAO;
 import view.GUI;
 import beans.Usuario;
 import beans.Pessoa;
@@ -58,9 +57,7 @@ public class UsuarioDAO {
                         Usuario.setCount();
                         return false;
                     }
-                }
-                if (this.usuario[i] == null) {
-
+                }else{
                     novoUsuario.setPessoa(pessoa);
                     usuario[i] = novoUsuario;
                     return true;

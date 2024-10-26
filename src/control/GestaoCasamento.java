@@ -4,10 +4,12 @@
  */
 package control;
 
+import DAO.FornecedorDAO;
 import DAO.UsuarioDAO;
 import DAO.PresenteDAO;
 import DAO.PessoaDAO;
 import DAO.MuralRecadosDAO;
+import beans.Fornecedor;
 import view.GUI;
 import beans.Usuario;
 import beans.Pessoa;
@@ -25,6 +27,7 @@ public class GestaoCasamento {
     Usuario usuarioLogado = null;
 
     PessoaDAO pessoaDAO = new PessoaDAO();
+    FornecedorDAO fornecedorDAO = new FornecedorDAO();
     PresenteDAO presenteDAO = new PresenteDAO();
     UsuarioDAO usuarioDAO = new UsuarioDAO(pessoaDAO);
     MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO(usuarioDAO);
@@ -126,6 +129,10 @@ public class GestaoCasamento {
                 // 4 - Acessar o Menu de mural de recados
                 case 4:
                     executaOpcaoMenuMuralRecados();
+                    break;
+                // 5 - Acessar o Menu de fornecedores 
+                case 5:
+                    executaOpcaoMenuFornecedor();
                     break;
                 case 6:
                     break;
@@ -427,7 +434,48 @@ public class GestaoCasamento {
     }
     
     private void executaOpcaoMenuFornecedor(){
-        
+        int pegaopcao = 0;
+
+        while (pegaopcao != 6) {
+            pegaopcao = gui.menuFornecedor();
+            
+            switch (pegaopcao) {
+                // 1 - Adicionar fornecedor
+                case 1:
+                    boolean fornecedorAdicionado;
+                    
+                    fornecedorAdicionado = fornecedorDAO.adicionaFornecedor(gui.criaFornecedor());
+                    
+                    if(fornecedorAdicionado){
+                        gui.exibirMensagemFornecedorAdicionado();
+                    }else{
+                        gui.exibirMensagemFornecedorNaoAdicionado();
+                    }
+                    break;
+                // 2 - Mostra a lista de fornecedores
+                case 2:
+                    if (fornecedorDAO.mostraFornecedor() == null) {
+                        gui.exibirMensagemFornecedorNaoEncontrado();
+                    } else {
+                        gui.exibirFornecedor(fornecedorDAO.mostraFornecedor());
+                    }
+                    break;
+                // 3 - Consulta fornecedor
+                case 3:
+                    Fornecedor fornecedorConsulta;
+                    
+                    fornecedorConsulta = fornecedorDAO.consultaFornecedor(gui.recebeCnpjFornecedor());
+                    
+                    if(fornecedorConsulta != null){
+                        gui.exibirFornecedor(fornecedorConsulta.toString());
+                    }else{
+                        gui.exibirMensagemFornecedorNaoEncontrado();
+                    }
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+        }
     }
 
     //Main

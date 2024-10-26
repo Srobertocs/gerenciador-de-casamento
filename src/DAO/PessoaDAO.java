@@ -69,8 +69,7 @@ public class PessoaDAO {
                     Pessoa.setCount();
                     return false;
                 }
-            }
-            if (this.pessoa[i] == null) {
+            }else{
                 this.pessoa[i] = novaPessoa;
                 return true;
             }
@@ -127,7 +126,6 @@ public class PessoaDAO {
     public Pessoa consultaPessoa(String nomePessoa) {
 
         for (int i = 0; i < 40; i++) {
-
             if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
                 return this.pessoa[i];
             }

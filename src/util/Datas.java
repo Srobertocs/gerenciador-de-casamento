@@ -15,7 +15,6 @@ public class Datas {
     public static LocalDateTime pegaDataAgora() {
 
         LocalDateTime data = LocalDateTime.now();
-
         return data;
     }
 }

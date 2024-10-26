@@ -7,6 +7,7 @@ package view;
 import beans.Usuario;
 import beans.Recados;
 import beans.Pessoa;
+import beans.Fornecedor;
 import util.Datas;
 import javax.swing.JOptionPane;
 
@@ -83,13 +84,35 @@ public class GUI {
 
         return recado;
     }
-    
-    public long recebeCodigoRecado(){
+
+    public long recebeCodigoRecado() {
         return Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo do recado: "));
     }
+
+    public String recebeNovoRecado() {
+        return JOptionPane.showInputDialog("Digite a alteracao do recado: ");
+    }
+
+    //Objeto Fornecedor
+    public Fornecedor criaFornecedor() {
+        Fornecedor fornecedor = new Fornecedor();
+
+        fornecedor.setNome(JOptionPane.showInputDialog("Digite o nome do fornecedor: "));
+        fornecedor.setCnpj(JOptionPane.showInputDialog("Digite o cnpj: "));
+        fornecedor.setTelefone(JOptionPane.showInputDialog("Digite telefone de contato: "));
+        fornecedor.setValorAPagar(Double.parseDouble(JOptionPane.showInputDialog("Digite o valor: ")));
+        fornecedor.setParcelas(Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade de parcelas: ")));
+        fornecedor.setStatus(JOptionPane.showInputDialog("Digite em que status se encontra o fornecedor :"
+                + "\n** pago **"
+                + "\n** em pagamento **"));
+        fornecedor.setDataCriacao(Datas.pegaDataAgora());
+        fornecedor.setDataModificacao(Datas.pegaDataAgora());
+
+        return fornecedor;
+    }
     
-    public String recebeNovoRecado(){
-        return  JOptionPane.showInputDialog("Digite a alteracao do recado: ");
+    public String recebeCnpjFornecedor(){
+        return JOptionPane.showInputDialog("Digite o cnpj do fornecedor");
     }
 
     //Métodos dos menus de opção
@@ -112,10 +135,10 @@ public class GUI {
         String menu = "HOME\nStatus: Logado"
                 + "\n\nselecione:"
                 + "\n1- Lista de presentes"
-                + "\n2- Gerenciamento de pessoas "
-                + "\n3- Gerenciamento de usuarios"
+                + "\n2- Painel de pessoas "
+                + "\n3- Painel de usuarios"
                 + "\n4- Mural de recados"
-                + "\n5-"
+                + "\n5- Painel de fornecedores"
                 + "\n6- Deslogar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
@@ -125,7 +148,7 @@ public class GUI {
     public int menuPessoa() {
         int opcao;
 
-        String menu = "GERENCIAMENTO DE PESSOAS\n"
+        String menu = "PAINEL DE PESSOAS\n"
                 + "\nselecione:"
                 + "\n1- Adicionar pessoa"
                 + "\n2- Consultar pessoa"
@@ -138,10 +161,26 @@ public class GUI {
         return opcao;
     }
 
+    public int menuFornecedor() {
+        int opcao;
+
+        String menu = "PAINEL DE FORNECEDOR\n"
+                + "\nselecione:"
+                + "\n1- Cadastro de fornecedores"
+                + "\n2- Mostrar lista de fornecedores "
+                + "\n3- Consulta fornecedor"
+                + "\n4- "
+                + "\n5- "
+                + "\n6- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+
     public int menuUsuario() {
         int opcao;
 
-        String menu = "GERENCIAMENTO DE USUARIOS\n"
+        String menu = "PAINEL DE USUARIOS\n"
                 + "\nselecione:"
                 + "\n1- Adicionar usuario"
                 + "\n2- Consultar usuario"
@@ -320,44 +359,69 @@ public class GUI {
     public void exibirMensagemRecadoNaoPostado() {
         JOptionPane.showMessageDialog(null, "Recado nao postado");
     }
-    
-    public void exibirMuralRecados(String muralRecados){
+
+    public void exibirMuralRecados(String muralRecados) {
         JOptionPane.showMessageDialog(null, muralRecados);
     }
-    
-    public void exibirMensagemNaoExisteMuralRecados(){
+
+    public void exibirMensagemNaoExisteMuralRecados() {
         JOptionPane.showMessageDialog(null, "Nao existe nenhum recado no mural");
     }
-    
-    public void exibirMensagemRecadoConsultaInvalida(){
+
+    public void exibirMensagemRecadoConsultaInvalida() {
         JOptionPane.showMessageDialog(null, "Consulta invalida: possiveis motivos"
                 + "\n1 - Remetente do recado nao cadastrado"
                 + "\n2 - Remetente não escreveu nenhum comentario"
                 + "\n3 - Mural de recados está vazio");
     }
-    
-    public void exibirMensagemRecadoNaoEditado(){
+
+    public void exibirMensagemRecadoNaoEditado() {
         JOptionPane.showMessageDialog(null, "Recado nao editado");
     }
-    
-    public void exibirMensagemCodigoNaoEncontrado(){
+
+    public void exibirMensagemCodigoNaoEncontrado() {
         JOptionPane.showMessageDialog(null, "Nenhum recado com esse codigo foi encontrado");
     }
-    
-    public void exibirMensagemRecadoEditado(){
+
+    public void exibirMensagemRecadoEditado() {
         JOptionPane.showMessageDialog(null, "Recado editado com sucesso");
     }
-    
-    public void exibirMensagemRecadoExcluido(){
+
+    public void exibirMensagemRecadoExcluido() {
         JOptionPane.showMessageDialog(null, "Recado excluido com sucesso");
     }
-    
-    public void exibirMensagemRecadoNaoExcluido(){
+
+    public void exibirMensagemRecadoNaoExcluido() {
         JOptionPane.showMessageDialog(null, "Recado nao excluido");
     }
-    
-    public void exibirMensagemUsuarioRecadoInvalido(){
+
+    public void exibirMensagemUsuarioRecadoInvalido() {
         JOptionPane.showMessageDialog(null, "O recado que esta tentando acessar nao foi escrito por voce.\n"
                 + "Selecione para executar a opcao que selecionou algum comentario que voce mesmo escreveu");
+    }
+
+    //Objeto Fornecedor
+    public void exibirFornecedor(String fornecedor){
+        JOptionPane.showMessageDialog(null, fornecedor);
+    }
+    
+    public void exibirMensagemFornecedorExistente() {
+        JOptionPane.showMessageDialog(null, "Fornecedor já adicionado");
+    }
+
+    public void exibirMensagemFornecedorAdicionado() {
+        JOptionPane.showMessageDialog(null, "Fornecedor cadastradado com sucesso");
+    }
+
+    public void exibirMensagemFornecedorNaoAdicionado() {
+        JOptionPane.showMessageDialog(null, "Fornecedor nao cadastrado");
+    }
+
+    public void exibirMensagemFornecedorNaoEncontrado() {
+        JOptionPane.showMessageDialog(null, "Fornecedor não foi encontrado. "
+                + "\nPossiveis motivos: "
+                + "\n1 - CNPJ digitado incorretamente "
+                + "\n2 - Fornecedor inexistente"
+                + "\n3 - Nenhuma fornecedor cadastrado");
     }
 }
