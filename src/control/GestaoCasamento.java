@@ -255,11 +255,11 @@ public class GestaoCasamento {
                     break;
                 // 3 - Exclui cadastro
                 case 3:
-                    boolean cadastroExcluido;
+                    boolean pessoaExcluida;
 
-                    cadastroExcluido = pessoaDAO.excluiPessoa(gui.recebeNomePessoa());
+                    pessoaExcluida = pessoaDAO.excluiPessoa(gui.recebeNomePessoa());
 
-                    if (cadastroExcluido) {
+                    if (pessoaExcluida) {
                         gui.exibirMensagemPessoaExcluida();
                     } else {
                         gui.exibirMensagemPessoaNaoEncontrada();
@@ -409,17 +409,17 @@ public class GestaoCasamento {
 
                     if (codigoRecadoExclusao == 0) {
                         gui.exibirMensagemCodigoNaoEncontrado();
-                    }else{
-                        if(muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecadoExclusao)){
+                    } else {
+                        if (muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecadoExclusao)) {
                             recadoExcluido = muralRecadosDAO.excluirRecado(codigoRecadoExclusao, usuarioLogado);
-                        }else{
+                        } else {
                             gui.exibirMensagemUsuarioRecadoInvalido();
                         }
                     }
-                    
-                    if(recadoExcluido == true){
+
+                    if (recadoExcluido == true) {
                         gui.exibirMensagemRecadoExcluido();
-                    }else{
+                    } else {
                         gui.exibirMensagemRecadoNaoExcluido();
                     }
                     break;
@@ -432,23 +432,23 @@ public class GestaoCasamento {
 
         }
     }
-    
-    private void executaOpcaoMenuFornecedor(){
+
+    private void executaOpcaoMenuFornecedor() {
         int pegaopcao = 0;
 
         while (pegaopcao != 6) {
             pegaopcao = gui.menuFornecedor();
-            
+
             switch (pegaopcao) {
                 // 1 - Adicionar fornecedor
                 case 1:
                     boolean fornecedorAdicionado;
-                    
+
                     fornecedorAdicionado = fornecedorDAO.adicionaFornecedor(gui.criaFornecedor());
-                    
-                    if(fornecedorAdicionado){
+
+                    if (fornecedorAdicionado) {
                         gui.exibirMensagemFornecedorAdicionado();
-                    }else{
+                    } else {
                         gui.exibirMensagemFornecedorNaoAdicionado();
                     }
                     break;
@@ -463,14 +463,42 @@ public class GestaoCasamento {
                 // 3 - Consulta fornecedor
                 case 3:
                     Fornecedor fornecedorConsulta;
-                    
+
                     fornecedorConsulta = fornecedorDAO.consultaFornecedor(gui.recebeCnpjFornecedor());
-                    
-                    if(fornecedorConsulta != null){
+
+                    if (fornecedorConsulta != null) {
                         gui.exibirFornecedor(fornecedorConsulta.toString());
-                    }else{
+                    } else {
                         gui.exibirMensagemFornecedorNaoEncontrado();
                     }
+                    break;
+
+                // 4 - Excluir fornecedor 
+                case 4:
+                    boolean fornecedorExcluido;
+
+                    fornecedorExcluido = fornecedorDAO.excluiFornecedor(gui.recebeCnpjFornecedor());
+
+                    if (fornecedorExcluido) {
+                        gui.exibirMensagemFornecedorExcluido();
+                    } else {
+                        gui.exibirMensagemFornecedorNaoEncontrado();
+                    }
+                    break;
+
+                // 5 - Alterar forma de pagamento
+                case 5:
+                    boolean statusAlterado;
+
+                    statusAlterado = fornecedorDAO.alteraStatusPagamento(gui.recebeCnpjFornecedor(), gui.recebeNovoStatusFornecedor());
+
+                    if (statusAlterado) {
+                        gui.exibirMensagemFornecedorAlterado();
+                    } else {
+                        gui.exibirMensagemFornecedorNaoEncontrado();
+                    }
+                    break;
+                case 6:
                     break;
                 default:
                     gui.exibirMensagemOpcaoInexistente();

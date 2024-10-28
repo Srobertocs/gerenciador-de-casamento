@@ -30,7 +30,7 @@ public class FornecedorDAO {
         fornecedor01.setDataCriacao(Datas.pegaDataAgora());
         fornecedor01.setDataModificacao(Datas.pegaDataAgora());
         adicionaFornecedor(fornecedor01);
-        
+
         Fornecedor fornecedor02 = new Fornecedor();
         fornecedor02.setNome("Cerimonial Oliveira");
         fornecedor02.setCnpj("12.789.258/0001-84");
@@ -41,7 +41,7 @@ public class FornecedorDAO {
         fornecedor02.setDataCriacao(Datas.pegaDataAgora());
         fornecedor02.setDataModificacao(Datas.pegaDataAgora());
         adicionaFornecedor(fornecedor02);
-        
+
         Fornecedor fornecedor03 = new Fornecedor();
         fornecedor03.setNome("Gastronomia Buffet Lima");
         fornecedor03.setCnpj("25.456.259/0001-87");
@@ -98,13 +98,36 @@ public class FornecedorDAO {
         }
     }
 
-    public Fornecedor consultaFornecedor(String cnpj){
-        
+    public Fornecedor consultaFornecedor(String cnpj) {
+
         for (int i = 0; i < 10; i++) {
-            if(this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)){
+            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)) {
                 return this.fornecedores[i];
             }
         }
         return null;
+    }
+
+    public boolean excluiFornecedor(String cnpj) {
+
+        for (int i = 0; i < 10; i++) {
+            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)) {
+                this.fornecedores[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean alteraStatusPagamento(String cnpj, String novoStatus) {
+
+        for (int i = 0; i < 10; i++) {
+            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)) {
+                this.fornecedores[i].setStatus(novoStatus);
+                this.fornecedores[i].setDataModificacao(Datas.pegaDataAgora());
+                return true;
+            }
+        }
+        return false;
     }
 }

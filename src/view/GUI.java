@@ -110,9 +110,15 @@ public class GUI {
 
         return fornecedor;
     }
-    
-    public String recebeCnpjFornecedor(){
+
+    public String recebeCnpjFornecedor() {
         return JOptionPane.showInputDialog("Digite o cnpj do fornecedor");
+    }
+
+    public String recebeNovoStatusFornecedor() {
+        return JOptionPane.showInputDialog("Digite o novo status atual do fornecedor:"
+                + "\n** pago **"
+                + "\n** em pagamento **");
     }
 
     //Métodos dos menus de opção
@@ -169,8 +175,8 @@ public class GUI {
                 + "\n1- Cadastro de fornecedores"
                 + "\n2- Mostrar lista de fornecedores "
                 + "\n3- Consulta fornecedor"
-                + "\n4- "
-                + "\n5- "
+                + "\n4- Excluir fornecedor"
+                + "\n5- Alterar status do fornecedor"
                 + "\n6- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
@@ -401,10 +407,10 @@ public class GUI {
     }
 
     //Objeto Fornecedor
-    public void exibirFornecedor(String fornecedor){
+    public void exibirFornecedor(String fornecedor) {
         JOptionPane.showMessageDialog(null, fornecedor);
     }
-    
+
     public void exibirMensagemFornecedorExistente() {
         JOptionPane.showMessageDialog(null, "Fornecedor já adicionado");
     }
@@ -423,5 +429,13 @@ public class GUI {
                 + "\n1 - CNPJ digitado incorretamente "
                 + "\n2 - Fornecedor inexistente"
                 + "\n3 - Nenhuma fornecedor cadastrado");
+    }
+
+    public void exibirMensagemFornecedorExcluido() {
+        JOptionPane.showMessageDialog(null, "Fornecedor excluido com sucesso");
+    }
+    
+    public void exibirMensagemFornecedorAlterado() {
+        JOptionPane.showMessageDialog(null, "Status do fornecedor alterado com sucesso");
     }
 }
