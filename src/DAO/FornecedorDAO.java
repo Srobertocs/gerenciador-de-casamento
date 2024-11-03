@@ -25,7 +25,7 @@ public class FornecedorDAO {
         fornecedor01.setCnpj("10.123.258/0001-89");
         fornecedor01.setTelefone("(34) 3314-9865");
         fornecedor01.setValorAPagar(10000.0);
-        fornecedor01.setParcelas(10);
+        fornecedor01.setParcelas(2);
         fornecedor01.setStatus("em pagamento");
         fornecedor01.setDataCriacao(Datas.pegaDataAgora());
         fornecedor01.setDataModificacao(Datas.pegaDataAgora());
@@ -36,7 +36,7 @@ public class FornecedorDAO {
         fornecedor02.setCnpj("12.789.258/0001-84");
         fornecedor02.setTelefone("(34) 3365-7855");
         fornecedor02.setValorAPagar(25000.0);
-        fornecedor02.setParcelas(24);
+        fornecedor02.setParcelas(10);
         fornecedor02.setStatus("em pagamento");
         fornecedor02.setDataCriacao(Datas.pegaDataAgora());
         fornecedor02.setDataModificacao(Datas.pegaDataAgora());
@@ -48,7 +48,7 @@ public class FornecedorDAO {
         fornecedor03.setTelefone("(34) 3156-9852");
         fornecedor03.setValorAPagar(12000.0);
         fornecedor03.setParcelas(1);
-        fornecedor03.setStatus("pago");
+        fornecedor03.setStatus("em pagamento");
         fornecedor03.setDataCriacao(Datas.pegaDataAgora());
         fornecedor03.setDataModificacao(Datas.pegaDataAgora());
         adicionaFornecedor(fornecedor03);
@@ -101,7 +101,17 @@ public class FornecedorDAO {
     public Fornecedor consultaFornecedor(String cnpj) {
 
         for (int i = 0; i < 10; i++) {
-            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)) {
+            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)){
+                return this.fornecedores[i];
+            }
+        }
+        return null;
+    }
+    
+    public Fornecedor pegaFornecedor(long id){
+        
+        for (int i = 0; i < 10; i++) {
+            if (this.fornecedores[i] != null && this.fornecedores[i].getId() == id){
                 return this.fornecedores[i];
             }
         }

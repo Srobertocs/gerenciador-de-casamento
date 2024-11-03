@@ -9,12 +9,14 @@ import DAO.UsuarioDAO;
 import DAO.PresenteDAO;
 import DAO.PessoaDAO;
 import DAO.MuralRecadosDAO;
+import DAO.PagamentoDAO;
 import beans.Fornecedor;
 import view.GUI;
 import beans.Usuario;
 import beans.Pessoa;
 import beans.Presente;
 import beans.Recados;
+import beans.Pagamento;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,6 +33,7 @@ public class GestaoCasamento {
     PresenteDAO presenteDAO = new PresenteDAO();
     UsuarioDAO usuarioDAO = new UsuarioDAO(pessoaDAO);
     MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO(usuarioDAO);
+    PagamentoDAO pagamentoDAO = new PagamentoDAO();
 
     GUI gui = new GUI();
 
@@ -110,7 +113,7 @@ public class GestaoCasamento {
     private void executaOpcaoMenuPrincipalLogado() {
         int pegaOpcao = 0;
 
-        while (pegaOpcao != 6) {
+        while (pegaOpcao != 7) {
             pegaOpcao = gui.menuPrincipalLogado();
 
             switch (pegaOpcao) {
@@ -134,7 +137,12 @@ public class GestaoCasamento {
                 case 5:
                     executaOpcaoMenuFornecedor();
                     break;
+                // 6 - Acessa o Menu de pagamentos
                 case 6:
+                    executaOpcaoMenuPagamento();
+                    break;
+                // 7 - Voltar 
+                case 7:
                     break;
                 default:
                     gui.exibirMensagemOpcaoInexistente();
@@ -472,7 +480,6 @@ public class GestaoCasamento {
                         gui.exibirMensagemFornecedorNaoEncontrado();
                     }
                     break;
-
                 // 4 - Excluir fornecedor 
                 case 4:
                     boolean fornecedorExcluido;
@@ -485,7 +492,6 @@ public class GestaoCasamento {
                         gui.exibirMensagemFornecedorNaoEncontrado();
                     }
                     break;
-
                 // 5 - Alterar forma de pagamento
                 case 5:
                     boolean statusAlterado;
@@ -498,6 +504,48 @@ public class GestaoCasamento {
                         gui.exibirMensagemFornecedorNaoEncontrado();
                     }
                     break;
+                // 6 - voltar 
+                case 6:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+        }
+    }
+
+    private void executaOpcaoMenuPagamento() {
+        int pegaopcao = 0;
+
+        while (pegaopcao != 6) {
+            pegaopcao = gui.menuPagamento();
+
+            switch (pegaopcao) {
+                // 1 - Lançamento dos pagamentos
+                case 1:
+                    boolean pagamentosLancados;
+                    String textoFornecedor;
+
+                    textoFornecedor = fornecedorDAO.mostraFornecedor();
+
+                    pagamentosLancados = pagamentoDAO.lancamentoPagamentos(fornecedorDAO.pegaFornecedor(gui.recebeIdFornecedor(textoFornecedor)), gui.recebeData());
+
+                    if (pagamentosLancados == true) {
+                        gui.exibirMensagemPagamentoLancado();
+                    } else {
+                        gui.exibirMensagemPagamentoNaoLancado();
+                    }
+                    break;
+                // 2 - Visualizar os pagamentos   
+                case 2:
+                     if (pagamentoDAO.mostraPagamentosLancados() == null) {
+                         gui.exibirMensagemPagamentoNaoEncontrado();
+                    } else {
+                         gui.exibirPagamento(pagamentoDAO.mostraPagamentosLancados());
+     
+                    }
+                    break;
+
+                // 6 - Voltar
                 case 6:
                     break;
                 default:

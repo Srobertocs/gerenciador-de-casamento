@@ -7,6 +7,7 @@ package view;
 import beans.Usuario;
 import beans.Recados;
 import beans.Pessoa;
+import beans.Pagamento;
 import beans.Fornecedor;
 import util.Datas;
 import javax.swing.JOptionPane;
@@ -15,6 +16,7 @@ import javax.swing.JOptionPane;
  *
  * @author SOUSA
  */
+
 public class GUI {
 
     //Métodos para popular objetos
@@ -120,6 +122,16 @@ public class GUI {
                 + "\n** pago **"
                 + "\n** em pagamento **");
     }
+    
+    //Objeto Pagamento
+     public int recebeIdFornecedor(String texto) {
+        return Integer.parseInt(JOptionPane.showInputDialog(texto
+                + "\n\nDigite o codigo do fornecedor para fazer o lancamento dos pagamentos"));
+    }
+     
+     public String recebeData() {
+        return JOptionPane.showInputDialog("Digite a data do primeiro vencimento: ");
+    }
 
     //Métodos dos menus de opção
     public int menuPrincipalNaoLogado() {
@@ -141,11 +153,12 @@ public class GUI {
         String menu = "HOME\nStatus: Logado"
                 + "\n\nselecione:"
                 + "\n1- Lista de presentes"
-                + "\n2- Painel de pessoas "
-                + "\n3- Painel de usuarios"
+                + "\n2- Menu de pessoas "
+                + "\n3- Menu de usuarios"
                 + "\n4- Mural de recados"
-                + "\n5- Painel de fornecedores"
-                + "\n6- Deslogar";
+                + "\n5- Menu de fornecedores"
+                + "\n6- Pagamentos "
+                + "\n7- Deslogar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
@@ -154,7 +167,7 @@ public class GUI {
     public int menuPessoa() {
         int opcao;
 
-        String menu = "PAINEL DE PESSOAS\n"
+        String menu = "MENU DE PESSOAS\n"
                 + "\nselecione:"
                 + "\n1- Adicionar pessoa"
                 + "\n2- Consultar pessoa"
@@ -170,7 +183,7 @@ public class GUI {
     public int menuFornecedor() {
         int opcao;
 
-        String menu = "PAINEL DE FORNECEDOR\n"
+        String menu = "MENU DE FORNECEDORES\n"
                 + "\nselecione:"
                 + "\n1- Cadastro de fornecedores"
                 + "\n2- Mostrar lista de fornecedores "
@@ -182,11 +195,27 @@ public class GUI {
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
     }
+    
+    public int menuPagamento() {
+        int opcao;
+
+        String menu = "PAGAMENTOS\n"
+                + "\nselecione:"
+                + "\n1- Lançamento dos pagamentos"
+                + "\n2- Visualizar todos os pagamentos "
+                + "\n3- Visualizar pagamentos do dia"
+                + "\n4- Consultar pagamento"
+                + "\n5- Editar pagamento"
+                + "\n6- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
 
     public int menuUsuario() {
         int opcao;
 
-        String menu = "PAINEL DE USUARIOS\n"
+        String menu = "MENU DE USUARIOS\n"
                 + "\nselecione:"
                 + "\n1- Adicionar usuario"
                 + "\n2- Consultar usuario"
@@ -438,4 +467,28 @@ public class GUI {
     public void exibirMensagemFornecedorAlterado() {
         JOptionPane.showMessageDialog(null, "Status do fornecedor alterado com sucesso");
     }
+    
+    //Objeto Pagamento
+    
+    public void exibirMensagemPagamentoLancado(){
+        JOptionPane.showMessageDialog(null, "Pagamentos lancados com sucesso");
+    }
+    
+     public void exibirMensagemPagamentoNaoLancado(){
+        JOptionPane.showMessageDialog(null, "Pagamentos nao lancados"
+                + "\nprincipais motivos:"
+                + "\n1 - Codigo do fornecedor nao existe"
+                + "\n2 - Pagamentos do fornecedor ja lancados");
+    }
+     
+     public void exibirMensagemPagamentoNaoEncontrado(){
+        JOptionPane.showMessageDialog(null, "Nenhum Pagamento encontrado");
+    }
+     
+      public void exibirPagamento(String pagamento) {
+        JOptionPane.showMessageDialog(null, pagamento);
+    }
 }
+
+
+
