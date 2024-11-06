@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
  *
  * @author SOUSA
  */
-
 public class GUI {
 
     //Métodos para popular objetos
@@ -122,15 +121,24 @@ public class GUI {
                 + "\n** pago **"
                 + "\n** em pagamento **");
     }
-    
+
     //Objeto Pagamento
-     public int recebeIdFornecedor(String texto) {
+    public int recebeIdFornecedor(String texto) {
         return Integer.parseInt(JOptionPane.showInputDialog(texto
                 + "\n\nDigite o codigo do fornecedor para fazer o lancamento dos pagamentos"));
     }
-     
-     public String recebeData() {
+
+    public int recebeIdPagamento(String texto) {
+        return Integer.parseInt(JOptionPane.showInputDialog(texto
+                + "\n\nDigite o codigo do pagamento que deseja pagar"));
+    }
+
+    public String recebeDataPrimeiroPagamento() {
         return JOptionPane.showInputDialog("Digite a data do primeiro vencimento: ");
+    }
+
+    public String recebeDataPesquisa() {
+        return JOptionPane.showInputDialog("Digite a data que deseja consultar se existe pagamentos: ");
     }
 
     //Métodos dos menus de opção
@@ -195,7 +203,7 @@ public class GUI {
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
     }
-    
+
     public int menuPagamento() {
         int opcao;
 
@@ -205,7 +213,7 @@ public class GUI {
                 + "\n2- Visualizar todos os pagamentos "
                 + "\n3- Visualizar pagamentos do dia"
                 + "\n4- Consultar pagamento"
-                + "\n5- Editar pagamento"
+                + "\n5- Pagar Contas"
                 + "\n6- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
@@ -463,32 +471,45 @@ public class GUI {
     public void exibirMensagemFornecedorExcluido() {
         JOptionPane.showMessageDialog(null, "Fornecedor excluido com sucesso");
     }
-    
+
     public void exibirMensagemFornecedorAlterado() {
         JOptionPane.showMessageDialog(null, "Status do fornecedor alterado com sucesso");
     }
-    
+
     //Objeto Pagamento
-    
-    public void exibirMensagemPagamentoLancado(){
+    public void exibirMensagemPagamentoLancado() {
         JOptionPane.showMessageDialog(null, "Pagamentos lancados com sucesso");
     }
     
-     public void exibirMensagemPagamentoNaoLancado(){
+    public void exibirMensagemPagamentoPago() {
+        JOptionPane.showMessageDialog(null, "Pagamentos pago com sucesso");
+    }
+
+    public void exibirMensagemPagamentoNaoLancado() {
         JOptionPane.showMessageDialog(null, "Pagamentos nao lancados"
                 + "\nprincipais motivos:"
                 + "\n1 - Codigo do fornecedor nao existe"
                 + "\n2 - Pagamentos do fornecedor ja lancados");
     }
-     
-     public void exibirMensagemPagamentoNaoEncontrado(){
+    
+    public void exibirMensagemPagamentoNaoPago() {
+        JOptionPane.showMessageDialog(null, "Pagamento nao paga"
+                + "\nprincipais motivos:"
+                + "\n1 - O pagamento ja esta pago"
+                + "\n2 - Codigo digitado nao encotrado"
+                + "\n3- Nao existe pagamento para hoje"
+                + "\n4- Codigo digitado referente ao pagamento de outro dia");
+    }
+
+    public void exibirMensagemPagamentoNaoEncontrado() {
         JOptionPane.showMessageDialog(null, "Nenhum Pagamento encontrado");
     }
-     
-      public void exibirPagamento(String pagamento) {
+
+    public void exibirPagamento(String pagamento) {
+        System.out.println(pagamento);
+    }
+    
+    public void exibirPagamentoConsultados(String pagamento) {
         JOptionPane.showMessageDialog(null, pagamento);
     }
 }
-
-
-

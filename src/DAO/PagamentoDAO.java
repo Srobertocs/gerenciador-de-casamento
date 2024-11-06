@@ -7,7 +7,6 @@ package DAO;
 import beans.Fornecedor;
 import beans.Pagamento;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import util.Datas;
 
 /**
@@ -18,11 +17,18 @@ public class PagamentoDAO {
 
     Pagamento[] pagamentos = new Pagamento[50];
 
+    public PagamentoDAO(FornecedorDAO fornecedor) {
+        //Lancamento dos pagamentos do primeiro fornecedor
+        this.lancamentoPagamentos(fornecedor.pegaFornecedor(1), Datas.pegaDataAgoraSemHoras());
+        //Lancamento dos pagamentos do segundo fornecedor
+        this.lancamentoPagamentos(fornecedor.pegaFornecedor(2), Datas.pegaDataAgoraSemHoras());
+    }
+
     public Pagamento criaPagamento(int parcela, Fornecedor fornecedor, double valor, LocalDate dataVenc) {
         Pagamento novoPagamento = new Pagamento();
         novoPagamento.setDataCriacao(Datas.pegaDataAgora());
         novoPagamento.setDataModificacao(Datas.pegaDataAgora());
-        novoPagamento.setDescricao("Pendente");
+        novoPagamento.setDescricao("Em aberto");
         novoPagamento.setFornecedor(fornecedor);
         novoPagamento.setParcelas(parcela);
         novoPagamento.setValor(valor);
@@ -31,19 +37,18 @@ public class PagamentoDAO {
         return novoPagamento;
     }
 
-    public boolean lancamentoPagamentos(Fornecedor fornecedor, String textoData) {
+    public boolean lancamentoPagamentos(Fornecedor fornecedor, LocalDate dataAtual) {
 
         double valorPorParcela = calculaValorParcelas(fornecedor.getParcelas(), fornecedor.getValorAPagar());
 
         int parcelas = 1;
-        LocalDate dataAtual = Datas.convercaoData(textoData);
 
         if (consultaLancamentoExistente(fornecedor) == true) {
             return false;
         } else {
             for (int i = 0; i < 50; i++) {
                 if (this.pagamentos[i] == null) {
-                    if (parcelas <= fornecedor.getParcelas()){
+                    if (parcelas <= fornecedor.getParcelas()) {
                         this.pagamentos[i] = criaPagamento(parcelas, fornecedor, valorPorParcela, dataAtual);
                         dataAtual = Datas.incrementaDataVencimento(dataAtual);
                         parcelas++;
@@ -92,5 +97,57 @@ public class PagamentoDAO {
         } else {
             return texto;
         }
+    }
+
+    public String mostraPagamentosDoDia() {
+
+        boolean vazio = true;
+
+        String texto = "\n\nPAGAMENTOS COM VENCIMENTO PARA HOJE";
+
+        for (int i = 0; i < 50; i++) {
+
+            if (this.pagamentos[i] != null && this.pagamentos[i].getDataPagamento().isEqual(Datas.pegaDataAgoraSemHoras())) {
+                texto += "\n\n" + this.pagamentos[i].toString();
+                vazio = false;
+            }
+        }
+        if (vazio == true) {
+            return null;
+        } else {
+            return texto;
+        }
+    }
+
+    public String consultaVencimentoDosDias(LocalDate dataSelecionada) {
+
+        boolean vazio = true;
+
+        String texto = "\n\nPAGAMENTOS COM VENCIMENTO PARA A DATA SELECIONADA";
+
+        for (int i = 0; i < 50; i++) {
+
+            if (this.pagamentos[i] != null && this.pagamentos[i].getDataPagamento().isEqual(dataSelecionada)) {
+                texto += "\n\n" + this.pagamentos[i].toString();
+                vazio = false;
+            }
+        }
+        if (vazio == true) {
+            return null;
+        } else {
+            return texto;
+        }
+    }
+
+    public boolean pagamentosPagos(long codigo) {
+
+        for (int i = 0; i < 50; i++) {
+            if (this.pagamentos[i] != null && this.pagamentos[i].getId() == codigo && this.pagamentos[i].getDescricao().equals("Em aberto") && this.pagamentos[i].getDataPagamento().isEqual(Datas.pegaDataAgoraSemHoras())) {
+                this.pagamentos[i].setDataModificacao(Datas.pegaDataAgora());
+                this.pagamentos[i].setDescricao("Pago");
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4,6 +4,7 @@
  */
 package beans;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -110,12 +111,14 @@ public class Fornecedor {
     @Override
     public String toString() {
         
+        DecimalFormat valorFormatado = new DecimalFormat("#.00");
+        
         String texto = "\nCodigo: " + this.id
                 + " | Nome do fornecedor: " + this.nome 
                 + " | CNPJ: " + this.cnpj
                 + " | Contato: " + this.telefone
-                + " | Valor: R$" + this.valorAPagar
-                + " | Parcelas: " + this.parcelas +"x"
+                + " | Valor: R$" + valorFormatado.format(this.valorAPagar)
+                + " | Parcelas: " + this.parcelas +" x"
                 +"  | Status: " + this.status
                 +"  | Data de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
                 +"  | Data de criacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));         

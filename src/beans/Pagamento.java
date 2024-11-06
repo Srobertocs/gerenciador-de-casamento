@@ -4,8 +4,10 @@
  */
 package beans;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -16,7 +18,7 @@ public class Pagamento {
 
     private long id;
     private LocalDate dataPagamento;
-    private String Descricao;
+    private String descricao;
     private Fornecedor fornecedor;
     private double valor;
     private int parcelas;
@@ -24,20 +26,20 @@ public class Pagamento {
     private LocalDateTime dataModificacao;
 
     private static long count;
-    
+
     //Construtor 
     public Pagamento() {
         Pagamento.count += 1;
         this.id = Pagamento.count;
     }
-    
+
     //Métodos Setters
     public void setDataPagamento(LocalDate dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 
     public void setDescricao(String Descricao) {
-        this.Descricao = Descricao;
+        this.descricao = Descricao;
     }
 
     public void setFornecedor(Fornecedor fornecedor) {
@@ -59,18 +61,18 @@ public class Pagamento {
     public void setDataModificacao(LocalDateTime dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
-    
+
     //Métodos Getters 
     public long getId() {
         return id;
     }
-    
+
     public LocalDate getDataPagamento() {
         return dataPagamento;
     }
 
     public String getDescricao() {
-        return Descricao;
+        return descricao;
     }
 
     public Fornecedor getFornecedor() {
@@ -85,7 +87,6 @@ public class Pagamento {
         return parcelas;
     }
 
- 
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
@@ -93,11 +94,23 @@ public class Pagamento {
     public LocalDateTime getDataModificacao() {
         return dataModificacao;
     }
-    
+
     //Método ToString 
     @Override
     public String toString() {
-        return "Pagamento{" + "id=" + id + ", dataPagamento=" + dataPagamento + ", Descricao=" + Descricao + ", fornecedor=" + fornecedor.getNome() + ", valor=" + valor + ", parcelas=" + parcelas + ", dataCriacao=" + dataCriacao + ", dataModificacao=" + dataModificacao + '}';
+
+        DecimalFormat valorFormatado = new DecimalFormat("#.00");
+
+        String texto = "id: " + this.id
+                + "\nFornecedor: " + this.fornecedor.getNome()
+                + "\nParcela: " + this.parcelas
+                + "\nValor: R$" + valorFormatado.format(this.valor)
+                + "\nData de vencimento: " + this.dataPagamento.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
+                + "\nStatus do pagamento: " + this.descricao
+                + "\nData de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                + " | Data de modificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+        return texto;
     }
 
     @Override
@@ -105,7 +118,7 @@ public class Pagamento {
         int hash = 7;
         hash = 37 * hash + (int) (this.id ^ (this.id >>> 32));
         hash = 37 * hash + Objects.hashCode(this.dataPagamento);
-        hash = 37 * hash + Objects.hashCode(this.Descricao);
+        hash = 37 * hash + Objects.hashCode(this.descricao);
         hash = 37 * hash + Objects.hashCode(this.fornecedor);
         hash = 37 * hash + (int) (Double.doubleToLongBits(this.valor) ^ (Double.doubleToLongBits(this.valor) >>> 32));
         hash = 37 * hash + this.parcelas;
@@ -135,7 +148,7 @@ public class Pagamento {
         if (this.parcelas != other.parcelas) {
             return false;
         }
-        if (!Objects.equals(this.Descricao, other.Descricao)) {
+        if (!Objects.equals(this.descricao, other.descricao)) {
             return false;
         }
         if (!Objects.equals(this.dataPagamento, other.dataPagamento)) {
@@ -149,6 +162,5 @@ public class Pagamento {
         }
         return Objects.equals(this.dataModificacao, other.dataModificacao);
     }
-    
-    
+
 }

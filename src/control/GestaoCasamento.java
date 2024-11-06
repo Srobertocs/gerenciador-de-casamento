@@ -18,6 +18,7 @@ import beans.Presente;
 import beans.Recados;
 import beans.Pagamento;
 import javax.swing.JOptionPane;
+import util.Datas;
 
 /**
  *
@@ -33,7 +34,7 @@ public class GestaoCasamento {
     PresenteDAO presenteDAO = new PresenteDAO();
     UsuarioDAO usuarioDAO = new UsuarioDAO(pessoaDAO);
     MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO(usuarioDAO);
-    PagamentoDAO pagamentoDAO = new PagamentoDAO();
+    PagamentoDAO pagamentoDAO = new PagamentoDAO(fornecedorDAO);
 
     GUI gui = new GUI();
 
@@ -527,7 +528,7 @@ public class GestaoCasamento {
 
                     textoFornecedor = fornecedorDAO.mostraFornecedor();
 
-                    pagamentosLancados = pagamentoDAO.lancamentoPagamentos(fornecedorDAO.pegaFornecedor(gui.recebeIdFornecedor(textoFornecedor)), gui.recebeData());
+                    pagamentosLancados = pagamentoDAO.lancamentoPagamentos(fornecedorDAO.pegaFornecedor(gui.recebeIdFornecedor(textoFornecedor)),  Datas.convercaoData(gui.recebeDataPrimeiroPagamento()));
 
                     if (pagamentosLancados == true) {
                         gui.exibirMensagemPagamentoLancado();
@@ -541,7 +542,40 @@ public class GestaoCasamento {
                          gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
                          gui.exibirPagamento(pagamentoDAO.mostraPagamentosLancados());
-     
+                    }
+                    break;
+                    
+                // 3 - Visualizar pagamentos do dia
+                case 3:
+                     if (pagamentoDAO.mostraPagamentosDoDia() == null) {
+                         gui.exibirMensagemPagamentoNaoEncontrado();
+                    } else {
+                         gui.exibirPagamento(pagamentoDAO.mostraPagamentosDoDia());
+                    }
+                    break;
+                    
+                // 4 - Consultar pagamentos
+                case 4:
+                    String pagamentoConsultado = pagamentoDAO.consultaVencimentoDosDias(Datas.convercaoData(gui.recebeDataPesquisa()));
+                    if (pagamentoConsultado == null) {
+                         gui.exibirMensagemPagamentoNaoEncontrado();
+                    } else {
+                         gui.exibirPagamentoConsultados(pagamentoConsultado);
+                    }
+                    break;
+                    
+                 // 5 - Pagamento das contas 
+                case 5:
+                    boolean pagamentosPagos;
+                    
+                    String textoPagamento = pagamentoDAO.mostraPagamentosDoDia();
+                    
+                    pagamentosPagos = pagamentoDAO.pagamentosPagos(gui.recebeIdPagamento(textoPagamento));
+                    
+                     if (pagamentosPagos== true) {
+                        gui.exibirMensagemPagamentoPago();
+                    } else {
+                        gui.exibirMensagemPagamentoNaoPago();
                     }
                     break;
 
