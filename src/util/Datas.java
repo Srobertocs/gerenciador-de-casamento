@@ -34,6 +34,14 @@ public class Datas {
         return dataLancamento;
     }
 
+    public static LocalDate dataVencimentoAuto(int dias) {
+        LocalDate dataVencimento;
+
+        dataVencimento = LocalDate.now().plusDays(dias);
+
+        return dataVencimento;
+    }
+
     public static LocalDate convercaoData(String textoData) {
 
         DateTimeFormatter formatacao = DateTimeFormatter.ofPattern("dd/MM/yyyy");

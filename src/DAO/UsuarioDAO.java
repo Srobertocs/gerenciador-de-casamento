@@ -161,5 +161,16 @@ public class UsuarioDAO {
         }
         return false;
     }
+    
+    public Usuario pegaNoivos(String tipo) {
+
+        for (int i = 0; i < 40; i++) {
+
+            if (this.usuario[i] != null && this.usuario[i].getTipo().equals(tipo) || this.usuario[i].getTipo().equals(tipo)) {
+                return usuario[i];
+            }
+        }
+        return null;
+    }
    
 }

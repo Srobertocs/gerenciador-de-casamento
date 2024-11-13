@@ -136,16 +136,23 @@ public class GUI {
     public String recebeDataPrimeiroPagamento() {
         return JOptionPane.showInputDialog("Digite a data do primeiro vencimento: ");
     }
+    
+     public int recebeDataPagamentoAuto() {
+        return Integer.parseInt(JOptionPane.showInputDialog("Digite o intervalo de dias que deseja efetuar o pagamento automatico: "));
+    }
 
     public String recebeDataPesquisa() {
         return JOptionPane.showInputDialog("Digite a data que deseja consultar se existe pagamentos: ");
     }
 
     //Métodos dos menus de opção
-    public int menuPrincipalNaoLogado() {
+    public int menuPrincipalNaoLogado(String noivo, String noiva) {
         int opcao;
 
-        String menu = "HOME\nSeja Bem Vindo\n\nStatus: Deslogado"
+        String menu = "HOME"
+                + "\nCerimonial de " + noivo + " & " + noiva 
+                + "\nSeja Bem Vindo"
+                + "\n\nStatus: Deslogado"
                 + "\n\nselecione:"
                 + "\n1- Lista de presentes"
                 + "\n2- Entrar no programa"
@@ -155,10 +162,12 @@ public class GUI {
         return opcao;
     }
 
-    public int menuPrincipalLogado() {
+    public int menuPrincipalLogado(String noivo, String noiva) {
         int opcao;
 
-        String menu = "HOME\nStatus: Logado"
+        String menu = "HOME"
+                + "\nCerimonial de " + noivo + " & " + noiva
+                + "\n\nStatus: Logado"
                 + "\n\nselecione:"
                 + "\n1- Lista de presentes"
                 + "\n2- Menu de pessoas "
@@ -214,7 +223,8 @@ public class GUI {
                 + "\n3- Visualizar pagamentos do dia"
                 + "\n4- Consultar pagamento"
                 + "\n5- Pagar Contas"
-                + "\n6- Voltar";
+                + "\n6- Pagar Automaticamente "
+                + "\n7- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;

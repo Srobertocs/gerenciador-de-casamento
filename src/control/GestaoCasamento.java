@@ -10,13 +10,13 @@ import DAO.PresenteDAO;
 import DAO.PessoaDAO;
 import DAO.MuralRecadosDAO;
 import DAO.PagamentoDAO;
-import beans.Fornecedor;
 import view.GUI;
 import beans.Usuario;
 import beans.Pessoa;
 import beans.Presente;
 import beans.Recados;
 import beans.Pagamento;
+import beans.Fornecedor;
 import javax.swing.JOptionPane;
 import util.Datas;
 
@@ -28,6 +28,8 @@ public class GestaoCasamento {
 
     //Inicialização dos OBJETOS e DAOS
     Usuario usuarioLogado = null;
+    Usuario noivo = null;
+    Usuario noiva = null;
 
     PessoaDAO pessoaDAO = new PessoaDAO();
     FornecedorDAO fornecedorDAO = new FornecedorDAO();
@@ -37,18 +39,24 @@ public class GestaoCasamento {
     PagamentoDAO pagamentoDAO = new PagamentoDAO(fornecedorDAO);
 
     GUI gui = new GUI();
+    
+
 
     public GestaoCasamento() {
+        //Criação dos OBJETOS
+        noivo =usuarioDAO.pegaNoivos("Noivo");
+        noiva =usuarioDAO.pegaNoivos("Noiva");
+        
+        //Chamada de método
         executaOpcaoMenuPrincipalNaoLogado();
     }
 
     //Métodos de execução das opcões dos menus 
     private void executaOpcaoMenuPrincipalNaoLogado() {
         int pegaOpcao = 0;
-
+        
         while (pegaOpcao != 3) {
-
-            pegaOpcao = gui.menuPrincipalNaoLogado();
+            pegaOpcao = gui.menuPrincipalNaoLogado(noivo.getLogin(), noiva.getLogin());
 
             switch (pegaOpcao) {
                 case 1:
@@ -115,7 +123,7 @@ public class GestaoCasamento {
         int pegaOpcao = 0;
 
         while (pegaOpcao != 7) {
-            pegaOpcao = gui.menuPrincipalLogado();
+            pegaOpcao = gui.menuPrincipalLogado(noivo.getLogin(), noiva.getLogin());
 
             switch (pegaOpcao) {
                 // 1 - Acessa o Menu da lista de presentes
@@ -517,7 +525,7 @@ public class GestaoCasamento {
     private void executaOpcaoMenuPagamento() {
         int pegaopcao = 0;
 
-        while (pegaopcao != 6) {
+        while (pegaopcao != 7) {
             pegaopcao = gui.menuPagamento();
 
             switch (pegaopcao) {
@@ -528,7 +536,7 @@ public class GestaoCasamento {
 
                     textoFornecedor = fornecedorDAO.mostraFornecedor();
 
-                    pagamentosLancados = pagamentoDAO.lancamentoPagamentos(fornecedorDAO.pegaFornecedor(gui.recebeIdFornecedor(textoFornecedor)),  Datas.convercaoData(gui.recebeDataPrimeiroPagamento()));
+                    pagamentosLancados = pagamentoDAO.lancamentoPagamentos(fornecedorDAO.pegaFornecedor(gui.recebeIdFornecedor(textoFornecedor)), Datas.convercaoData(gui.recebeDataPrimeiroPagamento()));
 
                     if (pagamentosLancados == true) {
                         gui.exibirMensagemPagamentoLancado();
@@ -538,54 +546,70 @@ public class GestaoCasamento {
                     break;
                 // 2 - Visualizar os pagamentos   
                 case 2:
-                     if (pagamentoDAO.mostraPagamentosLancados() == null) {
-                         gui.exibirMensagemPagamentoNaoEncontrado();
+                    if (pagamentoDAO.mostraPagamentosLancados() == null) {
+                        gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
-                         gui.exibirPagamento(pagamentoDAO.mostraPagamentosLancados());
+                        gui.exibirPagamento(pagamentoDAO.mostraPagamentosLancados());
                     }
                     break;
-                    
+
                 // 3 - Visualizar pagamentos do dia
                 case 3:
-                     if (pagamentoDAO.mostraPagamentosDoDia() == null) {
-                         gui.exibirMensagemPagamentoNaoEncontrado();
+                    if (pagamentoDAO.mostraPagamentosDoDia() == null) {
+                        gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
-                         gui.exibirPagamento(pagamentoDAO.mostraPagamentosDoDia());
+                        gui.exibirPagamento(pagamentoDAO.mostraPagamentosDoDia());
                     }
                     break;
-                    
+
                 // 4 - Consultar pagamentos
                 case 4:
                     String pagamentoConsultado = pagamentoDAO.consultaVencimentoDosDias(Datas.convercaoData(gui.recebeDataPesquisa()));
                     if (pagamentoConsultado == null) {
-                         gui.exibirMensagemPagamentoNaoEncontrado();
+                        gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
-                         gui.exibirPagamentoConsultados(pagamentoConsultado);
+                        gui.exibirPagamentoConsultados(pagamentoConsultado);
                     }
                     break;
-                    
-                 // 5 - Pagamento das contas 
+
+                // 5 - Pagamento das contas 
                 case 5:
                     boolean pagamentosPagos;
-                    
+
                     String textoPagamento = pagamentoDAO.mostraPagamentosDoDia();
-                    
+
                     pagamentosPagos = pagamentoDAO.pagamentosPagos(gui.recebeIdPagamento(textoPagamento));
-                    
-                     if (pagamentosPagos== true) {
+
+                    if (pagamentosPagos == true) {
                         gui.exibirMensagemPagamentoPago();
                     } else {
                         gui.exibirMensagemPagamentoNaoPago();
                     }
                     break;
 
-                // 6 - Voltar
+                // 6 - Pagamento Automatico
                 case 6:
+                    boolean pagamentosAutPagos;
+
+                    pagamentosAutPagos = pagamentoDAO.pagamentoPagosAuto(gui.recebeDataPagamentoAuto());
+
+                    if (pagamentosAutPagos == true) {
+                        gui.exibirMensagemPagamentoPago();
+                    } else {
+                        gui.exibirMensagemPagamentoNaoPago();
+                    }
+                    break;
+                //6 - Voltar 
+                case 7:
                     break;
                 default:
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
+    }
+    
+    private void executaOpcaoMenuConvite(){
+    
     }
 
     //Main

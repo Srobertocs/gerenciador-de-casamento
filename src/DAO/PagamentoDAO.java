@@ -139,6 +139,28 @@ public class PagamentoDAO {
         }
     }
 
+    public boolean pagamentoPagosAuto(int dias) {
+
+        LocalDate dataVencimentoAuto = Datas.dataVencimentoAuto(dias);
+        
+        int aux = 0;
+
+        for (int i = 0; i < 50; i++) {
+            if(this.pagamentos[i] != null && this.pagamentos[i].getDataPagamento().isBefore(dataVencimentoAuto)){
+                if(this.pagamentos[i].getDescricao().equals("Em aberto")){
+                    this.pagamentos[i].setDataModificacao(Datas.pegaDataAgora());
+                    this.pagamentos[i].setDescricao("Pago");
+                    aux++;
+                }
+            }
+        }
+        if(aux != 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public boolean pagamentosPagos(long codigo) {
 
         for (int i = 0; i < 50; i++) {
