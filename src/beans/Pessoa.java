@@ -21,21 +21,13 @@ public class Pessoa {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
 
-    private static long count;
-
-    //Construtor
-    public Pessoa() {
-        Pessoa.count += 1;
-        this.id = Pessoa.count;
-    }
 
     //Métodos Setters
+    public void setId(long id){
+        this.id = id;
+    }
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public static void setCount() {
-        Pessoa.count = count - 1;
     }
 
     public void setNascimento(String nascimento) {

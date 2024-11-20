@@ -8,6 +8,14 @@ import view.GUI;
 import beans.Usuario;
 import beans.Pessoa;
 import util.Datas;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import connection.ConnectionFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -16,59 +24,8 @@ import util.Datas;
 public class UsuarioDAO {
 
     GUI gui = new GUI();
-    
+
     Usuario[] usuario = new Usuario[40];
-
-    public UsuarioDAO(PessoaDAO pessoaDAO) {
-
-        Usuario usuario01 = new Usuario();
-        usuario01.setLogin("silvio");
-        usuario01.setSenha("123");
-        usuario01.setTipo("Noivo");
-        usuario01.setDataCriacao(Datas.pegaDataAgora());
-        usuario01.setDataModificacao(Datas.pegaDataAgora());
-        this.adicionaUsuario(usuario01, pessoaDAO.pegaPessoa(usuario01.getLogin()));
-
-        Usuario usuario02 = new Usuario();
-        usuario02.setLogin("bruna");
-        usuario02.setSenha("789");
-        usuario02.setTipo("Noiva");
-        usuario02.setDataCriacao(Datas.pegaDataAgora());
-        usuario02.setDataModificacao(Datas.pegaDataAgora());
-        this.adicionaUsuario(usuario02, pessoaDAO.pegaPessoa(usuario02.getLogin()));
-    }
-
-    public boolean adicionaUsuario(Usuario novoUsuario, Pessoa pessoa) {
-
-        if (pessoa == null) {
-            Usuario.setCount();
-            return false;
-        } else {
-            for (int i = 0; i < 40; i++) {
-
-                if (usuario[i] != null) {
-
-                    if (usuario[i].getLogin().equals(novoUsuario.getLogin())) {
-                        gui.exibirMensagemUsuarioExistente();
-                        Usuario.setCount();
-                        return false;
-
-                    } else if (validaTipo(this.usuario[i].getTipo(), novoUsuario.getTipo()) == false) {
-                        Usuario.setCount();
-                        return false;
-                    }
-                }else{
-                    novoUsuario.setPessoa(pessoa);
-                    usuario[i] = novoUsuario;
-                    return true;
-
-                }
-            }
-        }
-
-        gui.exibirMensagemListaUsuarioLotada();
-        return false;
-    }
 
     public boolean validaTipo(String tipo, String novoTipo) {
 
@@ -149,28 +106,72 @@ public class UsuarioDAO {
         return true;
     }
 
-    public boolean buscaUsuario(String nomeLogin, String senha) {
+    //Banco de dados
+    public boolean adicionaUsuario(Usuario novoUsuario, Pessoa pessoa) {
+        String sql = "insert into usuario (login,senha,tipo,dataCriacao,dataModificacao, idPessoa) values (?,?,?,?,?,?)";
 
-        for (int i = 0; i < 40; i++) {
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
-            if (this.usuario[i] != null) {
-                if (this.usuario[i].getLogin().equals(nomeLogin) && this.usuario[i].getSenha().equals(senha)) {
-                    return true;
+            if (pessoa != null) {
+                stmt.setString(1, novoUsuario.getLogin());
+                stmt.setString(2, novoUsuario.getSenha());
+                stmt.setString(3, novoUsuario.getTipo());
+                stmt.setTimestamp(4, java.sql.Timestamp.valueOf(novoUsuario.getDataCriacao()));
+                stmt.setTimestamp(5, java.sql.Timestamp.valueOf(novoUsuario.getDataModificacao()));
+                stmt.setLong(6, pessoa.getId());
+
+                return stmt.executeUpdate() > 0;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Usuario buscaNoivos(String tipo) {
+        String sql = "select * from usuario where tipo = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, tipo);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Usuario buscaUsuario = new Usuario();
+
+                    buscaUsuario.setId(resultado.getLong("id"));
+                    buscaUsuario.setLogin(resultado.getString("login"));
+                    buscaUsuario.setSenha(resultado.getString("senha"));
+                    buscaUsuario.setTipo(resultado.getString("tipo"));
+                    buscaUsuario.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    buscaUsuario.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return buscaUsuario;
+                } else {
+                    return null;
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
     }
-    
-    public Usuario pegaNoivos(String tipo) {
 
-        for (int i = 0; i < 40; i++) {
+    public boolean confereUsuario(String nomeUsuario, String senha) {
 
-            if (this.usuario[i] != null && this.usuario[i].getTipo().equals(tipo) || this.usuario[i].getTipo().equals(tipo)) {
-                return usuario[i];
+        String sql = "select * from usuario where login = ? and senha = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, nomeUsuario);
+            stmt.setString(2, senha);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                return resultado.next();
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
-   
 }

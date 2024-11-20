@@ -19,6 +19,8 @@ import beans.Pagamento;
 import beans.Fornecedor;
 import javax.swing.JOptionPane;
 import util.Datas;
+import java.sql.Connection;
+import connection.ConnectionFactory;
 
 /**
  *
@@ -34,19 +36,17 @@ public class GestaoCasamento {
     PessoaDAO pessoaDAO = new PessoaDAO();
     FornecedorDAO fornecedorDAO = new FornecedorDAO();
     PresenteDAO presenteDAO = new PresenteDAO();
-    UsuarioDAO usuarioDAO = new UsuarioDAO(pessoaDAO);
+    UsuarioDAO usuarioDAO = new UsuarioDAO();
     MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO(usuarioDAO);
     PagamentoDAO pagamentoDAO = new PagamentoDAO(fornecedorDAO);
 
     GUI gui = new GUI();
-    
-
 
     public GestaoCasamento() {
         //Criação dos OBJETOS
-        noivo =usuarioDAO.pegaNoivos("Noivo");
-        noiva =usuarioDAO.pegaNoivos("Noiva");
-        
+        noivo = usuarioDAO.buscaNoivos("Noivo");
+        noiva = usuarioDAO.buscaNoivos("Noiva");
+
         //Chamada de método
         executaOpcaoMenuPrincipalNaoLogado();
     }
@@ -54,7 +54,7 @@ public class GestaoCasamento {
     //Métodos de execução das opcões dos menus 
     private void executaOpcaoMenuPrincipalNaoLogado() {
         int pegaOpcao = 0;
-        
+
         while (pegaOpcao != 3) {
             pegaOpcao = gui.menuPrincipalNaoLogado(noivo.getLogin(), noiva.getLogin());
 
@@ -72,7 +72,7 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }
+    } //FINALIZADO
 
     private void executaOpcaoMenuLogin() {
         int pegaOpcao = 0;
@@ -87,7 +87,7 @@ public class GestaoCasamento {
 
                     String nomeUsuario = gui.recebeNomeUsuario();
 
-                    confirmacao = usuarioDAO.buscaUsuario(nomeUsuario, gui.recebeSenhaUsuario());
+                    confirmacao = usuarioDAO.confereUsuario(nomeUsuario, gui.recebeSenhaUsuario());
 
                     if (confirmacao) {
                         usuarioLogado = usuarioDAO.consultaUsuario(nomeUsuario);
@@ -103,7 +103,7 @@ public class GestaoCasamento {
                 case 2:
 
                     Usuario usuario = gui.criaUsuario();
-                    Pessoa pessoa = pessoaDAO.pegaPessoa(usuario.getLogin());
+                    Pessoa pessoa = pessoaDAO.BuscaPessoaNome(usuario.getLogin());
 
                     if (usuarioDAO.adicionaUsuario(usuario, pessoa)) {
                         gui.exibirMensagemUsuarioAdicionado();
@@ -117,7 +117,7 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }
+    } //FINALIZADO
 
     private void executaOpcaoMenuPrincipalLogado() {
         int pegaOpcao = 0;
@@ -158,7 +158,7 @@ public class GestaoCasamento {
                     break;
             }
         }
-    }
+    }//FINALIZADO
 
     private void executaOpcaoMenuUsuario() {
         int pegaOpcao = 0;
@@ -172,7 +172,7 @@ public class GestaoCasamento {
                     boolean confirmacao;
 
                     Usuario usuario = gui.criaUsuario();
-                    Pessoa pessoa = pessoaDAO.pegaPessoa(usuario.getLogin());
+                    Pessoa pessoa = pessoaDAO.BuscaPessoaNome(usuario.getLogin());
 
                     confirmacao = usuarioDAO.adicionaUsuario(usuario, pessoa);
 
@@ -236,7 +236,7 @@ public class GestaoCasamento {
             }
         }
 
-    }
+    }// FAZENDO A CONEXÃO COM O BANCO
 
     private void executaOpcaoMenuPessoa() {
 
@@ -248,9 +248,8 @@ public class GestaoCasamento {
             switch (pegaOpcao) {
                 // 1 - Adicionar pessoas
                 case 1:
-                    boolean confirmacao;
 
-                    confirmacao = pessoaDAO.adicionaPessoa(gui.criaPessoa());
+                    boolean confirmacao = pessoaDAO.adicionaPessoa(gui.criaPessoa());
 
                     if (confirmacao == true) {
                         gui.exibirMensagemPessoaAdicionada();
@@ -260,12 +259,12 @@ public class GestaoCasamento {
                     break;
                 //2 - Consulta Pessoa  
                 case 2:
-                    Pessoa pessoaConsulta;
+                    String pessoaConsulta;
 
                     pessoaConsulta = pessoaDAO.consultaPessoa(gui.recebeNomePessoa());
 
                     if (pessoaConsulta != null) {
-                        gui.exibirPessoas(pessoaConsulta.toString());
+                        gui.exibirPessoas(pessoaConsulta);
                     } else {
                         gui.exibirMensagemPessoaNaoEncontrada();
                     }
@@ -310,7 +309,7 @@ public class GestaoCasamento {
                     break;
             }
         }
-    }
+    } //FINALIZADO
 
     private void executaOpcaoMenuPresente() {
 
@@ -351,7 +350,7 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }
+    }//PENDENTE
 
     private void executaOpcaoMenuMuralRecados() {
 
@@ -448,7 +447,7 @@ public class GestaoCasamento {
             }
 
         }
-    }
+    }//PENDENTE
 
     private void executaOpcaoMenuFornecedor() {
         int pegaopcao = 0;
@@ -520,7 +519,7 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }
+    }//PENDENTE
 
     private void executaOpcaoMenuPagamento() {
         int pegaopcao = 0;
@@ -606,11 +605,7 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }
-    
-    private void executaOpcaoMenuConvite(){
-    
-    }
+    }//PENDENTE
 
     //Main
     public static void main(String[] args) {

@@ -21,22 +21,14 @@ public class Usuario {
     private Pessoa pessoa;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
-    
-    private static long count;
-    
-    //Contrutor
-   public Usuario(){
-       Usuario.count += 1;
-       this.id = Usuario.count;
-   }
    
    //Métodos Setters
     public void setLogin(String login) {
         this.login = login;
     }
     
-     public static void setCount(){
-        Usuario.count = count - 1;
+     public void setId(long id){
+        this.id = id;
     }
 
     public void setSenha(String senha) {

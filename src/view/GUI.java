@@ -389,7 +389,7 @@ public class GUI {
     }
 
     public void exibirMensagemUsuarioNaoAdicionado() {
-        JOptionPane.showMessageDialog(null, "Usuario não cadastrado");
+        JOptionPane.showMessageDialog(null, "Nao foi possivel cadastrar usuario");
     }
 
     public void exibirUsuarios(String usuarios) {

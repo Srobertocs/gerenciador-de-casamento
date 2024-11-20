@@ -7,131 +7,26 @@ package DAO;
 import view.GUI;
 import beans.Pessoa;
 import util.Datas;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import connection.ConnectionFactory;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author SOUSA
  */
+
 public class PessoaDAO {
 
     GUI gui = new GUI();
 
     Pessoa[] pessoa = new Pessoa[40];
-
-    public PessoaDAO() {
-
-        //Pessoas armazenadas automaticamente 
-        Pessoa pessoa01 = new Pessoa();
-        pessoa01.setNome("silvio");
-        pessoa01.setNascimento("31/10/2003");
-        pessoa01.setTelefone("(34) 999634-3432");
-        pessoa01.setDataCriacao(Datas.pegaDataAgora());
-        pessoa01.setDataModificacao(Datas.pegaDataAgora());
-        this.adicionaPessoa(pessoa01);
-
-        Pessoa pessoa02 = new Pessoa();
-        pessoa02.setNome("bruna");
-        pessoa02.setNascimento("30/10/2003");
-        pessoa02.setTelefone("(34) 98756-6598");
-        pessoa02.setDataCriacao(Datas.pegaDataAgora());
-        pessoa02.setDataModificacao(Datas.pegaDataAgora());
-        this.adicionaPessoa(pessoa02);
-        
-        Pessoa pessoa03 = new Pessoa();
-        pessoa03.setNome("vitor");
-        pessoa03.setNascimento("04/09/2000");
-        pessoa03.setTelefone("(34) 99965-0087");
-        pessoa03.setDataCriacao(Datas.pegaDataAgora());
-        pessoa03.setDataModificacao(Datas.pegaDataAgora());
-        this.adicionaPessoa(pessoa03);
-        
-        Pessoa pessoa04 = new Pessoa();
-        pessoa04.setNome("ana julia");
-        pessoa04.setNascimento("05/11/1999");
-        pessoa04.setTelefone("(34) 99789-1236");
-        pessoa04.setDataCriacao(Datas.pegaDataAgora());
-        pessoa04.setDataModificacao(Datas.pegaDataAgora());
-        this.adicionaPessoa(pessoa04);
-    }
-
-    public boolean adicionaPessoa(Pessoa novaPessoa) {
-        
-        if(novaPessoa.getNome().equals("") || novaPessoa.getNascimento().equals("") || novaPessoa.getTelefone().equals("")){
-            Pessoa.setCount();
-            return false;
-        }
-        for (int i = 0; i < 40; i++) {
-
-            if (this.pessoa[i] != null) {
-                if (this.pessoa[i].getNome().equals(novaPessoa.getNome())) {
-                    gui.exibirMensagemPessoaJaExistente();
-                    Pessoa.setCount();
-                    return false;
-                }
-            }else{
-                this.pessoa[i] = novaPessoa;
-                return true;
-            }
-        }
-        gui.exibirMensagemListaPessoaLotada();
-        return false;
-    }
-
-    public String mostraPessoa() {
-        
-        boolean vazio = true;
-
-        String texto = "PESSOAS CADASTRADAS";
-
-        for (int i = 0; i < 40; i++) {
-
-            if (this.pessoa[i] != null) {
-                texto += "\n" + pessoa[i].toString();
-                vazio = false;
-            }
-        }
-        if (vazio == true) {
-            return null;
-        } else {
-            return texto;
-        }
-    }
-
-    public boolean excluiPessoa(String nomePessoa) {
-
-        for (int i = 0; i < 40; i++) {
-
-            if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
-                this.pessoa[i] = null;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean alteraPessoa(String nomePessoa, String novoNome) {
-
-        for (int i = 0; i < 40; i++) {
-
-            if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
-                this.pessoa[i].setNome(novoNome);
-                this.pessoa[i].setDataModificacao(Datas.pegaDataAgora());
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Pessoa consultaPessoa(String nomePessoa) {
-
-        for (int i = 0; i < 40; i++) {
-            if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
-                return this.pessoa[i];
-            }
-        }
-        return null;
-    }
 
     public Pessoa pegaPessoa(String nomePessoa) {
 
@@ -148,5 +43,182 @@ public class PessoaDAO {
             gui.exibirMensagemPessoaNaoEncontrada();
         }
         return null;
+    }
+
+    public boolean adicionaPessoa(Pessoa novaPessoa) {
+        String sql = "insert into pessoa (nome,nascimento,telefone,dataCriacao,dataModificacao) values (?,?,?,?,?)";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, novaPessoa.getNome());
+            stmt.setString(2, novaPessoa.getNascimento());
+            stmt.setString(3, novaPessoa.getTelefone());
+            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(novaPessoa.getDataCriacao()));
+            stmt.setTimestamp(5, java.sql.Timestamp.valueOf(novaPessoa.getDataModificao()));
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Pessoa> listaPessoa() {
+        String sql = "select * from pessoa";
+
+        List<Pessoa> listaPessoa = new ArrayList<>();
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql); ResultSet resultado = stmt.executeQuery()) {
+
+            while (resultado.next()) {
+                Pessoa pessoa = new Pessoa();
+
+                pessoa.setId(resultado.getLong("id"));
+                pessoa.setNome(resultado.getString("nome"));
+                pessoa.setNascimento(resultado.getString("nascimento"));
+                pessoa.setTelefone(resultado.getString("telefone"));
+                pessoa.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                pessoa.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                listaPessoa.add(pessoa);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return listaPessoa;
+    }
+
+    public boolean alteraPessoa(String nomePessoa, String novoNome) {
+        String sql = "Update pessoa set nome = ?, dataModificacao = ? where nome = ? ";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, novoNome);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(Datas.pegaDataAgora()));
+            stmt.setString(3, nomePessoa);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String consultaPessoa(String nomePessoa) {
+        String sql = "select * from pessoa where nome = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, nomePessoa);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Pessoa pessoaConsulta = new Pessoa();
+
+                    pessoaConsulta.setId(resultado.getLong("id"));
+                    pessoaConsulta.setNome(resultado.getString("nome"));
+                    pessoaConsulta.setNascimento(resultado.getString("nascimento"));
+                    pessoaConsulta.setTelefone(resultado.getString("telefone"));
+                    pessoaConsulta.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    pessoaConsulta.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return pessoaConsulta.toString();
+                }else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean excluiPessoa(String nomePessoa) {
+        String sql = "delete from pessoa where nome = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, nomePessoa);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String mostraPessoa() {
+        boolean vazio = true;
+
+        List<Pessoa> listaPessoa = this.listaPessoa();
+
+        String texto = "PESSOAS CADASTRADAS";
+
+        for (Pessoa pessoa : listaPessoa) {
+            if (pessoa != null) {
+                texto += "\n" + pessoa.toString();
+                vazio = false;
+            }
+        }
+        if (vazio == true) {
+            return null;
+        } else {
+            return texto;
+        }
+    }
+    
+    public Pessoa BuscaPessoaID(long id){
+        String sql = "select * from pessoa where id = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setLong(1, id);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Pessoa buscaPessoa = new Pessoa();
+
+                    buscaPessoa.setId(resultado.getLong("id"));
+                    buscaPessoa.setNome(resultado.getString("nome"));
+                    buscaPessoa.setNascimento(resultado.getString("nascimento"));
+                    buscaPessoa.setTelefone(resultado.getString("telefone"));
+                    buscaPessoa.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    buscaPessoa.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return buscaPessoa;
+                }else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }     
+    }
+    
+    public Pessoa BuscaPessoaNome(String nomePessoa){
+         String sql = "select * from pessoa where nome = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, nomePessoa);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Pessoa buscaPessoa = new Pessoa();
+
+                    buscaPessoa.setId(resultado.getLong("id"));
+                    buscaPessoa.setNome(resultado.getString("nome"));
+                    buscaPessoa.setNascimento(resultado.getString("nascimento"));
+                    buscaPessoa.setTelefone(resultado.getString("telefone"));
+                    buscaPessoa.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    buscaPessoa.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return buscaPessoa;
+                }else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }     
     }
 }
