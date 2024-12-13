@@ -25,15 +25,11 @@ public class Pagamento {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
 
-    private static long count;
-
-    //Construtor 
-    public Pagamento() {
-        Pagamento.count += 1;
-        this.id = Pagamento.count;
+    //Métodos Setters
+    public void setId(long id) {
+        this.id = id;
     }
 
-    //Métodos Setters
     public void setDataPagamento(LocalDate dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
@@ -96,21 +92,29 @@ public class Pagamento {
     }
 
     //Método ToString 
-    @Override
-    public String toString() {
+    public String toString(int aux) {
 
         DecimalFormat valorFormatado = new DecimalFormat("#.00");
+        if (aux == 1) {
+            String texto = "id: " + this.id
+                    + "\nFornecedor: " + this.fornecedor.getNome()
+                    + "\nParcela: " + this.parcelas
+                    + "\nValor: R$" + valorFormatado.format(this.valor)
+                    + "\nData de vencimento: " + this.dataPagamento.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
+                    + "\nStatus do pagamento: " + this.descricao
+                    + "\nData de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                    + " | Data de modificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 
-        String texto = "id: " + this.id
-                + "\nFornecedor: " + this.fornecedor.getNome()
-                + "\nParcela: " + this.parcelas
-                + "\nValor: R$" + valorFormatado.format(this.valor)
-                + "\nData de vencimento: " + this.dataPagamento.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
-                + "\nStatus do pagamento: " + this.descricao
-                + "\nData de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-                + " | Data de modificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+            return texto;
+        }else{
+            String texto ="Fornecedor: " + this.fornecedor.getNome()
+                    + "\nParcela: " + this.parcelas
+                    + "\nValor: R$" + valorFormatado.format(this.valor)
+                    + "\nData de vencimento: " + this.dataPagamento.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
+                    + "\nStatus do pagamento: " + this.descricao;
 
-        return texto;
+            return texto;   
+        }   
     }
 
     @Override

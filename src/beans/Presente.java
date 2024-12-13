@@ -22,15 +22,11 @@ public class Presente {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificao;
 
-    private static long count;
-
-    //Construtor 
-    public Presente() {
-        Presente.count += 1;
-        this.id = Presente.count;
+    //Métodos Setters
+    public void setId(long id) {
+        this.id = id;
     }
 
-    //Métodos Setters
     public void setNome(String nome) {
         this.nome = nome;
     }

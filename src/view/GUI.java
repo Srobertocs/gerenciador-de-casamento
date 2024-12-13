@@ -4,11 +4,16 @@
  */
 package view;
 
+import DAO.ConviteFamiliarDAO;
+import DAO.PessoaDAO;
+import beans.ConviteFamiliar;
+import beans.ConviteIndividual;
 import beans.Usuario;
 import beans.Recados;
 import beans.Pessoa;
 import beans.Pagamento;
 import beans.Fornecedor;
+import beans.Presente;
 import util.Datas;
 import javax.swing.JOptionPane;
 
@@ -41,8 +46,19 @@ public class GUI {
     }
 
     //Objeto Presente
-    public String recebeIdPresente() {
-        return JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar");
+    public int recebeIdPresente() {
+        return Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo referente ao presente que deseja comprar"));
+    }
+
+    public Presente criaPresente() {
+        Presente presente = new Presente();
+
+        presente.setNome(JOptionPane.showInputDialog("Digite o nome do presente: "));
+        presente.setTipo(JOptionPane.showInputDialog("Digite o tipo do presente: "));
+        presente.setDataCriacao(Datas.pegaDataAgora());
+        presente.setDataModificao(Datas.pegaDataAgora());
+
+        return presente;
     }
 
     //Objeto usuário
@@ -136,8 +152,8 @@ public class GUI {
     public String recebeDataPrimeiroPagamento() {
         return JOptionPane.showInputDialog("Digite a data do primeiro vencimento: ");
     }
-    
-     public int recebeDataPagamentoAuto() {
+
+    public int recebeDataPagamentoAuto() {
         return Integer.parseInt(JOptionPane.showInputDialog("Digite o intervalo de dias que deseja efetuar o pagamento automatico: "));
     }
 
@@ -145,12 +161,44 @@ public class GUI {
         return JOptionPane.showInputDialog("Digite a data que deseja consultar se existe pagamentos: ");
     }
 
+    //Objeto Convite Familiar
+    public ConviteFamiliar criaConviteFamilia(Usuario noivo, Usuario noiva) {
+        ConviteFamiliar convite = new ConviteFamiliar();
+
+        convite.setNomeFamilia(JOptionPane.showInputDialog("Digite o nome da familia: "));
+        convite.setAcesso(JOptionPane.showInputDialog(" O Acesso deverá ter o nome do noivo, da noiva, o dia, o mes, o ano e quatro letras"
+                + "\n Por exemplo: " + noivo.getLogin() + noiva.getLogin() + "11122024abcd"
+                + "\n Crie seu acesso: "));
+        convite.setDataCriacao(Datas.pegaDataAgora());
+        convite.setDataModificacao(Datas.pegaDataAgora());
+
+        return convite;
+    }
+
+    public ConviteIndividual criaConviteIndividual(PessoaDAO pessoaDAO, ConviteFamiliarDAO conviteFamiliarDAO) {
+        ConviteIndividual convite = new ConviteIndividual();
+
+        convite.setFamilia(conviteFamiliarDAO.buscaConviteFamiliarId(Integer.parseInt(JOptionPane.showInputDialog(conviteFamiliarDAO.mostraConviteFamiliar() + "\n\nDigite o id da Familia"))));
+        while(convite.getPessoa() == null){
+            convite.setPessoa(pessoaDAO.buscaPessoaNome(JOptionPane.showInputDialog(pessoaDAO.mostraPessoa() + "\n\nDigite o nome da pessoa")));
+            if(convite.getPessoa() == null){
+                JOptionPane.showMessageDialog(null, "OHH MANEZAO. Voce precisa digitar o nome da pessoa!");
+            }
+        }
+        convite.setParentesco(JOptionPane.showInputDialog("Digite o parentesco da pessoa"));
+        convite.setConfirmacao("Nao confirmado");
+        convite.setDataCriacao(Datas.pegaDataAgora());
+        convite.setDataModificacao(Datas.pegaDataAgora());
+
+        return convite;
+    }
+
     //Métodos dos menus de opção
     public int menuPrincipalNaoLogado(String noivo, String noiva) {
         int opcao;
 
         String menu = "HOME"
-                + "\nCerimonial de " + noivo + " & " + noiva 
+                + "\nCerimonial de " + noivo + " & " + noiva
                 + "\nSeja Bem Vindo"
                 + "\n\nStatus: Deslogado"
                 + "\n\nselecione:"
@@ -162,12 +210,13 @@ public class GUI {
         return opcao;
     }
 
-    public int menuPrincipalLogado(String noivo, String noiva) {
+    public int menuPrincipalLogado(String noivo, String noiva, String usuarioLogado) {
         int opcao;
 
         String menu = "HOME"
                 + "\nCerimonial de " + noivo + " & " + noiva
                 + "\n\nStatus: Logado"
+                + "\nUsuario Logado: " + usuarioLogado
                 + "\n\nselecione:"
                 + "\n1- Lista de presentes"
                 + "\n2- Menu de pessoas "
@@ -175,7 +224,81 @@ public class GUI {
                 + "\n4- Mural de recados"
                 + "\n5- Menu de fornecedores"
                 + "\n6- Pagamentos "
-                + "\n7- Deslogar";
+                + "\n7- Convites"
+                + "\n8- Relatorios"
+                + "\n9- Deslogar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+    
+    public int menuPrincipalLogadoNormal(String noivo, String noiva, String usuarioLogado) {
+        int opcao;
+
+        String menu = "HOME"
+                + "\nCerimonial de " + noivo + " & " + noiva
+                + "\n\nStatus: Logado"
+                + "\nUsuario Logado: " + usuarioLogado
+                + "\n\nselecione:"
+                + "\n1- Lista de presentes"
+                + "\n2- Mural de recados"
+                + "\n3- Convites"
+                + "\n4- Deslogar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+
+    public int menuConvite() {
+        int opcao;
+
+        String menu = "MENU CONVITE"
+                + "\n\nselecione:"
+                + "\n1- Convite Familiar"
+                + "\n2- Convite Individual"
+                + "\n3- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+    
+    public int menuRelatorio() {
+        int opcao;
+
+        String menu = "RELATORIOS"
+                + "\n\nselecione:"
+                + "\n1- Relatorio de Recados enviados"
+                + "\n2- Relatorio de Convidados"
+                + "\n3- Relatorio dos Pagamentos Pagos"
+                + "\n4- Relatorio de Convidados Confirmados"
+                + "\n5- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+
+    public int menuConviteFamilia() {
+        int opcao;
+
+        String menu = "MENU CONVITE FAMILIA"
+                + "\n\nselecione:"
+                + "\n1- Cadastrar Familiar"
+                + "\n2- Mostrar Familias cadastradas"
+                + "\n3- Confirmar presença da familia"
+                + "\n4- Voltar";
+
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
+        return opcao;
+    }
+
+    public int menuConviteIndividual() {
+        int opcao;
+
+        String menu = "MENU CONVITE INDIVIDUAL"
+                + "\n\nselecione:"
+                + "\n1- Cadastrar Convite"
+                + "\n2- Mostrar Convites Cadastrados"
+                + "\n3- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
@@ -222,8 +345,8 @@ public class GUI {
                 + "\n2- Visualizar todos os pagamentos "
                 + "\n3- Visualizar pagamentos do dia"
                 + "\n4- Consultar pagamento"
-                + "\n5- Pagar Contas"
-                + "\n6- Pagar Automaticamente "
+                + "\n5- Pagar Contas do dia"
+                + "\n6- Pagamento Automatico"
                 + "\n7- Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
@@ -253,7 +376,8 @@ public class GUI {
                 + "\nselecione:"
                 + "\n1- Visualizar lista de presentes"
                 + "\n2- Reservar presente"
-                + "\n3- Voltar";
+                + "\n3- Adicionar presente"
+                + "\n4 - Voltar";
 
         opcao = Integer.parseInt(JOptionPane.showInputDialog(menu));
         return opcao;
@@ -347,8 +471,22 @@ public class GUI {
         JOptionPane.showMessageDialog(null, presentes);
     }
 
+    public void exibirMensagemListaPresenteVazia() {
+        JOptionPane.showMessageDialog(null, "A lista de presente esta vazia");
+    }
+
     public void exibirMensagemPresenteJaEscolhido() {
         JOptionPane.showMessageDialog(null, "Presente já reservado");
+    }
+
+    public void exibirMensagemPresenteAdicionado() {
+        JOptionPane.showMessageDialog(null, "presente adicionado");
+    }
+
+    public void exibirMensagemPresenteNaoAdicionado() {
+        JOptionPane.showMessageDialog(null, "presente nao adicionado"
+                + "\n Possiveis motivos: "
+                + "\n1 - So os noivos tem autorizacao para adicionar um novo presente");
     }
 
     public void exibirMensagemIdPresenteDigitadoIncorreto() {
@@ -429,11 +567,9 @@ public class GUI {
     }
 
     public void exibirMensagemRecadoNaoEditado() {
-        JOptionPane.showMessageDialog(null, "Recado nao editado");
-    }
-
-    public void exibirMensagemCodigoNaoEncontrado() {
-        JOptionPane.showMessageDialog(null, "Nenhum recado com esse codigo foi encontrado");
+        JOptionPane.showMessageDialog(null, "Recado nao editado\npossiveis motivos:"
+                + "\n1 - Codigo digitado incorretamente;"
+                + "\n2 - Nao eh possivel editar um recado que voce nao escreveu.");
     }
 
     public void exibirMensagemRecadoEditado() {
@@ -445,12 +581,9 @@ public class GUI {
     }
 
     public void exibirMensagemRecadoNaoExcluido() {
-        JOptionPane.showMessageDialog(null, "Recado nao excluido");
-    }
-
-    public void exibirMensagemUsuarioRecadoInvalido() {
-        JOptionPane.showMessageDialog(null, "O recado que esta tentando acessar nao foi escrito por voce.\n"
-                + "Selecione para executar a opcao que selecionou algum comentario que voce mesmo escreveu");
+        JOptionPane.showMessageDialog(null, "Recado nao excluido\npossiveis motivos:"
+                + "\n1 - Codigo digitado incorretamente;"
+                + "\n2 - Nao eh possivel excluir um recado que voce nao escreveu.");
     }
 
     //Objeto Fornecedor
@@ -490,7 +623,7 @@ public class GUI {
     public void exibirMensagemPagamentoLancado() {
         JOptionPane.showMessageDialog(null, "Pagamentos lancados com sucesso");
     }
-    
+
     public void exibirMensagemPagamentoPago() {
         JOptionPane.showMessageDialog(null, "Pagamentos pago com sucesso");
     }
@@ -501,9 +634,9 @@ public class GUI {
                 + "\n1 - Codigo do fornecedor nao existe"
                 + "\n2 - Pagamentos do fornecedor ja lancados");
     }
-    
+
     public void exibirMensagemPagamentoNaoPago() {
-        JOptionPane.showMessageDialog(null, "Pagamento nao paga"
+        JOptionPane.showMessageDialog(null, "Pagamento nao pago"
                 + "\nprincipais motivos:"
                 + "\n1 - O pagamento ja esta pago"
                 + "\n2 - Codigo digitado nao encotrado"
@@ -518,8 +651,68 @@ public class GUI {
     public void exibirPagamento(String pagamento) {
         System.out.println(pagamento);
     }
-    
+
     public void exibirPagamentoConsultados(String pagamento) {
         JOptionPane.showMessageDialog(null, pagamento);
     }
+
+    //Objeto ConviteFamiliar
+    public void exibirMensagemFamiliaNaoCadastrada() {
+        JOptionPane.showMessageDialog(null, "Familia nao cadastrada"
+                + "\nprincipais motivos:"
+                + "\n1 - Familia ja cadastrada"
+                + "\n2 - Alguma informacao incorreta digitada");
+    }
+
+    public void exibirMensagemFamiliaCadastrada() {
+        JOptionPane.showMessageDialog(null, "Familia cadastrada com sucesso");
+    }
+
+    public void exibirMensagemFamiliaConfirmada() {
+        JOptionPane.showMessageDialog(null, "Familia confirmada para o casamento");
+    }
+    
+    public void exibirMensagemFamiliaNaoConfirmada() {
+        JOptionPane.showMessageDialog(null, "Familia não confirmada "
+                + "\nPossiveis motivos: "
+                + "\n1 - Usuario nao eh o titular da familia"
+                + "\n2 - Familia ja aceitou o convite");
+    }
+    
+    public void exibirMensagemFamiliaNaoEncontrada() {
+        JOptionPane.showMessageDialog(null, "Familia não foi encontrada. "
+                + "\nPossiveis motivos: "
+                + "\n1 - Id digitado incorreto"
+                + "\n2 - Familia nao cadastrada"
+                + "\n3 - Nenhuma familia encontrada");
+    }
+
+    public void exibirFamilia(String conviteFamiliar) {
+        JOptionPane.showMessageDialog(null, conviteFamiliar);
+    }
+
+    //Objeto ConviteIndividual
+    public void exibirMensagemConviteIndividualCadastrado() {
+        JOptionPane.showMessageDialog(null, "Convite cadastrado com sucesso");
+    }
+
+    public void exibirMensagemConviteIndividualNaoCadastrado() {
+        JOptionPane.showMessageDialog(null, "Convite nao cadastrado"
+                + "\nprincipais motivos:"
+                + "\n1 - Convite ja cadastrado"
+                + "\n2 - Alguma informacao incorreta digitada");
+    }
+
+    public void exibirMensagemConviteIndividualNaoEncontrado() {
+        JOptionPane.showMessageDialog(null, "Convite não foi encontrado"
+                + "\nPossiveis motivos: "
+                + "\n1 - Id digitado incorreto"
+                + "\n2 - Convite nao cadastrada"
+                + "\n3 - Nenhuma Convite encontrado");
+    }
+
+    public void exibirConviteIndividual(String conviteIndividual) {
+        JOptionPane.showMessageDialog(null, conviteIndividual);
+    }
+
 }

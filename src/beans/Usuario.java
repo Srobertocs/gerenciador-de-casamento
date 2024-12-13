@@ -80,9 +80,10 @@ public class Usuario {
         return dataModificacao;
     }
 
-    @Override
-    public String toString() {
-        String texto = "\nID: " + this.id
+    public String toString(int aux) {
+        
+        if(aux == 1){
+            String texto = "\nID: " + this.id
                 + " | Login: " + this.login
                 + " | Senha: " + this.senha
                 + " | ID Pessoa vinculada : " + this.pessoa.getId()
@@ -91,6 +92,12 @@ public class Usuario {
                 + "\nData de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
                 + "  Data de modificao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         return texto;
+        }else{
+            String texto = "\nNome: " + this.login
+                + " | Telefone : " + this.pessoa.getTelefone()
+                + " | " + this.tipo;
+        return texto;
+        }
     }
 
     @Override

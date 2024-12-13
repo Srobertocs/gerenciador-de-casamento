@@ -4,7 +4,6 @@
  */
 package DAO;
 
-import view.GUI;
 import beans.Usuario;
 import beans.Pessoa;
 import util.Datas;
@@ -23,110 +22,170 @@ import java.util.List;
  */
 public class UsuarioDAO {
 
-    GUI gui = new GUI();
-
-    Usuario[] usuario = new Usuario[40];
-
-    public boolean validaTipo(String tipo, String novoTipo) {
-
-        if (tipo.equals("Noivo") & tipo.equals(novoTipo)) {
-            gui.exibirMensagemNoivoJaCadastrado();
-            return false;
-        } else if (tipo.equals("Noiva") & tipo.equals(novoTipo)) {
-            gui.exibirMensagemNoivaJaCadastrada();
-            return false;
-        }
-        return true;
-    }
-
-    public String mostraUsuario() {
-
-        boolean vazio = true;
-
-        String texto = "USUARIOS CADASTRADOS";
-
-        for (int i = 0; i < 40; i++) {
-
-            if (this.usuario[i] != null) {
-                texto += "\n" + usuario[i].toString();
-                vazio = false;
-            }
-        }
-        if (vazio == true) {
-            return null;
-
-        } else {
-            return texto;
-        }
-    }
-
-    public Usuario consultaUsuario(String nomeLogin) {
-
-        for (int i = 0; i < 40; i++) {
-
-            if (this.usuario[i] != null && this.usuario[i].getLogin().equals(nomeLogin)) {
-                return usuario[i];
-            }
-        }
-        return null;
-    }
-
-    public boolean alteraSenhaUsuario(Usuario usuario, String novaSenha) {
-
-        if (usuario == null) {
-            return false;
-        } else {
-
-            for (int i = 0; i < 40; i++) {
-
-                if (this.usuario[i] != null) {
-                    if (this.usuario[i].getSenha().equals(usuario.getSenha()) && this.usuario[i].getLogin().equals(usuario.getLogin())) {
-                        this.usuario[i].setSenha(novaSenha);
-                        this.usuario[i].setDataModificacao(Datas.pegaDataAgora());
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean excluirUsuario(Usuario usuario) {
-
-        if (usuario == null) {
-            return false;
-        }
-        for (int i = 0; i < 40; i++) {
-
-            if (this.usuario[i] == usuario) {
-                this.usuario[i] = null;
-                return true;
-            }
-        }
-        return true;
-    }
-
-    //Banco de dados
     public boolean adicionaUsuario(Usuario novoUsuario, Pessoa pessoa) {
         String sql = "insert into usuario (login,senha,tipo,dataCriacao,dataModificacao, idPessoa) values (?,?,?,?,?,?)";
 
         try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
-            if (pessoa != null) {
-                stmt.setString(1, novoUsuario.getLogin());
-                stmt.setString(2, novoUsuario.getSenha());
-                stmt.setString(3, novoUsuario.getTipo());
-                stmt.setTimestamp(4, java.sql.Timestamp.valueOf(novoUsuario.getDataCriacao()));
-                stmt.setTimestamp(5, java.sql.Timestamp.valueOf(novoUsuario.getDataModificacao()));
-                stmt.setLong(6, pessoa.getId());
+            if (this.confereTipoUsuario(novoUsuario.getTipo()) == false) {
+                if (pessoa != null) {
+                    stmt.setString(1, novoUsuario.getLogin());
+                    stmt.setString(2, novoUsuario.getSenha());
+                    stmt.setString(3, novoUsuario.getTipo());
+                    stmt.setTimestamp(4, java.sql.Timestamp.valueOf(novoUsuario.getDataCriacao()));
+                    stmt.setTimestamp(5, java.sql.Timestamp.valueOf(novoUsuario.getDataModificacao()));
+                    stmt.setLong(6, pessoa.getId());
 
-                return stmt.executeUpdate() > 0;
+                    return stmt.executeUpdate() > 0;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public boolean alteraSenhaUsuario(String loginUsuario, String novaSenha) {
+        String sql = "Update usuario set senha = ?, dataModificacao = ? where login = ? ";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, novaSenha);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(Datas.pegaDataAgora()));
+            stmt.setString(3, loginUsuario);
+
+            return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void alteraNomeUsuario(String loginUsuario, String novoLogin) {
+        String sql = "Update usuario set login = ?, dataModificacao = ? where login = ? ";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, novoLogin);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(Datas.pegaDataAgora()));
+            stmt.setString(3, loginUsuario);
+            
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public boolean excluirUsuario(String loginUsuario) {
+        String sql = "delete from usuario where login = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, loginUsuario);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Usuario> listaUsuario(PessoaDAO pessoaDAO) {
+        String sql = "select * from usuario";
+
+        List<Usuario> listaUsuario = new ArrayList<>();
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql); ResultSet resultado = stmt.executeQuery()) {
+
+            while (resultado.next()) {
+                Usuario usuario = new Usuario();
+
+                usuario.setId(resultado.getLong("id"));
+                usuario.setLogin(resultado.getString("login"));
+                usuario.setSenha(resultado.getString("senha"));
+                usuario.setTipo(resultado.getString("tipo"));
+                usuario.setPessoa(pessoaDAO.buscaPessoaId(resultado.getInt("idPessoa")));
+                usuario.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                usuario.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                listaUsuario.add(usuario);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return listaUsuario;
+    }
+
+    public String consultaUsuario(String nomeUsuario, PessoaDAO pessoaDAO) {
+        String sql = "select * from usuario where login = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, nomeUsuario);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Usuario usuarioConsulta = new Usuario();
+
+                    usuarioConsulta.setId(resultado.getLong("id"));
+                    usuarioConsulta.setLogin(resultado.getString("login"));
+                    usuarioConsulta.setSenha(resultado.getString("senha"));
+                    usuarioConsulta.setTipo(resultado.getString("tipo"));
+                    usuarioConsulta.setPessoa(pessoaDAO.buscaPessoaId(resultado.getInt("idPessoa")));
+                    usuarioConsulta.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    usuarioConsulta.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return usuarioConsulta.toString(1);
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String mostraUsuario(PessoaDAO pessoaDAO) {
+        boolean vazio = true;
+
+        List<Usuario> listaUsuario = this.listaUsuario(pessoaDAO);
+
+        String texto = "PESSOAS CADASTRADAS";
+
+        for (Usuario usuario : listaUsuario) {
+            if (usuario != null) {
+                texto += "\n" + usuario.toString(1);
+                vazio = false;
+            }
+        }
+        if (vazio == true) {
+            return null;
+        } else {
+            return texto;
+        }
+    }
+    
+    public String RelatorioUsuario(PessoaDAO pessoaDAO) {
+        boolean vazio = true;
+
+        List<Usuario> listaUsuario = this.listaUsuario(pessoaDAO);
+
+        String texto = "LISTA DE CONVIDADOS";
+
+        for (Usuario usuario : listaUsuario) {
+            if (usuario != null && usuario.getTipo().equals("Convidado")) {
+                texto += "\n" + usuario.toString(2);
+                vazio = false;
+            }
+        }
+        if (vazio == true) {
+            return null;
+        } else {
+            return texto;
         }
     }
 
@@ -135,6 +194,63 @@ public class UsuarioDAO {
 
         try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setString(1, tipo);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Usuario buscaUsuario = new Usuario();
+
+                    buscaUsuario.setId(resultado.getLong("id"));
+                    buscaUsuario.setLogin(resultado.getString("login"));
+                    buscaUsuario.setSenha(resultado.getString("senha"));
+                    buscaUsuario.setTipo(resultado.getString("tipo"));
+                    buscaUsuario.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    buscaUsuario.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return buscaUsuario;
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Usuario buscaUsuarioLogin(String loginUsuario, PessoaDAO pessoaDAO) {
+        String sql = "select * from usuario where login = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, loginUsuario);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Usuario buscaUsuario = new Usuario();
+
+                    buscaUsuario.setId(resultado.getLong("id"));
+                    buscaUsuario.setLogin(resultado.getString("login"));
+                    buscaUsuario.setSenha(resultado.getString("senha"));
+                    buscaUsuario.setTipo(resultado.getString("tipo"));
+                    buscaUsuario.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    buscaUsuario.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+                    buscaUsuario.setPessoa(pessoaDAO.buscaPessoaId(resultado.getLong("idPessoa")));
+
+                    return buscaUsuario;
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public Usuario buscaUsuarioId(long id) {
+        String sql = "select * from usuario where id = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setLong(1, id);
 
             try (ResultSet resultado = stmt.executeQuery()) {
 
@@ -167,11 +283,28 @@ public class UsuarioDAO {
             stmt.setString(2, senha);
 
             try (ResultSet resultado = stmt.executeQuery()) {
-
                 return resultado.next();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean confereTipoUsuario(String tipo) {
+        String sql = "select * from usuario where tipo = ?";
+
+        if (tipo.equals("Noivo") || tipo.equals("Noiva")) {
+            try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                stmt.setString(1, tipo);
+
+                try (ResultSet resultado = stmt.executeQuery()) {
+
+                    return resultado.next();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
     }
 }

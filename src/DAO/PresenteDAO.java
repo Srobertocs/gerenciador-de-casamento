@@ -7,6 +7,14 @@ package DAO;
 import view.GUI;
 import beans.Presente;
 import beans.Pessoa;
+import beans.Usuario;
+import connection.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import util.Datas;
 import javax.swing.JOptionPane;
 
@@ -15,104 +23,102 @@ import javax.swing.JOptionPane;
  * @author SOUSA
  */
 public class PresenteDAO {
-
-    GUI gui = new GUI();
-
-    Presente[] presente = new Presente[5];
-
-    public PresenteDAO() {
-        //Armazena os presentes automaticamente
-        Presente presente01 = new Presente();
-        presente01.setComprador(null);
-        presente01.setNome("JOGO DE PANELAS");
-        presente01.setTipo("Utensilio de cozinha");
-        presente01.setDataCriacao(Datas.pegaDataAgora());
-        presente01.setDataModificao(Datas.pegaDataAgora());
-        this.adicionaPresentes(presente01);
-
-        Presente presente02 = new Presente();
-        presente02.setComprador(null);
-        presente02.setNome("TELEVISAO");
-        presente02.setTipo("Eletrodomestico");
-        presente02.setDataCriacao(Datas.pegaDataAgora());
-        presente02.setDataModificao(Datas.pegaDataAgora());
-        this.adicionaPresentes(presente02);
-
-        Presente presente03 = new Presente();
-        presente03.setComprador(null);
-        presente03.setNome("GELADEIRA");
-        presente03.setTipo("Eletrodomestico");
-        presente03.setDataCriacao(Datas.pegaDataAgora());
-        presente03.setDataModificao(Datas.pegaDataAgora());
-        this.adicionaPresentes(presente03);
-
-        Presente presente04 = new Presente();
-        presente04.setComprador(null);
-        presente04.setNome("MICROONDAS");
-        presente04.setTipo("Eletrodomestico");
-        presente04.setDataCriacao(Datas.pegaDataAgora());
-        presente04.setDataModificao(Datas.pegaDataAgora());
-        this.adicionaPresentes(presente04);
-
-        Presente presente05 = new Presente();
-        presente05.setComprador(null);
-        presente05.setNome("CAMA KING SIZE");
-        presente05.setTipo("Movel");
-        presente05.setDataCriacao(Datas.pegaDataAgora());
-        presente05.setDataModificao(Datas.pegaDataAgora());
-        this.adicionaPresentes(presente05);
-    }
-
-    public void adicionaPresentes(Presente novoPresente) {
+    
+    public boolean reservaCompradorPresentes(Pessoa pessoa, long id) {
+        String sql = "Update presente set idPessoa = ?, dataModificacao = ? where id = ? ";
         
-        for (int i = 0; i < 5; i++) {
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
             
-            if (this.presente[i] == null) {
-                this.presente[i] = novoPresente;
-                break;
-            }
+            stmt.setLong(1, pessoa.getId());
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(Datas.pegaDataAgora()));
+            stmt.setLong(3, id);
+            
+            return stmt.executeUpdate() > 0;
+            
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
-
-    public String mostraListaPresentes() {
+    
+    public boolean adicionaPresente(Presente novoPresente, String tipoUsuario, UsuarioDAO usuarioDAO) {
+        String sql = "insert into presente (nome,tipo,dataCriacao,dataModificacao) values (?,?,?,?)";
+        
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            
+            if (usuarioDAO.confereTipoUsuario(tipoUsuario) == true) {
+                
+                stmt.setString(1, novoPresente.getNome());
+                stmt.setString(2, novoPresente.getTipo());
+                stmt.setTimestamp(3, java.sql.Timestamp.valueOf(novoPresente.getDataCriacao()));
+                stmt.setTimestamp(4, java.sql.Timestamp.valueOf(novoPresente.getDataModificao()));
+                
+                return stmt.executeUpdate() > 0;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        
+    }
+    
+    public List<Presente> listaPresente(PessoaDAO pessoaDAO) {
+        String sql = "select * from presente";
+        
+        List<Presente> listaPresente = new ArrayList<>();
+        
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql); ResultSet resultado = stmt.executeQuery()) {
+            
+            while (resultado.next()) {
+                Presente presente = new Presente();
+                
+                presente.setId(resultado.getLong("id"));
+                presente.setNome(resultado.getString("nome"));
+                presente.setTipo(resultado.getString("tipo"));
+                presente.setComprador(pessoaDAO.buscaPessoaId(resultado.getInt("idPessoa")));
+                presente.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                presente.setDataModificao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+                
+                listaPresente.add(presente);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return listaPresente;
+    }
+    
+    public String mostraListaPresente(PessoaDAO pessoaDAO) {
+        boolean vazio = true;
+        
+        List<Presente> listaPresente = listaPresente(pessoaDAO);
         
         String texto = "LISTA DE PRESENTES\n";
         
-        for (int i = 0; i < 5; i++) {
-            
-            if (this.presente[i] != null) {
-                texto += "\n" + this.presente[i].toString();
+        for (Presente presente : listaPresente) {
+            if (presente != null) {
+                texto += "\n" + presente.toString();
+                vazio = false;
             }
         }
-        return texto;
+        if (vazio == true) {
+            return null;
+        } else {
+            return texto;
+        }
     }
-
+    
     public boolean validaIdPresente(long id) {
+        String sql = "select * from presente where id = ?";
         
-        for (int i = 0; i < 5; i++) {
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
             
-            if (this.presente[i].getId() == id) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean reservaCompradorPresentes(Pessoa pessoa, long id) {
-
-        for (int i = 0; i < 5; i++) {
+            stmt.setLong(1, id);
             
-            if (this.presente[i] != null & this.presente[i].getId() == id) {
-               
-                if (this.presente[i].getComprador() == null) {
-                    this.presente[i].setComprador(pessoa);
-                    this.presente[i].setDataModificao(Datas.pegaDataAgora());
-                    return true;
-                } else {
-                    gui.exibirMensagemPresenteJaEscolhido();
-                }
+            try (ResultSet resultado = stmt.executeQuery()) {
+                return resultado.next();
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
     }
 }

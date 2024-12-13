@@ -4,7 +4,6 @@
  */
 package DAO;
 
-import view.GUI;
 import beans.Pessoa;
 import util.Datas;
 import java.sql.Connection;
@@ -23,27 +22,6 @@ import javax.swing.JOptionPane;
  */
 
 public class PessoaDAO {
-
-    GUI gui = new GUI();
-
-    Pessoa[] pessoa = new Pessoa[40];
-
-    public Pessoa pegaPessoa(String nomePessoa) {
-
-        boolean vazio = true;
-
-        for (int i = 0; i < 40; i++) {
-
-            if (this.pessoa[i] != null && this.pessoa[i].getNome().equals(nomePessoa)) {
-                vazio = false;
-                return pessoa[i];
-            }
-        }
-        if (vazio == true) {
-            gui.exibirMensagemPessoaNaoEncontrada();
-        }
-        return null;
-    }
 
     public boolean adicionaPessoa(Pessoa novaPessoa) {
         String sql = "insert into pessoa (nome,nascimento,telefone,dataCriacao,dataModificacao) values (?,?,?,?,?)";
@@ -166,7 +144,7 @@ public class PessoaDAO {
         }
     }
     
-    public Pessoa BuscaPessoaID(long id){
+    public Pessoa buscaPessoaId(long id){
         String sql = "select * from pessoa where id = ?";
 
         try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
@@ -194,7 +172,7 @@ public class PessoaDAO {
         }     
     }
     
-    public Pessoa BuscaPessoaNome(String nomePessoa){
+    public Pessoa buscaPessoaNome(String nomePessoa){
          String sql = "select * from pessoa where nome = ?";
 
         try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {

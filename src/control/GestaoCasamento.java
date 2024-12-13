@@ -4,6 +4,8 @@
  */
 package control;
 
+import DAO.ConviteFamiliarDAO;
+import DAO.ConviteIndividualDAO;
 import DAO.FornecedorDAO;
 import DAO.UsuarioDAO;
 import DAO.PresenteDAO;
@@ -21,6 +23,7 @@ import javax.swing.JOptionPane;
 import util.Datas;
 import java.sql.Connection;
 import connection.ConnectionFactory;
+import pdf.GeraPdf;
 
 /**
  *
@@ -37,13 +40,16 @@ public class GestaoCasamento {
     FornecedorDAO fornecedorDAO = new FornecedorDAO();
     PresenteDAO presenteDAO = new PresenteDAO();
     UsuarioDAO usuarioDAO = new UsuarioDAO();
-    MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO(usuarioDAO);
-    PagamentoDAO pagamentoDAO = new PagamentoDAO(fornecedorDAO);
-
+    MuralRecadosDAO muralRecadosDAO = new MuralRecadosDAO();
+    PagamentoDAO pagamentoDAO = new PagamentoDAO();
+    ConviteFamiliarDAO conviteFamiliarDAO = new ConviteFamiliarDAO();
+    ConviteIndividualDAO conviteIndividualDAO = new ConviteIndividualDAO();
+    
+    GeraPdf gerarPdf = new GeraPdf();
     GUI gui = new GUI();
 
     public GestaoCasamento() {
-        //Criação dos OBJETOS
+        //Criação dos OBJETOS                                           
         noivo = usuarioDAO.buscaNoivos("Noivo");
         noiva = usuarioDAO.buscaNoivos("Noiva");
 
@@ -72,7 +78,7 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    } //FINALIZADO
+    }
 
     private void executaOpcaoMenuLogin() {
         int pegaOpcao = 0;
@@ -85,13 +91,18 @@ public class GestaoCasamento {
                 case 1:
                     boolean confirmacao;
 
-                    String nomeUsuario = gui.recebeNomeUsuario();
+                    String loginUsuario = gui.recebeNomeUsuario();
 
-                    confirmacao = usuarioDAO.confereUsuario(nomeUsuario, gui.recebeSenhaUsuario());
+                    confirmacao = usuarioDAO.confereUsuario(loginUsuario, gui.recebeSenhaUsuario());
 
                     if (confirmacao) {
-                        usuarioLogado = usuarioDAO.consultaUsuario(nomeUsuario);
-                        executaOpcaoMenuPrincipalLogado();
+                        usuarioLogado = usuarioDAO.buscaUsuarioLogin(loginUsuario, pessoaDAO); // Pega o usuario logado
+                        
+                        if(usuarioLogado.getTipo().equals("Convidado")){
+                            executaOpcaoMenuPrincipalLogadoNormal();
+                        }else{
+                            executaOpcaoMenuPrincipalLogadoADM();
+                        }
                         pegaOpcao = 3;
 
                     } else {
@@ -103,7 +114,7 @@ public class GestaoCasamento {
                 case 2:
 
                     Usuario usuario = gui.criaUsuario();
-                    Pessoa pessoa = pessoaDAO.BuscaPessoaNome(usuario.getLogin());
+                    Pessoa pessoa = pessoaDAO.buscaPessoaNome(usuario.getLogin());
 
                     if (usuarioDAO.adicionaUsuario(usuario, pessoa)) {
                         gui.exibirMensagemUsuarioAdicionado();
@@ -117,13 +128,13 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    } //FINALIZADO
+    }
 
-    private void executaOpcaoMenuPrincipalLogado() {
+    private void executaOpcaoMenuPrincipalLogadoADM() {
         int pegaOpcao = 0;
 
-        while (pegaOpcao != 7) {
-            pegaOpcao = gui.menuPrincipalLogado(noivo.getLogin(), noiva.getLogin());
+        while (pegaOpcao != 9) {
+            pegaOpcao = gui.menuPrincipalLogado(noivo.getLogin(), noiva.getLogin(), usuarioLogado.getLogin());
 
             switch (pegaOpcao) {
                 // 1 - Acessa o Menu da lista de presentes
@@ -150,15 +161,52 @@ public class GestaoCasamento {
                 case 6:
                     executaOpcaoMenuPagamento();
                     break;
-                // 7 - Voltar 
+                // 7 - Acessar Menu de Convite
                 case 7:
+                    executaOpcaoMenuConvite();
+                    break;
+                // 8 - Sair
+                case 8:
+                    executaOpcaoMenuRelatorios();
+                    break;
+                // 9 - Sair
+                case 9:
                     break;
                 default:
                     gui.exibirMensagemOpcaoInexistente();
                     break;
             }
         }
-    }//FINALIZADO
+    }
+    
+     private void executaOpcaoMenuPrincipalLogadoNormal() {
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 4) {
+            pegaOpcao = gui.menuPrincipalLogadoNormal(noivo.getLogin(), noiva.getLogin(), usuarioLogado.getLogin());
+
+            switch (pegaOpcao) {
+                // 1 - Acessa o Menu da lista de presentes
+                case 1:
+                    executaOpcaoMenuPresente();
+                    break;
+                // 2 - Acessa o Menu de Mural de Recados
+                case 2:
+                      executaOpcaoMenuMuralRecados();
+                    break;
+                // 3 - Acessa o Menu de Convite
+                case 3:
+                    executaOpcaoMenuConvite();
+                    break;
+                    
+                case 4:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+                    break;
+            }
+        }
+    }
 
     private void executaOpcaoMenuUsuario() {
         int pegaOpcao = 0;
@@ -172,9 +220,8 @@ public class GestaoCasamento {
                     boolean confirmacao;
 
                     Usuario usuario = gui.criaUsuario();
-                    Pessoa pessoa = pessoaDAO.BuscaPessoaNome(usuario.getLogin());
 
-                    confirmacao = usuarioDAO.adicionaUsuario(usuario, pessoa);
+                    confirmacao = usuarioDAO.adicionaUsuario(usuario, pessoaDAO.buscaPessoaNome(usuario.getLogin()));
 
                     if (confirmacao) {
                         gui.exibirMensagemUsuarioAdicionado();
@@ -184,12 +231,12 @@ public class GestaoCasamento {
                     break;
                 // 2 - Consultar usuario 
                 case 2:
-                    Usuario usuarioConsulta;
+                    String textoUsuarioConsulta;
 
-                    usuarioConsulta = usuarioDAO.consultaUsuario(gui.recebeNomeUsuario());
+                    textoUsuarioConsulta = usuarioDAO.consultaUsuario(gui.recebeNomeUsuario(), pessoaDAO);
 
-                    if (usuarioConsulta != null) {
-                        gui.exibirUsuarios(usuarioConsulta.toString());
+                    if (textoUsuarioConsulta != null) {
+                        gui.exibirUsuarios(textoUsuarioConsulta);
                     } else {
                         gui.exibirMensagemUsuarioNaoEncontrado();
                     }
@@ -198,7 +245,7 @@ public class GestaoCasamento {
                 case 3:
                     boolean excluirUsuario;
 
-                    excluirUsuario = usuarioDAO.excluirUsuario(usuarioDAO.consultaUsuario(gui.recebeNomeUsuario()));
+                    excluirUsuario = usuarioDAO.excluirUsuario(gui.recebeNomeUsuario());
 
                     if (excluirUsuario) {
                         gui.exibirMensagemUsuarioExcluido();
@@ -210,7 +257,7 @@ public class GestaoCasamento {
                 case 4:
                     boolean alteraSenha;
 
-                    alteraSenha = usuarioDAO.alteraSenhaUsuario(usuarioDAO.consultaUsuario(gui.recebeNomeUsuario()), gui.recebeNovaSenhaUsuario());
+                    alteraSenha = usuarioDAO.alteraSenhaUsuario(gui.recebeNomeUsuario(), gui.recebeNovaSenhaUsuario());
 
                     if (alteraSenha) {
                         gui.exibirMensagemUsuarioAlterado();
@@ -221,10 +268,10 @@ public class GestaoCasamento {
                 // 5 - Mostra Usuarios cadastrados
                 case 5:
 
-                    if (usuarioDAO.mostraUsuario() == null) {
+                    if (usuarioDAO.mostraUsuario(pessoaDAO) == null) {
                         gui.exibirMensagemUsuarioNaoEncontrado();
                     } else {
-                        gui.exibirUsuarios(usuarioDAO.mostraUsuario());
+                        gui.exibirUsuarios(usuarioDAO.mostraUsuario(pessoaDAO));
                     }
                     break;
                 // 6 - Deslogar 
@@ -236,7 +283,7 @@ public class GestaoCasamento {
             }
         }
 
-    }// FAZENDO A CONEXÃO COM O BANCO
+    }
 
     private void executaOpcaoMenuPessoa() {
 
@@ -259,12 +306,12 @@ public class GestaoCasamento {
                     break;
                 //2 - Consulta Pessoa  
                 case 2:
-                    String pessoaConsulta;
+                    String textoPessoaConsulta;
 
-                    pessoaConsulta = pessoaDAO.consultaPessoa(gui.recebeNomePessoa());
+                    textoPessoaConsulta = pessoaDAO.consultaPessoa(gui.recebeNomePessoa());
 
-                    if (pessoaConsulta != null) {
-                        gui.exibirPessoas(pessoaConsulta);
+                    if (textoPessoaConsulta != null) {
+                        gui.exibirPessoas(textoPessoaConsulta);
                     } else {
                         gui.exibirMensagemPessoaNaoEncontrada();
                     }
@@ -284,10 +331,14 @@ public class GestaoCasamento {
                 // 4 - Altera o nome da pessoa 
                 case 4:
                     boolean alteraNome;
+                    
+                    String nomeAtual = gui.recebeNomePessoa();
+                    String novoNome = gui.recebeNovoNomePessoa();
 
-                    alteraNome = pessoaDAO.alteraPessoa(gui.recebeNomePessoa(), gui.recebeNovoNomePessoa());
+                    alteraNome = pessoaDAO.alteraPessoa(nomeAtual, novoNome);
 
                     if (alteraNome) {
+                        usuarioDAO.alteraNomeUsuario(nomeAtual, novoNome);
                         gui.exibirMensagemPessoaAlterada();
                     } else {
                         gui.exibirMensagemPessoaNaoEncontrada();
@@ -309,29 +360,33 @@ public class GestaoCasamento {
                     break;
             }
         }
-    } //FINALIZADO
+    }
 
     private void executaOpcaoMenuPresente() {
 
         int pegaOpcao = 0;
 
-        while (pegaOpcao != 3) {
+        while (pegaOpcao != 4) {
 
             pegaOpcao = gui.menuPresente();
             switch (pegaOpcao) {
                 //Mostra a lista de presentes 
                 case 1:
-                    gui.exibirPresentes(presenteDAO.mostraListaPresentes());
+                    if (presenteDAO.mostraListaPresente(pessoaDAO) == null) {
+                        gui.exibirMensagemListaPresenteVazia();
+                    } else {
+                        gui.exibirPresentes(presenteDAO.mostraListaPresente(pessoaDAO));
+                    }
                     break;
                 //Reserva comprador de cada presente 
                 case 2:
                     boolean confirmacao = false;
 
                     Pessoa pessoa = new Pessoa();
-                    pessoa = pessoaDAO.pegaPessoa(gui.recebeNomePessoa());
+                    pessoa = pessoaDAO.buscaPessoaNome(gui.recebeNomePessoa());
 
                     if (pessoa != null) {
-                        long id = Integer.parseInt(gui.recebeIdPresente());
+                        long id = gui.recebeIdPresente();
 
                         if (presenteDAO.validaIdPresente(id)) {
                             confirmacao = presenteDAO.reservaCompradorPresentes(pessoa, id);
@@ -343,14 +398,29 @@ public class GestaoCasamento {
                         gui.exibirMensagemReservaPresenteFeitaComSucesso();
                     }
                     break;
-                //Retorna para o menu principal
+                //Adiciona presente nas listas
                 case 3:
+                    boolean usuarioAdicionado;
+
+                    if (usuarioLogado == null) {
+                        gui.exibirMensagemUsuarioNaoEncontrado();
+                    } else {
+                        usuarioAdicionado = presenteDAO.adicionaPresente(gui.criaPresente(), usuarioLogado.getTipo(), usuarioDAO);
+
+                        if (usuarioAdicionado) {
+                            gui.exibirMensagemPresenteAdicionado();
+                        } else {
+                            gui.exibirMensagemPresenteNaoAdicionado();
+                        }
+                    }
+                    break;
+                case 4:
                     break;
                 default:
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }//PENDENTE
+    }
 
     private void executaOpcaoMenuMuralRecados() {
 
@@ -364,7 +434,7 @@ public class GestaoCasamento {
                 case 1:
                     boolean postado;
 
-                    postado = muralRecadosDAO.postarMuralRecados(gui.criaRecado(), usuarioLogado);
+                    postado = muralRecadosDAO.postarMuralRecados(usuarioLogado, gui.criaRecado());
 
                     if (postado) {
                         gui.exibirMensagemRecadoPostado();
@@ -374,11 +444,11 @@ public class GestaoCasamento {
                     break;
                 // 2 - Mostrar mural de recados
                 case 2:
-                    if (muralRecadosDAO.mostrarMuralRecados() == null) {
+                    if (muralRecadosDAO.mostrarMuralRecados(usuarioDAO) == null) {
                         gui.exibirMensagemNaoExisteMuralRecados();
 
                     } else {
-                        gui.exibirMuralRecados(muralRecadosDAO.mostrarMuralRecados());
+                        gui.exibirMuralRecados(muralRecadosDAO.mostrarMuralRecados(usuarioDAO));
                     }
                     break;
                 // 3 - Consultar recados 
@@ -386,7 +456,7 @@ public class GestaoCasamento {
 
                     String textoConsulta;
 
-                    textoConsulta = muralRecadosDAO.consultarMuralRecados(usuarioDAO.consultaUsuario(gui.recebeNomeUsuario()));
+                    textoConsulta = muralRecadosDAO.consultarMuralRecados(usuarioDAO.buscaUsuarioLogin(gui.recebeNomeUsuario(), pessoaDAO), usuarioDAO);
 
                     if (textoConsulta == null) {
                         gui.exibirMensagemRecadoConsultaInvalida();
@@ -396,21 +466,8 @@ public class GestaoCasamento {
                     break;
                 // 4 - Editar comentario
                 case 4:
-                    long codigoRecadoEdicao;
-                    boolean recadoEditado = false;
 
-                    codigoRecadoEdicao = muralRecadosDAO.validaCodigoRecado(gui.recebeCodigoRecado());
-
-                    if (codigoRecadoEdicao == 0) {
-                        gui.exibirMensagemCodigoNaoEncontrado();
-                    } else {
-                        if (muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecadoEdicao)) {
-                            recadoEditado = muralRecadosDAO.editarComentarioMuralRecados(codigoRecadoEdicao, gui.recebeNovoRecado());
-                        } else {
-                            gui.exibirMensagemUsuarioRecadoInvalido();
-                        }
-                    }
-                    if (recadoEditado == true) {
+                    if (muralRecadosDAO.editarComentarioMuralRecados(gui.recebeCodigoRecado(), usuarioLogado, gui.recebeNovoRecado())) {
                         gui.exibirMensagemRecadoEditado();
                     } else {
                         gui.exibirMensagemRecadoNaoEditado();
@@ -418,22 +475,8 @@ public class GestaoCasamento {
                     break;
                 // 5 - Excluir comentário
                 case 5:
-                    long codigoRecadoExclusao;
-                    boolean recadoExcluido = false;
 
-                    codigoRecadoExclusao = muralRecadosDAO.validaCodigoRecado(gui.recebeCodigoRecado());
-
-                    if (codigoRecadoExclusao == 0) {
-                        gui.exibirMensagemCodigoNaoEncontrado();
-                    } else {
-                        if (muralRecadosDAO.validaUsuarioRecado(usuarioLogado, codigoRecadoExclusao)) {
-                            recadoExcluido = muralRecadosDAO.excluirRecado(codigoRecadoExclusao, usuarioLogado);
-                        } else {
-                            gui.exibirMensagemUsuarioRecadoInvalido();
-                        }
-                    }
-
-                    if (recadoExcluido == true) {
+                    if (muralRecadosDAO.excluirRecado(gui.recebeCodigoRecado(), usuarioLogado)) {
                         gui.exibirMensagemRecadoExcluido();
                     } else {
                         gui.exibirMensagemRecadoNaoExcluido();
@@ -447,7 +490,7 @@ public class GestaoCasamento {
             }
 
         }
-    }//PENDENTE
+    }
 
     private void executaOpcaoMenuFornecedor() {
         int pegaopcao = 0;
@@ -519,7 +562,7 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }//PENDENTE
+    }
 
     private void executaOpcaoMenuPagamento() {
         int pegaopcao = 0;
@@ -535,7 +578,7 @@ public class GestaoCasamento {
 
                     textoFornecedor = fornecedorDAO.mostraFornecedor();
 
-                    pagamentosLancados = pagamentoDAO.lancamentoPagamentos(fornecedorDAO.pegaFornecedor(gui.recebeIdFornecedor(textoFornecedor)), Datas.convercaoData(gui.recebeDataPrimeiroPagamento()));
+                    pagamentosLancados = pagamentoDAO.lancamentoPagamentos(fornecedorDAO.buscaFornecedorId(gui.recebeIdFornecedor(textoFornecedor)), Datas.convercaoData(gui.recebeDataPrimeiroPagamento()));
 
                     if (pagamentosLancados == true) {
                         gui.exibirMensagemPagamentoLancado();
@@ -545,25 +588,25 @@ public class GestaoCasamento {
                     break;
                 // 2 - Visualizar os pagamentos   
                 case 2:
-                    if (pagamentoDAO.mostraPagamentosLancados() == null) {
+                    if (pagamentoDAO.mostraPagamentosLancados(fornecedorDAO) == null) {
                         gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
-                        gui.exibirPagamento(pagamentoDAO.mostraPagamentosLancados());
+                        gui.exibirPagamento(pagamentoDAO.mostraPagamentosLancados(fornecedorDAO));
                     }
                     break;
 
                 // 3 - Visualizar pagamentos do dia
                 case 3:
-                    if (pagamentoDAO.mostraPagamentosDoDia() == null) {
+                    if (pagamentoDAO.mostraPagamentosDoDia(fornecedorDAO) == null) {
                         gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
-                        gui.exibirPagamento(pagamentoDAO.mostraPagamentosDoDia());
+                        gui.exibirPagamento(pagamentoDAO.mostraPagamentosDoDia(fornecedorDAO));
                     }
                     break;
 
                 // 4 - Consultar pagamentos
                 case 4:
-                    String pagamentoConsultado = pagamentoDAO.consultaVencimentoDosDias(Datas.convercaoData(gui.recebeDataPesquisa()));
+                    String pagamentoConsultado = pagamentoDAO.consultaVencimentoDosDias(Datas.convercaoData(gui.recebeDataPesquisa()), fornecedorDAO);
                     if (pagamentoConsultado == null) {
                         gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
@@ -571,18 +614,23 @@ public class GestaoCasamento {
                     }
                     break;
 
-                // 5 - Pagamento das contas 
+                // 5 - Pagamento das contas do dia  
                 case 5:
                     boolean pagamentosPagos;
 
-                    String textoPagamento = pagamentoDAO.mostraPagamentosDoDia();
+                    String textoPagamento = pagamentoDAO.mostraPagamentosDoDia(fornecedorDAO);
 
-                    pagamentosPagos = pagamentoDAO.pagamentosPagos(gui.recebeIdPagamento(textoPagamento));
-
-                    if (pagamentosPagos == true) {
-                        gui.exibirMensagemPagamentoPago();
+                    if (textoPagamento == null) {
+                        gui.exibirMensagemPagamentoNaoEncontrado();
                     } else {
-                        gui.exibirMensagemPagamentoNaoPago();
+                        pagamentosPagos = pagamentoDAO.pagamentosPagos(gui.recebeIdPagamento(textoPagamento));
+
+                        if (pagamentosPagos == true) {
+                            gui.exibirMensagemPagamentoPago();
+                            fornecedorDAO.consultaPagamentoFornecedor(pagamentoDAO.listaPagamento(fornecedorDAO));
+                        } else {
+                            gui.exibirMensagemPagamentoNaoPago();
+                        }
                     }
                     break;
 
@@ -594,6 +642,7 @@ public class GestaoCasamento {
 
                     if (pagamentosAutPagos == true) {
                         gui.exibirMensagemPagamentoPago();
+                        fornecedorDAO.consultaPagamentoFornecedor(pagamentoDAO.listaPagamento(fornecedorDAO));
                     } else {
                         gui.exibirMensagemPagamentoNaoPago();
                     }
@@ -605,7 +654,149 @@ public class GestaoCasamento {
                     gui.exibirMensagemOpcaoInexistente();
             }
         }
-    }//PENDENTE
+    }
+
+    private void executaOpcaoMenuConvite() {
+
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 3) {
+
+            pegaOpcao = gui.menuConvite();
+            switch (pegaOpcao) {
+                //Mostra a lista de presentes 
+                case 1:
+                    executaOpcaoMenuConviteFamilia();
+                    break;
+                //Reserva comprador de cada presente 
+                case 2:
+                    executaOpcaoMenuConviteIndividual();
+                    break;
+                //Volta
+                case 3:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+        }
+    }
+
+    private void executaOpcaoMenuConviteFamilia() {
+
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 4) {
+
+            pegaOpcao = gui.menuConviteFamilia();
+            switch (pegaOpcao) {
+                //Adiciona convite familiar 
+                case 1:
+                    boolean conviteFamiliaAdicionado = false;
+
+                    conviteFamiliaAdicionado = conviteFamiliarDAO.adicionaConviteFamilia(gui.criaConviteFamilia(noivo, noiva));
+                    if (conviteFamiliaAdicionado == true) {
+                        gui.exibirMensagemFamiliaCadastrada();
+                    } else {
+                        gui.exibirMensagemFamiliaNaoCadastrada();
+                    }
+                    break;
+                //Mostra convite familiar
+                case 2:
+                    if (conviteFamiliarDAO.mostraConviteFamiliar() == null) {
+                        gui.exibirMensagemFamiliaNaoEncontrada();
+                    } else {
+                        gui.exibirFamilia(conviteFamiliarDAO.mostraConviteFamiliar());
+                    }
+                    break;
+                //Confirmar presença
+                case 3:
+                    boolean alterado = false;
+                    
+                    alterado = conviteIndividualDAO.alteraConfirmacao(conviteFamiliarDAO.confirmaConviteFamiliar(usuarioLogado, conviteIndividualDAO.listaConviteIdividual(pessoaDAO, conviteFamiliarDAO)));
+                    
+                    if(alterado == true){
+                        gui.exibirMensagemFamiliaConfirmada();
+                    }else{
+                        gui.exibirMensagemFamiliaNaoConfirmada();
+                    }
+                    break;
+                //Voltar 
+                case 4: 
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+        }
+    }
+
+    private void executaOpcaoMenuConviteIndividual() {
+
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 3) {
+
+            pegaOpcao = gui.menuConviteIndividual();
+            switch (pegaOpcao) {
+                //Adiciona convite Individual
+                case 1:
+
+                    boolean conviteIndividualAdicionado = false;
+
+                    conviteIndividualAdicionado = conviteIndividualDAO.adicionaConviteIndividual(gui.criaConviteIndividual(pessoaDAO, conviteFamiliarDAO));
+                    if (conviteIndividualAdicionado == true) {
+                        gui.exibirMensagemConviteIndividualCadastrado();
+                    } else {
+                        gui.exibirMensagemConviteIndividualNaoCadastrado();
+                    }
+                    break;
+                //Mostra convite Individual
+                case 2:
+                    if (conviteIndividualDAO.mostraConviteIndividual(pessoaDAO, conviteFamiliarDAO) == null) {
+                        gui.exibirMensagemConviteIndividualNaoEncontrado();
+                    } else {
+                        gui.exibirConviteIndividual(conviteIndividualDAO.mostraConviteIndividual(pessoaDAO, conviteFamiliarDAO));
+                    }
+                    break;
+                case 3:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+        }
+    }
+    
+    private void executaOpcaoMenuRelatorios() {
+
+        int pegaOpcao = 0;
+
+        while (pegaOpcao != 5) {
+
+            pegaOpcao = gui.menuRelatorio();
+            switch (pegaOpcao) {
+                //Relatorio de recados 
+                case 1:
+                    gerarPdf.gerarPdf("Recados", muralRecadosDAO.RelatorioMuralRecados(usuarioDAO));
+                    break;
+                //Relatorio Lista de Convidados 
+                case 2:
+                    gerarPdf.gerarPdf("Convidados", usuarioDAO.RelatorioUsuario(pessoaDAO));
+                    break;
+                //Relatorio Pagamentos efetuados
+                case 3:
+                    gerarPdf.gerarPdf("Pagamento", pagamentoDAO.RelatorioPagamentosPagos(fornecedorDAO));
+                    break;
+                //Relatorio Convidados confirmados
+                case 4: 
+                    gerarPdf.gerarPdf("Convidados_confirmados", conviteIndividualDAO.RelatorioConviteIndividual(pessoaDAO, conviteFamiliarDAO));
+                    break;
+                //Voltar
+                case 5:
+                    break;
+                default:
+                    gui.exibirMensagemOpcaoInexistente();
+            }
+        }
+    }
 
     //Main
     public static void main(String[] args) {

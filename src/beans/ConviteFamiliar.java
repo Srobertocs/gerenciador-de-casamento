@@ -19,14 +19,11 @@ public class ConviteFamiliar {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
 
-    private static long count;
-
-    public ConviteFamiliar() {
-        ConviteFamiliar.count += 1;
-        this.id = ConviteFamiliar.count;
+    //Métodos Setters
+    public void setId(long id) {
+        this.id = id;
     }
 
-    //Métodos Setters
     public void setNomeFamilia(String nomeFamilia) {
         this.nomeFamilia = nomeFamilia;
     }
@@ -44,6 +41,9 @@ public class ConviteFamiliar {
     }
 
     //Métodos Getters 
+   public long getId(){
+       return id;
+   }
     public String getNomeFamilia() {
         return nomeFamilia;
     }
@@ -59,12 +59,14 @@ public class ConviteFamiliar {
     public LocalDateTime getDataModificacao() {
         return dataModificacao;
     }
-    
-    //Método de ToString 
 
+    //Método de ToString 
     @Override
     public String toString() {
-        return "ConviteFamiliar{" + "id=" + id + ", nomeFamilia=" + nomeFamilia + ", acesso=" + acesso + ", dataCriacao=" + dataCriacao + ", dataModificacao=" + dataModificacao + '}';
+        String texto = "Id: " + this.id
+                + "\nNome Familia: " + this.nomeFamilia
+                + "\nAcesso: " + this.acesso;
+        return texto;
     }
 
     @Override
@@ -104,7 +106,5 @@ public class ConviteFamiliar {
         }
         return Objects.equals(this.dataModificacao, other.dataModificacao);
     }
-    
-    
 
 }

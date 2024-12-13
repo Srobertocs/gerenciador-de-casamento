@@ -74,14 +74,14 @@ public class Pessoa {
     //Método toString
     @Override
     public String toString() {
-
-        String texto = "\nID: " + this.id
+        
+            String texto = "\nID: " + this.id
                 + " | Nome: " + this.nome
                 + " | Telefone: " + this.telefone
                 + " | Data de nascimento: " + this.nascimento
                 + "\nData de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
                 + "  Data de modificao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-        return texto;
+        return texto;  
     }
 
     @Override

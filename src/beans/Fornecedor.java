@@ -14,6 +14,7 @@ import java.util.Objects;
  * @author SOUSA
  */
 public class Fornecedor {
+
     private long id;
     private String nome;
     private String cnpj;
@@ -23,17 +24,12 @@ public class Fornecedor {
     private String status;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
-    
-    private static long count;
-    
-    
-    //Construtor
-    public Fornecedor(){
-        Fornecedor.count += 1;
-        this.id = Fornecedor.count;
-    }
-    
+
     //Métodos Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -66,10 +62,6 @@ public class Fornecedor {
         this.dataModificacao = dataModificao;
     }
 
-    public static void setCount() {
-        Fornecedor.count = count - 1;
-    }
-    
     //Métodos Getters
     public long getId() {
         return id;
@@ -110,19 +102,19 @@ public class Fornecedor {
     //Método ToString
     @Override
     public String toString() {
-        
+
         DecimalFormat valorFormatado = new DecimalFormat("#.00");
-        
+
         String texto = "\nCodigo: " + this.id
-                + " | Nome do fornecedor: " + this.nome 
+                + " | Nome do fornecedor: " + this.nome
                 + " | CNPJ: " + this.cnpj
                 + " | Contato: " + this.telefone
                 + " | Valor: R$" + valorFormatado.format(this.valorAPagar)
-                + " | Parcelas: " + this.parcelas +" x"
-                +"  | Status: " + this.status
-                +"  | Data de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-                +"  | Data de criacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));         
-        return  texto;
+                + " | Parcelas: " + this.parcelas + " x"
+                + "  | Status: " + this.status
+                + "  | Data de criacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                + "  | Data de Modificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        return texto;
     }
 
     @Override

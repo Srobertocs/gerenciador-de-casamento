@@ -5,8 +5,17 @@
 package DAO;
 
 import beans.Fornecedor;
-import util.Datas;
+import beans.Pagamento;
 import view.GUI;
+import util.Datas;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import connection.ConnectionFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -16,80 +25,115 @@ public class FornecedorDAO {
 
     GUI gui = new GUI();
 
-    Fornecedor[] fornecedores = new Fornecedor[10];
-
-    public FornecedorDAO() {
-
-        Fornecedor fornecedor01 = new Fornecedor();
-        fornecedor01.setNome("Gosto de festa");
-        fornecedor01.setCnpj("10.123.258/0001-89");
-        fornecedor01.setTelefone("(34) 3314-9865");
-        fornecedor01.setValorAPagar(10000.0);
-        fornecedor01.setParcelas(2);
-        fornecedor01.setStatus("em pagamento");
-        fornecedor01.setDataCriacao(Datas.pegaDataAgora());
-        fornecedor01.setDataModificacao(Datas.pegaDataAgora());
-        adicionaFornecedor(fornecedor01);
-
-        Fornecedor fornecedor02 = new Fornecedor();
-        fornecedor02.setNome("Cerimonial Oliveira");
-        fornecedor02.setCnpj("12.789.258/0001-84");
-        fornecedor02.setTelefone("(34) 3365-7855");
-        fornecedor02.setValorAPagar(25000.0);
-        fornecedor02.setParcelas(10);
-        fornecedor02.setStatus("em pagamento");
-        fornecedor02.setDataCriacao(Datas.pegaDataAgora());
-        fornecedor02.setDataModificacao(Datas.pegaDataAgora());
-        adicionaFornecedor(fornecedor02);
-
-        Fornecedor fornecedor03 = new Fornecedor();
-        fornecedor03.setNome("Gastronomia Buffet Lima");
-        fornecedor03.setCnpj("25.456.259/0001-87");
-        fornecedor03.setTelefone("(34) 3156-9852");
-        fornecedor03.setValorAPagar(12000.0);
-        fornecedor03.setParcelas(1);
-        fornecedor03.setStatus("em pagamento");
-        fornecedor03.setDataCriacao(Datas.pegaDataAgora());
-        fornecedor03.setDataModificacao(Datas.pegaDataAgora());
-        adicionaFornecedor(fornecedor03);
-
-    }
-
     public boolean adicionaFornecedor(Fornecedor novoFornecedor) {
+        String sql = "insert into fornecedor (nome, cnpj, telefone,valorAPagar,parcelas,status,dataCriacao,dataModificacao) values (?,?,?,?,?,?,?,?)";
 
-        if (novoFornecedor.getNome().equals("") || novoFornecedor.getCnpj().equals("") || novoFornecedor.getTelefone().equals("") || novoFornecedor.getParcelas() == 0 || novoFornecedor.getStatus().equals("")
-                || novoFornecedor.getValorAPagar() == 0.0) {
-            Fornecedor.setCount();
-            return false;
-        }
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
-        for (int i = 0; i < 10; i++) {
-            if (this.fornecedores[i] != null) {
-                if (this.fornecedores[i].getCnpj().equals(novoFornecedor.getCnpj())) {
-                    gui.exibirMensagemFornecedorExistente();
-                    Fornecedor.setCount();
+            if (this.confereFornecedor(novoFornecedor.getCnpj()) == false) {
+                if (novoFornecedor != null) {
+                    stmt.setString(1, novoFornecedor.getNome());
+                    stmt.setString(2, novoFornecedor.getCnpj());
+                    stmt.setString(3, novoFornecedor.getTelefone());
+                    stmt.setDouble(4, novoFornecedor.getValorAPagar());
+                    stmt.setInt(5, novoFornecedor.getParcelas());
+                    stmt.setString(6, novoFornecedor.getStatus());
+                    stmt.setTimestamp(7, java.sql.Timestamp.valueOf(novoFornecedor.getDataCriacao()));
+                    stmt.setTimestamp(8, java.sql.Timestamp.valueOf(novoFornecedor.getDataModificacao()));
+
+                    return stmt.executeUpdate() > 0;
+                } else {
                     return false;
                 }
             } else {
-                this.fornecedores[i] = novoFornecedor;
-                return true;
+                return false;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
+    }
+
+    public List<Fornecedor> listaFornecedor() {
+        String sql = "select * from fornecedor";
+
+        List<Fornecedor> listaFornecedor = new ArrayList<>();
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql); ResultSet resultado = stmt.executeQuery()) {
+
+            while (resultado.next()) {
+                Fornecedor fornecedor = new Fornecedor();
+
+                fornecedor.setId(resultado.getLong("id"));
+                fornecedor.setCnpj(resultado.getString("cnpj"));
+                fornecedor.setNome(resultado.getString("nome"));
+                fornecedor.setTelefone(resultado.getString("telefone"));
+                fornecedor.setValorAPagar(resultado.getDouble("valorAPagar"));
+                fornecedor.setParcelas(resultado.getInt("parcelas"));
+                fornecedor.setStatus(resultado.getString("status"));
+                fornecedor.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                fornecedor.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                listaFornecedor.add(fornecedor);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return listaFornecedor;
+    }
+
+    public boolean excluiFornecedor(String cnpj) {
+        String sql = "delete from fornecedor where cnpj = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, cnpj);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Fornecedor consultaFornecedor(String cnpj) {
+        String sql = "select * from fornecedor where cnpj = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, cnpj);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+                if (resultado.next()) {
+                    Fornecedor fornecedor = new Fornecedor();
+
+                    fornecedor.setId(resultado.getLong("id"));
+                    fornecedor.setCnpj(resultado.getString("cnpj"));
+                    fornecedor.setNome(resultado.getString("nome"));
+                    fornecedor.setTelefone(resultado.getString("telefone"));
+                    fornecedor.setValorAPagar(resultado.getDouble("valorAPagar"));
+                    fornecedor.setParcelas(resultado.getInt("parcelas"));
+                    fornecedor.setStatus(resultado.getString("status"));
+                    fornecedor.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    fornecedor.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return fornecedor;
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String mostraFornecedor() {
-
         boolean vazio = true;
 
+        List<Fornecedor> listaFornecedor = this.listaFornecedor();
         String texto = "FORNECEDORES CADASTRADOS";
 
-        for (int i = 0; i < 10; i++) {
-
-            if (this.fornecedores[i] != null) {
-                texto += "\n" + fornecedores[i].toString();
-                vazio = false;
-            }
+        for (Fornecedor fornecedor : listaFornecedor) {
+            texto += "\n" + fornecedor.toString();
+            vazio = false;
         }
         if (vazio == true) {
             return null;
@@ -98,46 +142,86 @@ public class FornecedorDAO {
         }
     }
 
-    public Fornecedor consultaFornecedor(String cnpj) {
+    public boolean confereFornecedor(String cnpj) {
 
-        for (int i = 0; i < 10; i++) {
-            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)){
-                return this.fornecedores[i];
+        String sql = "select * from fornecedor where cnpj = ?";
+
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, cnpj);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+                return resultado.next();
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
-    }
-    
-    public Fornecedor pegaFornecedor(long id){
-        
-        for (int i = 0; i < 10; i++) {
-            if (this.fornecedores[i] != null && this.fornecedores[i].getId() == id){
-                return this.fornecedores[i];
-            }
-        }
-        return null;
     }
 
-    public boolean excluiFornecedor(String cnpj) {
+    public Fornecedor buscaFornecedorId(long id) {
+        String sql = "select * from fornecedor where id = ?";
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setLong(1, id);
 
-        for (int i = 0; i < 10; i++) {
-            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)) {
-                this.fornecedores[i] = null;
-                return true;
+            try (ResultSet resultado = stmt.executeQuery()) {
+
+                if (resultado.next()) {
+                    Fornecedor buscaFornecedor = new Fornecedor();
+
+                    buscaFornecedor.setId(resultado.getLong("id"));
+                    buscaFornecedor.setCnpj(resultado.getString("cnpj"));
+                    buscaFornecedor.setNome(resultado.getString("nome"));
+                    buscaFornecedor.setTelefone(resultado.getString("telefone"));
+                    buscaFornecedor.setValorAPagar(resultado.getDouble("valorAPagar"));
+                    buscaFornecedor.setParcelas(resultado.getInt("parcelas"));
+                    buscaFornecedor.setStatus(resultado.getString("status"));
+                    buscaFornecedor.setDataCriacao(resultado.getTimestamp("dataCriacao").toLocalDateTime());
+                    buscaFornecedor.setDataModificacao(resultado.getTimestamp("dataModificacao").toLocalDateTime());
+
+                    return buscaFornecedor;
+                } else {
+                    return null;
+                }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
     public boolean alteraStatusPagamento(String cnpj, String novoStatus) {
+        String sql = "Update fornecedor set status = ?, dataModificacao = ? where cnpj = ? ";
 
-        for (int i = 0; i < 10; i++) {
-            if (this.fornecedores[i] != null && this.fornecedores[i].getCnpj().equals(cnpj)) {
-                this.fornecedores[i].setStatus(novoStatus);
-                this.fornecedores[i].setDataModificacao(Datas.pegaDataAgora());
-                return true;
+        try (Connection conexao = new ConnectionFactory().getConnection(); PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setString(1, novoStatus);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(Datas.pegaDataAgora()));
+            stmt.setString(3, cnpj);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void consultaPagamentoFornecedor(List<Pagamento> listaPagamentos) {
+
+        boolean pago = false;
+
+        List<Fornecedor> listaFornecedor = this.listaFornecedor();
+        for (Fornecedor fornecedor : listaFornecedor) {
+            for (Pagamento pagamento : listaPagamentos) {
+                if (pagamento.getFornecedor().getId() == fornecedor.getId() && pagamento.getDescricao().equals("Pago") && pagamento.getParcelas() == fornecedor.getParcelas()) {
+
+                    pago = this.alteraStatusPagamento(fornecedor.getCnpj(), "Pago");
+
+                }
             }
         }
-        return false;
+        if (pago == true) {
+            gui.exibirMensagemFornecedorAlterado();
+        }else {
+            System.out.println("teste manezão");
+        }
+            
     }
 }

@@ -13,21 +13,18 @@ import java.util.Objects;
  * @author SOUSA
  */
 public class Recados {
+
     private long id;
     private Usuario usuario;
     private String recado;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
-    
-    private static long count;
-    
-    //Construtor
-    public Recados(){
-        Recados.count += 1;     
-        this.id = Recados.count;
-    }
-    
+
     //Métodos Setters
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
@@ -43,9 +40,8 @@ public class Recados {
     public void setDataModificacao(LocalDateTime dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
-    
-    //Métodos Getters
 
+    //Métodos Getters
     public long getId() {
         return id;
     }
@@ -65,16 +61,25 @@ public class Recados {
     public LocalDateTime getDataModificacao() {
         return dataModificacao;
     }
-    
+
     //Método ToString
-    @Override
-    public String toString() {
-        String texto = "Enviado por: " + this.usuario.getLogin()
+    public String toString(int aux) {
+        
+        if(aux == 1){
+            String texto = "Postado por: " + this.usuario.getLogin()
                 + " |  Código: " + this.id
                 + "\nRecado: " + this.recado
                 + "\n\nData de postagem: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
                 + "\nData de modificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         return texto;
+        }else{
+             String texto = "/-------------------------------/"
+                + "\nPostado por: " + this.usuario.getLogin()
+                + "\n\nRecado: " + this.recado
+                + "\n\nData de postagem: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                + "\nData de modificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        return texto;
+        }
     }
 
     @Override
@@ -114,8 +119,5 @@ public class Recados {
         }
         return Objects.equals(this.dataModificacao, other.dataModificacao);
     }
-    
+
 }
-    
-    
-    
